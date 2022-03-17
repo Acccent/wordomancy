@@ -1,0 +1,100 @@
+/* Bluu Next */
+
+@font-face {
+  font-family: 'Bluu Next';
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url('@/0_assets/fonts/BluuNext/BluuNext-Bold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Bluu Next';
+  font-style: italic;
+  font-weight: 700;
+  font-display: block;
+  src: url('@/0_assets/fonts/BluuNext/BluuNext-BoldItalic.woff2')
+    format('woff2');
+}
+
+/* Bluu Next Titling */
+
+@font-face {
+  font-family: 'Bluu Next Titling';
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url('@/0_assets/fonts/BluuNext/BluuNext-Titling.woff2') format('woff2');
+}
+
+/* Amulya Regular */
+
+@font-face {
+  font-family: 'Amulya';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('@/0_assets/fonts/Amulya/Amulya-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Amulya';
+  font-style: italic;
+  font-weight: 400;
+  font-display: block;
+  src: url('@/0_assets/fonts/Amulya/Amulya-RegularItalic.woff2') format('woff2');
+}
+
+/* Amulya Light */
+
+@font-face {
+  font-family: 'Amulya';
+  font-style: normal;
+  font-weight: 300;
+  font-display: block;
+  src: url('@/0_assets/fonts/Amulya/Amulya-Light.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Amulya';
+  font-style: italic;
+  font-weight: 300;
+  font-display: block;
+  src: url('@/0_assets/fonts/Amulya/Amulya-LightItalic.woff2') format('woff2');
+}
+
+/* Amulya Medium */
+
+@font-face {
+  font-family: 'Amulya';
+  font-style: normal;
+  font-weight: 600;
+  font-display: block;
+  src: url('@/0_assets/fonts/Amulya/Amulya-Medium.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Amulya';
+  font-style: italic;
+  font-weight: 600;
+  font-display: block;
+  src: url('@/0_assets/fonts/Amulya/Amulya-MediumItalic.woff2') format('woff2');
+}
+
+/* Amulya Bold */
+
+@font-face {
+  font-family: 'Amulya';
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url('@/0_assets/fonts/Amulya/Amulya-Bold.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Amulya';
+  font-style: italic;
+  font-weight: 700;
+  font-display: block;
+  src: url('@/0_assets/fonts/Amulya/Amulya-BoldItalic.woff2') format('woff2');
+}
