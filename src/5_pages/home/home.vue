@@ -3,8 +3,7 @@ import { SpellPhase } from '@/2_utils/global';
 import cModal from '@/4_components/cModal.vue';
 import castSpell from './cast-spell/vCastSpell.vue';
 import friendSpells from './friend-spells/vFriendSpells.vue';
-import { useUser } from '@/3_stores/user';
-import { useSpellCasting } from '@/3_stores/spell-casting';
+import { useUser, useSpellCasting } from '@/3_stores';
 const user = useUser();
 const spell = useSpellCasting();
 

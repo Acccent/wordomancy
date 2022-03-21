@@ -6,7 +6,6 @@ import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
 
 export default defineConfig({
-  publicDir: 'toPublic',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -34,7 +33,4 @@ export default defineConfig({
       dts: true,
     }),
   ],
-  build: {
-    outDir: 'public',
-  },
 });

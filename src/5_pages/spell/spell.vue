@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import vSpellLettersSolve from './vSpellLettersSolve.vue';
 import vKeyboard from './vKeyboard.vue';
-import { useSpellSolving } from '@/3_stores/spell-solving';
+import { useSpellSolving } from '@/3_stores';
 const spell = useSpellSolving();
 const route = useRoute();
 

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import vSpellLettersCast from './vSpellLettersCast.vue';
-import { useSpellCasting } from '@/3_stores/spell-casting';
+import { useSpellCasting } from '@/3_stores';
 const spell = useSpellCasting();
 
 const missingKeysCount = computed(() => spell.keysNeeded - spell.keys.size);

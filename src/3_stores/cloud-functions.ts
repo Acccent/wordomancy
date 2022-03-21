@@ -22,22 +22,39 @@ export const useCloud = defineStore('cloud-functions', {
     wordMap: s => new Map([...s.word].map((l, i) => [i, l])),
   },
   actions: {
-    async fetchData(d: string) {
-      const json = await fetch(`/${d}.json`);
-      const data: string[] = await json.json();
+    async fetchNetlify(q: string) {
+      const res = await fetch('/.netlify/functions/' + q);
+      console.log(res);
+
+      return await res.json();
+    },
+
+    async getSpellId() {
+      return (await this.fetchNetlify('get-spell-id')) as string;
+    },
+
+    async getEmojis(n?: number) {
+      return (await this.fetchNetlify(
+        `get-emojis${n ? '?amount=' + n : ''}`
+      )) as string[];
+    },
+
+    async fetchSet(d: string) {
+      const res = await fetch(`/${d}.json`);
+      const data: string[] = await res.json();
       return new Set(data);
     },
 
-    async fetchSpellwords(): Promise<Set<string>> {
+    async fetchSpellwords() {
       if (!this.spellwords.size) {
-        this.spellwords = await this.fetchData('spellwords');
+        this.spellwords = await this.fetchSet('spellwords');
       }
       return this.spellwords;
     },
 
     async checkIfGuessExists(word: string) {
       if (!this.possibleGuesses.size) {
-        this.possibleGuesses = await this.fetchData('guesses');
+        this.possibleGuesses = await this.fetchSet('guesses');
       }
       return this.possibleGuesses.has(word);
     },

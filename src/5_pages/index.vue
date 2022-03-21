@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import ReadMe from '@/../readme.md';
-import { useUser } from '@/3_stores/user';
+import { useUser } from '@/3_stores';
 const user = useUser();
 const router = useRouter();
 

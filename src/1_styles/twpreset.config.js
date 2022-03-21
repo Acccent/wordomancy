@@ -32,14 +32,14 @@ module.exports = {
     themes: [
       {
         wordomancy: {
-          primary: 'hsl(34 93% 53%)',
-          'primary-focus': 'hsl(34 100% 63%)',
+          primary: 'hsl(36 100% 60%)',
+          'primary-focus': 'hsl(36 90% 50%)',
           // 'primary-content': 'hsl(333 100% 55%)',
-          secondary: 'hsl(44 93% 68%)',
-          'secondary-focus': 'hsl(44 100% 78%)',
+          secondary: 'hsl(26 96% 70%)',
+          'secondary-focus': 'hsl(26 88% 62%)',
           // 'secondary-content': 'hsl(339 75% 75%)',
           accent: 'hsl(266 93% 83%)',
-          'accent-focus': 'hsl(266 100% 83%)',
+          'accent-focus': 'hsl(266 83% 73%)',
           // 'accent-content': 'hsl(39 90% 55%)',
           neutral: 'hsl(228 8% 40%)',
           'neutral-focus': 'hsl(228, 12%, 60%)',
@@ -54,7 +54,7 @@ module.exports = {
           // 'success-content': '#47ebaf',
           warning: 'hsl(40 80% 70%)',
           // 'warning-content': '#f9cf86',
-          error: 'hsl(3 80% 60%)',
+          error: 'hsl(2 75% 75%)',
           // 'error-content': '#eb4768',
           '--rounded-box': '.4rem',
           '--rounded-btn': '.15rem',

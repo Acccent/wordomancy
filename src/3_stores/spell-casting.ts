@@ -1,6 +1,5 @@
-import { SpellPhase, getKeysNeeded, getSetFromArray } from '@/2_utils/global';
-import { useCloud } from './cloud-functions';
-import { useAppState } from './app-state';
+import { SpellPhase, getKeysNeeded } from '@/2_utils/global';
+import { useAppState, useCloud } from './';
 const cloud = useCloud();
 const appState = useAppState();
 
@@ -32,7 +31,7 @@ export const useSpellCasting = defineStore('spell-casting', {
       this.$reset();
 
       const spellwords = await cloud.getRandomSpellwords(3);
-      const emojis = [...getSetFromArray([...appState.emojiList], 3)];
+      const emojis = await cloud.getEmojis(3);
 
       for (let i = 0; i < 3; i++) {
         this.energy.set(emojis[i], spellwords[i]);
@@ -58,7 +57,9 @@ export const useSpellCasting = defineStore('spell-casting', {
       }
     },
 
-    submitSpell() {
+    async submitSpell() {
+      const id = await cloud.getSpellId();
+      console.log(id);
       this.phase = SpellPhase.submitted;
     },
   },

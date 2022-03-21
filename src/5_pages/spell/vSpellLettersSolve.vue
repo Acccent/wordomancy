@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { LS } from '@/2_utils/global';
-import { useSpellSolving } from '@/3_stores/spell-solving';
+import { useSpellSolving } from '@/3_stores';
 const spell = useSpellSolving();
 
 const props = defineProps<{
@@ -10,7 +10,7 @@ const props = defineProps<{
 const isCurrent = props.guess === undefined;
 const guess = computed(() => (isCurrent ? spell.currentGuess : props.guess));
 
-const guessPreview = computed(() => {
+const guessDisplay = computed(() => {
   const glArray = [] as GuessedLetter[];
   for (let i = 0; i < spell.knownInfo.length; i++) {
     const inputLetter = guess.value.get(i);
@@ -19,22 +19,24 @@ const guessPreview = computed(() => {
       continue;
     }
 
-    const correctLetter = spell.knownInfo.corrects.get(i);
-    if (correctLetter) {
-      glArray.push({
-        letter: correctLetter,
-        state: LS.correct,
-      });
-      continue;
-    }
+    if (isCurrent) {
+      const correctLetter = spell.knownInfo.corrects.get(i);
+      if (correctLetter) {
+        glArray.push({
+          letter: correctLetter,
+          state: LS.correct,
+        });
+        continue;
+      }
 
-    const keyLetter = spell.knownInfo.keys.get(i);
-    if (keyLetter) {
-      glArray.push({
-        letter: keyLetter,
-        state: LS.key,
-      });
-      continue;
+      const keyLetter = spell.knownInfo.keys.get(i);
+      if (keyLetter) {
+        glArray.push({
+          letter: keyLetter,
+          state: LS.key,
+        });
+        continue;
+      }
     }
 
     glArray.push({
@@ -72,7 +74,7 @@ function isTranslucent(i: number) {
 
 <template>
   <div class="flex justify-center gap-1 my-4">
-    <div v-for="({ letter, state }, i) in guessPreview" :key="i" class="w-1/10">
+    <div v-for="({ letter, state }, i) in guessDisplay" :key="i" class="w-1/10">
       <c-spell-single-letter
         :letter="letter"
         :letterState="getLetterState(state)"

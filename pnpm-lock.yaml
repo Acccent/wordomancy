@@ -2,9 +2,10 @@ lockfileVersion: 5.3
 
 specifiers:
   '@iconify-json/fluent': ^1.1.2
-  '@iconify-json/twemoji': ^1.1.1
+  '@iconify-json/twemoji': ^1.1.2
   '@iconify-json/uil': ^1.1.1
   '@iconify/vue': ^3.1.4
+  '@netlify/functions': ^1.0.0
   '@rushstack/eslint-patch': ^1.1.0
   '@tailwindcss/typography': ^0.5.2
   '@types/node': ^17.0.21
@@ -16,6 +17,7 @@ specifiers:
   daisyui: ^2.6.4
   eslint: ^8.9.0
   eslint-plugin-vue: ^8.5.0
+  nanoid: ^3.3.1
   pinia: ^2.0.11
   postcss: ^8.4.7
   postcss-import: ^14.0.2
@@ -39,9 +41,10 @@ dependencies:
 
 devDependencies:
   '@iconify-json/fluent': 1.1.2
-  '@iconify-json/twemoji': 1.1.1
+  '@iconify-json/twemoji': 1.1.2
   '@iconify-json/uil': 1.1.1
   '@iconify/vue': 3.1.4_vue@3.2.31
+  '@netlify/functions': 1.0.0
   '@rushstack/eslint-patch': 1.1.0
   '@tailwindcss/typography': 0.5.2_tailwindcss@3.0.23
   '@types/node': 17.0.21
@@ -53,6 +56,7 @@ devDependencies:
   daisyui: 2.6.4_4585f94de3eac54c17be782e8b51352c
   eslint: 8.9.0
   eslint-plugin-vue: 8.5.0_eslint@8.9.0
+  nanoid: 3.3.1
   postcss: 8.4.7
   postcss-import: 14.0.2_postcss@8.4.7
   prettier: 2.5.1
@@ -166,8 +170,8 @@ packages:
       '@iconify/types': 1.0.12
     dev: true
 
-  /@iconify-json/twemoji/1.1.1:
-    resolution: {integrity: sha512-deh0LtiBaNTd55IP0KfqAiapvn+/9ZmxXkRaHx4vhYM/RpyuUgQW5m2tVKp3YXjCsi8IlJgvFN1iL2wIXlex5Q==}
+  /@iconify-json/twemoji/1.1.2:
+    resolution: {integrity: sha512-w2dZmkglD+wdwRhnse/ek04NP1ETXVNLmrWJKrZxMq90oAdMal1WBQaLySyNcFM9G8OKuvEhttS84Crp+Kk0iw==}
     dependencies:
       '@iconify/types': 1.0.12
     dev: true
@@ -188,6 +192,13 @@ packages:
       vue: 3.x
     dependencies:
       vue: 3.2.31
+    dev: true
+
+  /@netlify/functions/1.0.0:
+    resolution: {integrity: sha512-7fnJv3vr8uyyyOYPChwoec6MjzsCw1CoRUO2DhQ1BD6bOyJRlD4DUaOOGlMILB2LCT8P24p5LexEGx8AJb7xdA==}
+    engines: {node: '>=8.3.0'}
+    dependencies:
+      is-promise: 4.0.0
     dev: true
 
   /@nodelib/fs.scandir/2.1.5:
@@ -1854,6 +1865,10 @@ packages:
 
   /is-promise/2.2.2:
     resolution: {integrity: sha512-+lP4/6lKUBfQjZ2pdxThZvLUAafmZb8OAxFb8XXtiQmS35INgr85hdOGoEs124ez1FCnZJt6jau/T+alh58QFQ==}
+    dev: true
+
+  /is-promise/4.0.0:
+    resolution: {integrity: sha512-hvpoI6korhJMnej285dSg6nu1+e6uxs7zG3BYAm5byqDsgJNWwxzM6z6iZiAgQR4TJ30JmBTOwqZUw3WlyH3AQ==}
     dev: true
 
   /is-regex/1.1.4:

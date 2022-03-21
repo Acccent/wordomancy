@@ -2,7 +2,11 @@
 .vscode
 .history
 node_modules
+cloud
 dist
-public
 *.local
 *.log
+*.dev.*
+
+# Local Netlify folder
+.netlify

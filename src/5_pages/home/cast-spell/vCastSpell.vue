@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { SpellPhase } from '@/2_utils/global';
-import { useSpellCasting } from '@/3_stores/spell-casting';
+import { useSpellCasting } from '@/3_stores';
 import vInputSpellword from './vInputSpellword.vue';
 import vSelectKeys from './vSelectKeys.vue';
 const spell = useSpellCasting();

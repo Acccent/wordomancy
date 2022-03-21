@@ -70,8 +70,6 @@ function getSetFromArray<T>(array: Array<T>, num: number): Set<T> {
 export {
   SpellPhase,
   LetterState as LS,
-  type GuessedLetter,
-  type GuessedWord,
   KnownInfo,
   getKeysNeeded,
   getSetFromArray,

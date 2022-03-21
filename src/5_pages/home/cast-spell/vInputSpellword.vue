@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useSpellCasting } from '@/3_stores/spell-casting';
+import { useSpellCasting } from '@/3_stores';
 const spell = useSpellCasting();
 
 const used: boolean[][] = reactive([]);

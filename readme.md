@@ -7,14 +7,14 @@ There's still a lot missing and some things might not work, so feedback is very 
 
 ### Known issues
 
+- ⚠️ There may be a bug where a misplaced letter is highlighted several times in a guess, when it's only once in the solution 
 - Text fields can be weird
-  - Pressing enter to submit adds a Q
   - Focus state isn't predictable
   - Changing the text in the middle of the word moves the caret to the end
 - Spellword & Guess inputs lets you add repeat invalid letters
 - Colors need tweaking and accessibility check
 - Layout issues on small screens
-- No favicon or sharing metadata
+- No sharing metadata
 - Feedback on remaining guesses
 - Hint feature probably needs tweaking
 - Guesses should scroll up when new ones are added and the screen is too small (instead of pushing the keyboard down)
@@ -27,7 +27,7 @@ There's still a lot missing and some things might not work, so feedback is very 
 - Friends page (with their latest Spells)
 - Daily Spell
 - Explanations + acknowledgments
-- Setting
+- Settings
   - Choose color for letter states
   - Toggle letter hints
 
