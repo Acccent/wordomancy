@@ -1,7 +1,8 @@
 import { SpellPhase, getKeysNeeded } from '@/2_utils/global';
-import { useAppState, useCloud } from './';
-const cloud = useCloud();
+import { useAppState, useCloud, useLocal } from './';
 const appState = useAppState();
+const cloud = useCloud();
+const local = useLocal();
 
 export const useSpellCasting = defineStore('spell-casting', {
   state: () => {
@@ -10,18 +11,23 @@ export const useSpellCasting = defineStore('spell-casting', {
       phase: SpellPhase.noEnergy,
       word: '',
       keys: new Set<number>(),
+      id: '',
     };
   },
   getters: {
-    keyLetters: s => [...s.keys].sort((a, b) => a - b).map(k => s.word[k]),
     isValidWord: s => /^[A-Z]{5,10}$/.test(s.word),
-    keysNeeded: s => getKeysNeeded(s.word.length),
+    keysNeeded: s => getKeysNeeded(s.word),
     hasEnoughKeys(): boolean {
       return this.keys.size === this.keysNeeded;
     },
-    keysAsPhrase(): string {
-      return this.keyLetters.reduce(
-        (p, c, i) => `${p}${i === this.keys.size - 1 ? ' and ' : ', '}${c}`
+    keysAsPhrase: s => {
+      const sortedKeys = [...s.keys].sort((a, b) => a - b);
+      return sortedKeys.reduce(
+        (p, c, i) =>
+          `${p}${i === 0 ? '' : i === s.keys.size - 1 ? ' and ' : ', '}${
+            s.word[c]
+          }`,
+        ''
       );
     },
   },
@@ -30,18 +36,14 @@ export const useSpellCasting = defineStore('spell-casting', {
       appState.loading = true;
       this.$reset();
 
-      const spellwords = await cloud.getRandomSpellwords(3);
-      const emojis = await cloud.getEmojis(3);
-
-      for (let i = 0; i < 3; i++) {
-        this.energy.set(emojis[i], spellwords[i]);
-      }
+      const e = await cloud.getEnergyForecast();
+      e.forEach(kv => this.energy.set(kv[0], kv[1]));
 
       appState.loading = false;
     },
 
     async submitInput() {
-      if (await cloud.checkIfSpellwordExists(this.word)) {
+      if (await local.checkIfSpellwordExists(this.word)) {
         this.phase = SpellPhase.selectingKeys;
       } else {
         return false;
@@ -58,8 +60,8 @@ export const useSpellCasting = defineStore('spell-casting', {
     },
 
     async submitSpell() {
-      const id = await cloud.getSpellId();
-      console.log(id);
+      const res = await cloud.submitSpell(this.word, [...this.keys]);
+      console.log(res);
       this.phase = SpellPhase.submitted;
     },
   },

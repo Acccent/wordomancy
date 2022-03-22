@@ -29,7 +29,9 @@ const letterClass = computed(() => {
   }
 });
 
-defineEmits(['updateCheckbox']);
+defineEmits<{
+  (e: 'updateCheckbox', value: boolean): void;
+}>();
 </script>
 
 <template>

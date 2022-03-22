@@ -22,6 +22,7 @@ const user = useUser(store);
 
 router.beforeEach(to => {
   if (to.name !== 'index' && user.name !== 'passwordomancy') {
+    user.name = '';
     return { name: 'index' };
   }
 });

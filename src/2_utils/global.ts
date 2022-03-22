@@ -39,8 +39,8 @@ class KnownInfo {
   }
 }
 
-function getKeysNeeded(w: number) {
-  switch (w) {
+function getKeysNeeded(w: string) {
+  switch (w.length) {
     case 5:
     case 6:
       return 1;

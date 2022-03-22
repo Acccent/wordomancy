@@ -4,7 +4,6 @@ const props = defineProps<{
   buttonText?: string;
 }>();
 
-const emit = defineEmits(['opened', 'closed']);
 const isOpen = ref(false);
 
 function open() {
@@ -16,6 +15,11 @@ function close() {
   isOpen.value = false;
   emit('closed');
 }
+
+const emit = defineEmits<{
+  (e: 'opened'): void;
+  (e: 'closed'): void;
+}>();
 
 defineExpose({ open, close });
 </script>

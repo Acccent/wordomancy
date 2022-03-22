@@ -12,8 +12,6 @@ const props = defineProps<{
   uppercase?: boolean;
 }>();
 
-const emit = defineEmits(['update:modelValue']);
-
 function emitValue(e: Event) {
   const v = (e.target as HTMLInputElement).value;
   emit('update:modelValue', props.uppercase ? v.toUpperCase() : v);
@@ -22,6 +20,10 @@ function emitValue(e: Event) {
 const tipFlexOrder = computed(() =>
   props.tipPosition === 'top' ? 'order-first' : 'order-last'
 );
+
+const emit = defineEmits<{
+  (e: 'update:modelValue', value: string): void;
+}>();
 </script>
 
 <template>

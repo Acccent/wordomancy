@@ -4,85 +4,64 @@ import {
   getKeysNeeded,
   getSetFromArray,
 } from '@/2_utils/global';
+import { useLocal } from './';
+const local = useLocal();
 
 const maxGuesses = 6;
 
 export const useCloud = defineStore('cloud-functions', {
   state: () => {
     return {
-      spellwords: new Set<string>(),
-      possibleGuesses: new Set<string>(),
       word: '',
       keys: new Set<number>(),
       ud: {} as UserSolveData,
     };
   },
   getters: {
-    spellwordsArray: s => [...s.spellwords],
     wordMap: s => new Map([...s.word].map((l, i) => [i, l])),
   },
   actions: {
-    async fetchNetlify(q: string) {
-      const res = await fetch('/.netlify/functions/' + q);
-      console.log(res);
-
+    async fetchNetlify(f: string, params?: Record<string, any>) {
+      const res = await fetch('/.netlify/functions/' + f, {
+        method: params !== undefined ? 'POST' : 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: params !== undefined ? JSON.stringify(params) : undefined,
+      });
       return await res.json();
     },
 
-    async getSpellId() {
-      return (await this.fetchNetlify('get-spell-id')) as string;
-    },
-
     async getEmojis(n?: number) {
-      return (await this.fetchNetlify(
-        `get-emojis${n ? '?amount=' + n : ''}`
-      )) as string[];
+      return (await this.fetchNetlify('get-emojis', {
+        amount: n,
+      })) as string[];
     },
 
-    async fetchSet(d: string) {
-      const res = await fetch(`/${d}.json`);
-      const data: string[] = await res.json();
-      return new Set(data);
+    async getRandomSpellword() {
+      return (await this.fetchNetlify('get-spellword')) as string;
     },
 
-    async fetchSpellwords() {
-      if (!this.spellwords.size) {
-        this.spellwords = await this.fetchSet('spellwords');
-      }
-      return this.spellwords;
+    async getEnergyForecast() {
+      return (await this.fetchNetlify('get-forecast')) as string[][];
     },
 
-    async checkIfGuessExists(word: string) {
-      if (!this.possibleGuesses.size) {
-        this.possibleGuesses = await this.fetchSet('guesses');
-      }
-      return this.possibleGuesses.has(word);
-    },
-
-    async checkIfSpellwordExists(word: string) {
-      return (await this.fetchSpellwords()).has(word);
-    },
-
-    async getRandomSpellwords(amount: number) {
-      const maxWords = (await this.fetchSpellwords()).size;
-      const out = [];
-
-      for (let i = 0; i < amount; i++) {
-        out.push(this.spellwordsArray[Math.floor(Math.random() * maxWords)]);
-      }
-
-      return out;
+    async submitSpell(word: string, keys: number[]) {
+      return await this.fetchNetlify('submit-spell', {
+        word,
+        keys,
+      });
     },
 
     async solveNewSpell() {
       this.ud.previousGuesses = [];
 
-      this.word = (await this.getRandomSpellwords(1))[0];
+      this.word = await this.getRandomSpellword();
       const wordAsArray = [...this.word];
 
       this.keys = getSetFromArray(
         wordAsArray.map((l, i) => i),
-        getKeysNeeded(this.word.length)
+        getKeysNeeded(this.word)
       );
 
       this.ud.knownInfo = new KnownInfo(this.word.length);
@@ -100,13 +79,14 @@ export const useCloud = defineStore('cloud-functions', {
       // Exit before doing anything if the word isn't correct
       // (we allow strings with spaces before or after)
       const guessString = [...guess.values()].join('');
-      if (!(await this.checkIfGuessExists(guessString))) {
+      if (!(await local.checkIfGuessExists(guessString))) {
         return false;
       }
 
-      const won = guessString === this.word;
       const known = this.ud.knownInfo;
 
+      // If the guess is correct, no need to check anything else
+      const won = guessString === this.word;
       if (won) {
         return {
           result: new Map(
@@ -145,12 +125,12 @@ export const useCloud = defineStore('cloud-functions', {
       // 2) If we do, mark it as misplaced and remove it from the available letters
       // 3) Otherwise mark it as wrong
       guess.forEach((letter, i) => {
-        const inRemaining = [...solutionMap].findIndex(kv => kv[1] === letter);
+        const inRemaining = [...solutionMap].find(kv => kv[1] === letter);
 
-        if (inRemaining >= 0) {
+        if (inRemaining !== undefined) {
           resultMap.set(i, { letter, state: LS.misplaced });
           known.misplaceds.add(letter);
-          solutionMap.delete(inRemaining);
+          solutionMap.delete(inRemaining[0]);
         } else {
           resultMap.set(i, { letter, state: LS.wrong });
           if (
