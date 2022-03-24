@@ -19,13 +19,19 @@ const spell = useSpellCasting();
     <template v-else-if="spell.phase === SpellPhase.selectingKeys">
       <v-select-keys />
     </template>
-    <template v-else-if="spell.phase === SpellPhase.submitted">
-      <p class="text-center">
-        You've submitted the Spellword {{ spell.word }} with the Key Letter{{
+    <template v-else-if="spell.phase === SpellPhase.submitting">
+      <p class="text-center">Your Spell is being submitted...</p>
+    </template>
+    <div v-else class="text-center">
+      <p class="mb-4">Your Spell was successfully submitted!</p>
+      <p class="mb-4">
+        You used the Spellword {{ spell.word }} with the Key Letter{{
           spell.keys.size > 1 ? 's' : ''
         }}
-        {{ spell.keysAsPhrase }}!
+        {{ spell.keysAsPhrase }}.
       </p>
-    </template>
+      <p>Your Spell code is:</p>
+      <code class="text-xl">{{ spell.code }}</code>
+    </div>
   </template>
 </template>

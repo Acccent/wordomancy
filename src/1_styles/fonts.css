@@ -27,7 +27,7 @@
   src: url('@/0_assets/fonts/BluuNext/BluuNext-Titling.woff2') format('woff2');
 }
 
-/* Amulya Regular */
+/* Amulya */
 
 @font-face {
   font-family: 'Amulya';
@@ -45,8 +45,6 @@
   src: url('@/0_assets/fonts/Amulya/Amulya-RegularItalic.woff2') format('woff2');
 }
 
-/* Amulya Light */
-
 @font-face {
   font-family: 'Amulya';
   font-style: normal;
@@ -62,8 +60,6 @@
   font-display: block;
   src: url('@/0_assets/fonts/Amulya/Amulya-LightItalic.woff2') format('woff2');
 }
-
-/* Amulya Medium */
 
 @font-face {
   font-family: 'Amulya';
@@ -81,8 +77,6 @@
   src: url('@/0_assets/fonts/Amulya/Amulya-MediumItalic.woff2') format('woff2');
 }
 
-/* Amulya Bold */
-
 @font-face {
   font-family: 'Amulya';
   font-style: normal;
@@ -97,4 +91,42 @@
   font-weight: 700;
   font-display: block;
   src: url('@/0_assets/fonts/Amulya/Amulya-BoldItalic.woff2') format('woff2');
+}
+
+/* Source Code Pro */
+
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('@/0_assets/fonts/SourceCodePro/SourceCodePro-Regular.woff2')
+    format('woff2');
+}
+
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: italic;
+  font-weight: 400;
+  font-display: block;
+  src: url('@/0_assets/fonts/SourceCodePro/SourceCodePro-RegularItalic.woff2')
+    format('woff2');
+}
+
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url('@/0_assets/fonts/SourceCodePro/SourceCodePro-Bold.woff2')
+    format('woff2');
+}
+
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: italic;
+  font-weight: 700;
+  font-display: block;
+  src: url('@/0_assets/fonts/SourceCodePro/SourceCodePro-BoldItalic.woff2')
+    format('woff2');
 }

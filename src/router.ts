@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import store from './pinia';
-import { useUser } from '@/3_stores/user';
+// import store from './pinia';
+// import { useUser } from '@/3_stores/user';
 const Index = () => import('./5_pages/index.vue');
 const Home = () => import('./5_pages/home/home.vue');
 const Spell = () => import('./5_pages/spell/spell.vue');
@@ -12,19 +12,19 @@ const router = createRouter({
     { path: '/', name: 'index', component: Index },
     { path: '/index', redirect: '/' },
     { path: '/home', name: 'home', component: Home },
-    { path: '/spell/:spellid?', name: 'spell', component: Spell },
+    { path: '/spell/:code?', name: 'spell', component: Spell },
     { path: '/notfound', name: 'not found', component: NotFound },
     { path: '/:pathMatch(.*)*', redirect: '/notfound' },
   ],
 });
 
-const user = useUser(store);
+// const user = useUser(store);
 
-router.beforeEach(to => {
-  if (to.name !== 'index' && user.name !== 'passwordomancy') {
-    user.name = '';
-    return { name: 'index' };
-  }
-});
+// router.beforeEach(to => {
+//   if (to.name !== 'index' && user.name !== 'passwordomancy') {
+//     user.name = '';
+//     return { name: 'index' };
+//   }
+// });
 
 export default router;

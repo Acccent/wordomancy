@@ -12,6 +12,7 @@ module.exports = {
     fontFamily: {
       sans: ['Amulya', ...defaultTheme.fontFamily.sans],
       serif: ['Bluu Next', ...defaultTheme.fontFamily.serif],
+      mono: ['Source Code Pro', ...defaultTheme.fontFamily.mono],
       display: ['Bluu Next Titling', ...defaultTheme.fontFamily.serif],
       spell: ['Bluu Next', ...defaultTheme.fontFamily.serif],
     },

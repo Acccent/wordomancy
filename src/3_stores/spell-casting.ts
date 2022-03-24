@@ -11,7 +11,7 @@ export const useSpellCasting = defineStore('spell-casting', {
       phase: SpellPhase.noEnergy,
       word: '',
       keys: new Set<number>(),
-      id: '',
+      code: '',
     };
   },
   getters: {
@@ -60,8 +60,17 @@ export const useSpellCasting = defineStore('spell-casting', {
     },
 
     async submitSpell() {
-      const res = await cloud.submitSpell(this.word, [...this.keys]);
-      console.log(res);
+      this.phase = SpellPhase.submitting;
+      const { word, keys, code } = await cloud.submitSpell(this.word, [
+        ...this.keys,
+      ]);
+      console.log(keys());
+
+      this.$patch({
+        word,
+        keys: new Set(keys),
+        code,
+      });
       this.phase = SpellPhase.submitted;
     },
   },

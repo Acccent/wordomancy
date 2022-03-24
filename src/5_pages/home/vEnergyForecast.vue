@@ -27,11 +27,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <c-modal
-    ref="modal"
-    button-class="btn-primary"
-    button-text="Cast a Spell"
-    @closed="spell.phase = SpellPhase.inputtingWord">
+  <c-modal ref="modal" @closed="spell.phase = SpellPhase.inputtingWord">
     <p class="text-center">Welcome!</p>
     <template v-if="spell.energy.size < 1">
       <p class="text-center">Getting your energy forecast...</p>

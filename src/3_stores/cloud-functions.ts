@@ -4,7 +4,8 @@ import {
   getKeysNeeded,
   getSetFromArray,
 } from '@/2_utils/global';
-import { useLocal } from './';
+import { useAppState, useLocal } from './';
+const app = useAppState();
 const local = useLocal();
 
 const maxGuesses = 6;
@@ -21,8 +22,9 @@ export const useCloud = defineStore('cloud-functions', {
     wordMap: s => new Map([...s.word].map((l, i) => [i, l])),
   },
   actions: {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async fetchNetlify(f: string, params?: Record<string, any>) {
-      const res = await fetch('/.netlify/functions/' + f, {
+      const res = await fetch(`/.netlify/functions/${f}`, {
         method: params !== undefined ? 'POST' : 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -46,23 +48,48 @@ export const useCloud = defineStore('cloud-functions', {
       return (await this.fetchNetlify('get-forecast')) as string[][];
     },
 
-    async submitSpell(word: string, keys: number[]) {
+    async submitSpell(spellword: string, keys: number[]) {
       return await this.fetchNetlify('submit-spell', {
-        word,
+        spellword,
         keys,
       });
     },
 
-    async solveNewSpell() {
+    async solveNewSpell(code: string) {
       this.ud.previousGuesses = [];
 
-      this.word = await this.getRandomSpellword();
-      const wordAsArray = [...this.word];
+      if (code !== 'random') {
+        try {
+          const { data, error } = await app.supabase
+            .from('spells')
+            .select()
+            .eq('code', code)
+            .single();
 
-      this.keys = getSetFromArray(
-        wordAsArray.map((l, i) => i),
-        getKeysNeeded(this.word)
-      );
+          if (data === null) {
+            return false;
+          }
+
+          if (error) {
+            throw error.message;
+          }
+
+          this.$patch({
+            word: data.spellword,
+            keys: new Set(data.keys),
+          });
+        } catch (e) {
+          alert(e);
+        }
+      } else {
+        this.word = await this.getRandomSpellword();
+        const wordAsArray = [...this.word];
+
+        this.keys = getSetFromArray(
+          wordAsArray.map((l, i) => i),
+          getKeysNeeded(this.word)
+        );
+      }
 
       this.ud.knownInfo = new KnownInfo(this.word.length);
 

@@ -2,6 +2,7 @@ enum SpellPhase {
   noEnergy,
   inputtingWord,
   selectingKeys,
+  submitting,
   submitted,
 }
 

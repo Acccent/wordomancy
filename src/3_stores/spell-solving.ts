@@ -8,6 +8,7 @@ const maxGuesses = 6;
 export const useSpellSolving = defineStore('spell-solving', {
   state: () => {
     return {
+      spellExists: false,
       kbInput: '',
       inputOffset: 0,
       showWrongState: false,
@@ -28,7 +29,7 @@ export const useSpellSolving = defineStore('spell-solving', {
           this.knownInfo.length && this.remainingGuesses > 1
       );
     },
-    won: s => s.knownInfo.corrects.size === s.knownInfo.length,
+    won: s => s.spellExists && s.knownInfo.corrects.size === s.knownInfo.length,
     gameOver(): boolean {
       return this.won || this.remainingGuesses < 1;
     },
@@ -45,36 +46,46 @@ export const useSpellSolving = defineStore('spell-solving', {
     },
 
     // Setup a new Spell
-    async resetSpell() {
+    async resetSpell(code: string) {
       appState.loading = true;
       this.$reset();
 
-      this.knownInfo = await cloud.solveNewSpell();
+      const foundSpellInfo = await cloud.solveNewSpell(code);
 
-      this.resetInput();
+      this.spellExists = !!foundSpellInfo;
+
+      if (foundSpellInfo) {
+        this.knownInfo = foundSpellInfo;
+      }
+
+      this.updateCurrentGuess();
 
       appState.loading = false;
     },
 
     // Reset the user input and get ready for a new guess
     resetInput() {
-      this.kbInput = '';
-      this.inputOffset = 0;
+      this.$patch({
+        kbInput: '',
+        inputOffset: 0,
+      });
       this.updateCurrentGuess();
     },
 
     // Update the guess preview based on user input,
     // taking into account known info
     updateCurrentGuess() {
-      this.unknownGuess = false;
       this.currentGuess.clear();
 
       // Normalize the input and offset first
-      this.kbInput = this.kbInput.slice(0, this.knownInfo.length);
-      this.inputOffset = Math.min(
-        this.inputOffset,
-        this.knownInfo.length - this.kbInput.length
-      );
+      this.$patch({
+        unknownGuess: false,
+        kbInput: this.kbInput.slice(0, this.knownInfo.length),
+        inputOffset: Math.min(
+          this.inputOffset,
+          this.knownInfo.length - this.kbInput.length
+        ),
+      });
 
       const inputEnd = this.inputOffset + this.kbInput.length;
       for (let i = this.inputOffset; i < inputEnd; i++) {

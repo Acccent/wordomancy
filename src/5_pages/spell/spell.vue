@@ -1,20 +1,41 @@
 <script setup lang="ts">
 import vSpellLettersSolve from './vSpellLettersSolve.vue';
 import vKeyboard from './vKeyboard.vue';
+import vSpellNotFound from './vSpellNotFound.vue';
 import { useSpellSolving } from '@/3_stores';
 const spell = useSpellSolving();
 const route = useRoute();
+const router = useRouter();
 
-onMounted(() => {
-  if (route.params.spellid === 'random' || route.params.spellid === undefined) {
-    spell.resetSpell();
+const spellNotFoundModal = ref<InstanceType<typeof vSpellNotFound> | null>(
+  null
+);
+
+async function goToRandom() {
+  if (route.params.code !== 'random') {
+    router.replace({ name: 'spell', params: { code: 'random' } });
+  }
+  await spell.resetSpell('random');
+}
+
+onMounted(async () => {
+  const code = route.params.code.toString();
+
+  if (!code) {
+    await goToRandom();
+  } else {
+    await spell.resetSpell(code);
+  }
+
+  if (!spell.spellExists) {
+    spellNotFoundModal.value?.open();
   }
 });
 </script>
 
 <template>
   <c-navbar />
-  <div class="column flex flex-col h-full">
+  <div v-if="spell.spellExists" class="column flex flex-col h-full">
     <div class="grow">
       <v-spell-letters-solve
         v-for="(guess, i) in spell.allGuesses"
@@ -38,10 +59,11 @@ onMounted(() => {
         that your friends create) but for the Alpha, you can solve new ones
         forever!
       </p>
-      <a-button big @click="spell.resetSpell"> Solve another Spell </a-button>
+      <a-button big @click="goToRandom">Solve another Spell</a-button>
     </div>
     <div v-else class="flex-none">
       <v-keyboard />
     </div>
   </div>
+  <v-spell-not-found ref="spellNotFoundModal" @picked-random="goToRandom" />
 </template>

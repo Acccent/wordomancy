@@ -13,8 +13,10 @@ There's still a lot missing and some things might not work, so feedback is very 
   - Changing the text in the middle of the word moves the caret to the end
 - Spellword & Guess inputs lets you add repeat invalid letters
 - Colors need tweaking and accessibility check
+  - Focused buttons retain their color even if they become disabled (until unfocused)
 - Layout issues on small screens
 - No sharing metadata
+  - Share Spell url creates accessible image
 - Feedback on remaining guesses
 - Hint feature probably needs tweaking
 - Guesses should scroll up when new ones are added and the screen is too small (instead of pushing the keyboard down)
@@ -22,8 +24,6 @@ There's still a lot missing and some things might not work, so feedback is very 
 
 ### Planned features
 
-- Actual Spell submission + sharing
-  - Share Spell url creates accessible image
 - Friends page (with their latest Spells)
 - Daily Spell
 - Explanations + acknowledgments
