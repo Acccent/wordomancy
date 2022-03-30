@@ -19,7 +19,6 @@ specifiers:
   daisyui: ^2.6.4
   eslint: ^8.9.0
   eslint-plugin-vue: ^8.5.0
-  gsap: ^3.9.1
   motion: ^10.7.0
   nanoid: ^3.3.1
   pinia: ^2.0.11
@@ -41,7 +40,6 @@ specifiers:
 
 dependencies:
   '@supabase/supabase-js': 1.31.2
-  gsap: 3.9.1
   motion: 10.7.0
   pinia: 2.0.12_typescript@4.6.3+vue@3.2.31
   pnpm: 6.32.3
@@ -1909,10 +1907,6 @@ packages:
       section-matter: 1.0.0
       strip-bom-string: 1.0.0
     dev: true
-
-  /gsap/3.9.1:
-    resolution: {integrity: sha512-JSGVYoC6da4pIjdF/yxFU6Rz8OojOIDkbooveZlfNg0+JIoFoRruyfWAEi6R/gUeNcuOiTqUIb0gi1nCNrHf8w==}
-    dev: false
 
   /hard-rejection/2.1.0:
     resolution: {integrity: sha512-VIZB+ibDhx7ObhAe7OVtoEbuP4h/MuOTHJ+J8h/eBXotJYl0fBgR72xDFCKgIh22OJZIOVNxBMWuhAr10r8HdA==}

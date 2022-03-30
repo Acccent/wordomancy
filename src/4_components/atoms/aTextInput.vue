@@ -51,7 +51,7 @@ const emit = defineEmits<{
 <style scoped lang="postcss">
 .tooltip {
   @apply transition delay-100 duration-200 ease-in-out;
-  @apply rounded px-2 py-1 text-sm font-semibold w-max; /*  max-w-full mx-auto; */
+  @apply rounded px-2 py-1 text-sm font-semibold w-max;
   background-color: var(--tooltip-color);
   color: var(--tooltip-text-color);
 
