@@ -60,7 +60,10 @@ const tooltip = computed(() =>
         information.
       </p>
       <template #modal-action>
-        <a-button type="submit" for="display-name-form" :disabled="tooltip">
+        <a-button
+          for="display-name-form"
+          class="btn-primary"
+          :disabled="tooltip">
           Save display name
         </a-button>
       </template>

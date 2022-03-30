@@ -118,7 +118,6 @@ const emit = defineEmits<{
     <a-button
       class="btn-primary grow basis-2/3 py-2"
       title="Submit"
-      type="submit"
       form="guess-text-input"
       :disabled="!spell.isValidGuess">
       <a-icon name="u-upload" />

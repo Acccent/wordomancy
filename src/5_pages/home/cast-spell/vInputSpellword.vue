@@ -81,8 +81,6 @@ const tooltip = computed(() => {
       :tooltip="tooltip"
       v-model="newSpellword"
       @update:modelValue="changeInput" />
-    <a-button big type="submit" :disabled="!spell.isValidWord">
-      Use this Spellword
-    </a-button>
+    <a-button big :disabled="!spell.isValidWord"> Use this Spellword </a-button>
   </form>
 </template>

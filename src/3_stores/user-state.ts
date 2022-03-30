@@ -26,16 +26,16 @@ export const useUser = defineStore('user', {
           .eq('id', this.user?.id)
           .limit(1);
 
+        if (error) {
+          throw error;
+        }
+
         console.log(data);
 
         if (data?.length) {
           console.log('saving display name');
 
           this.displayName = data[0]['display-name'];
-        }
-
-        if (error) {
-          throw error;
         }
       }
     },
@@ -83,6 +83,8 @@ export const useUser = defineStore('user', {
       if (error) {
         throw error;
       }
+
+      this.displayName = name;
     },
 
     async getFriends() {
