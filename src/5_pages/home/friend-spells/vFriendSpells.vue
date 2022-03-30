@@ -7,6 +7,10 @@ function goToSpell() {
   router.push({ name: 'spell', params: { code: spellCodeInput.value } });
 }
 
+function goToDailySpell() {
+  router.push({ name: 'spell', params: { code: 'daily' } });
+}
+
 function goToRandomSpell() {
   router.push({ name: 'spell', params: { code: 'random' } });
 }
@@ -28,9 +32,12 @@ function goToRandomSpell() {
         </button>
       </div>
     </div>
+    <p class="mt-8">You can also solve the daily Spell:</p>
+    <a-button class="btn-primary mt-4" @click="goToDailySpell">
+      Solve daily Spell
+    </a-button>
     <p class="mt-8">
-      Or (just for the Alpha) click the button below to solve a
-      randomly-generated Spell:
+      Or (just for the Alpha) solve a randomly-generated Spell:
     </p>
     <a-button class="btn-primary mt-4" @click="goToRandomSpell"
       >Solve Random Spell</a-button

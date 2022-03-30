@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { useSpellCasting } from '@/3_stores';
-const spell = useSpellCasting();
+import { casting as spell } from '@/3_stores';
 </script>
 
 <template>

@@ -24,11 +24,11 @@ const emit = defineEmits<{
     <p class="text-center">No Spell could be found for this code.</p>
 
     <template #modal-action>
-      <div class="flex w-full">
+      <div class="flex flex-col w-full">
         <a-button class="btn-primary" @click="router.push({ name: 'home' })">
           Go back Home
         </a-button>
-        <div class="divider divider-horizontal">or</div>
+        <div class="divider">or</div>
         <a-button class="btn-primary" @click="pickRandom">
           Solve random Spell
         </a-button>

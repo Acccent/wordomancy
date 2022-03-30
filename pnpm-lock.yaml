@@ -19,6 +19,8 @@ specifiers:
   daisyui: ^2.6.4
   eslint: ^8.9.0
   eslint-plugin-vue: ^8.5.0
+  gsap: ^3.9.1
+  motion: ^10.7.0
   nanoid: ^3.3.1
   pinia: ^2.0.11
   pnpm: ^6.32.3
@@ -39,6 +41,8 @@ specifiers:
 
 dependencies:
   '@supabase/supabase-js': 1.31.2
+  gsap: 3.9.1
+  motion: 10.7.0
   pinia: 2.0.12_typescript@4.6.3+vue@3.2.31
   pnpm: 6.32.3
   vue: 3.2.31
@@ -205,6 +209,83 @@ packages:
     dependencies:
       vue: 3.2.31
     dev: true
+
+  /@motionone/animation/10.7.0:
+    resolution: {integrity: sha512-TMsa4i5J6Lhl0CzEJM0umzW/ChTY5tIQ0Xcwi/nqw4OAOnpCoKWb4SDqT8Afx7WZ9+rw1/lZyRbB7ND52ibFPg==}
+    dependencies:
+      '@motionone/easing': 10.7.0
+      '@motionone/types': 10.7.0
+      '@motionone/utils': 10.7.0
+      tslib: 2.3.1
+    dev: false
+
+  /@motionone/dom/10.7.0:
+    resolution: {integrity: sha512-aPXbpFJJtqeJWXolFDG77YZ+FTnQqQzdkaNvzPAi3H3sWeSGttRJWYprKo1EWcYCDKDGmvptftBC2Xt8EvK2bQ==}
+    dependencies:
+      '@motionone/animation': 10.7.0
+      '@motionone/generators': 10.7.0
+      '@motionone/types': 10.7.0
+      '@motionone/utils': 10.7.0
+      hey-listen: 1.0.8
+      tslib: 2.3.1
+    dev: false
+
+  /@motionone/easing/10.7.0:
+    resolution: {integrity: sha512-FqGcVUel8NnYuXygnJ2KfiIfiySmpXhbTH/0icbRwjqPVVBd5k8+PCCrxJtFYD3LFKBUk2tT3fd01Y/j78+OUw==}
+    dependencies:
+      '@motionone/utils': 10.7.0
+      tslib: 2.3.1
+    dev: false
+
+  /@motionone/generators/10.7.0:
+    resolution: {integrity: sha512-l+F5bcszVN3YzMYEKyNE2TKilCe7l4B0BgSyjAvHCs37rXeUoJFv0B+UHAE1NL6iHzQ9s8Z5MUAGqyW/D0ymHQ==}
+    dependencies:
+      '@motionone/types': 10.7.0
+      '@motionone/utils': 10.7.0
+      tslib: 2.3.1
+    dev: false
+
+  /@motionone/react/10.7.0:
+    resolution: {integrity: sha512-9R/eqJQxtXZa92PsG/KOGLerJ+LDXCYRH4CigF23G8J5utMXaFthAP1XBnrRClMvA1rupGlnUhTCVFcEvuqntw==}
+    peerDependencies:
+      react: ^17.0.2
+      react-dom: ^17.0.2
+    peerDependenciesMeta:
+      react:
+        optional: true
+      react-dom:
+        optional: true
+    dependencies:
+      '@motionone/dom': 10.7.0
+      hey-listen: 1.0.8
+      tslib: 2.3.1
+    dev: false
+
+  /@motionone/svelte/10.7.0:
+    resolution: {integrity: sha512-P8CD03GF0Ce8Xo/MjsmoIoiFHOi7NTUfDYb16s3tIYgzEgT0yxrRdaBh/e5tElMgIZsG5BlSfxCvxo4z3tNJMA==}
+    dependencies:
+      '@motionone/dom': 10.7.0
+      tslib: 2.3.1
+    dev: false
+
+  /@motionone/types/10.7.0:
+    resolution: {integrity: sha512-Sb29czMqFj0GckrbfWlrp9/DjaO+mOdORFGqQ7jNCV4pqx/jKHZsRTX7cZrjLPAQJrfEQu02dMcMHZOhsCiBBA==}
+    dev: false
+
+  /@motionone/utils/10.7.0:
+    resolution: {integrity: sha512-p8hAaIYE1JmaeduHhunjLUPFFWk+7MskCLcFTuJGTLVKWkWC6lLjswVV/Himkg2IHOqnbSRgqHb8y3jpIoPuMQ==}
+    dependencies:
+      '@motionone/types': 10.7.0
+      hey-listen: 1.0.8
+      tslib: 2.3.1
+    dev: false
+
+  /@motionone/vue/10.7.0:
+    resolution: {integrity: sha512-28Ip/hR8GLBieNiZ4IcmSrBHEPY6UiSp4+iidpOlG5GTLLWXxl7Pzqhbe6i9BTNpEY9yc2AdplQ6LEe/yxaPqQ==}
+    dependencies:
+      '@motionone/dom': 10.7.0
+      tslib: 2.3.1
+    dev: false
 
   /@netlify/functions/1.0.0:
     resolution: {integrity: sha512-7fnJv3vr8uyyyOYPChwoec6MjzsCw1CoRUO2DhQ1BD6bOyJRlD4DUaOOGlMILB2LCT8P24p5LexEGx8AJb7xdA==}
@@ -1829,6 +1910,10 @@ packages:
       strip-bom-string: 1.0.0
     dev: true
 
+  /gsap/3.9.1:
+    resolution: {integrity: sha512-JSGVYoC6da4pIjdF/yxFU6Rz8OojOIDkbooveZlfNg0+JIoFoRruyfWAEi6R/gUeNcuOiTqUIb0gi1nCNrHf8w==}
+    dev: false
+
   /hard-rejection/2.1.0:
     resolution: {integrity: sha512-VIZB+ibDhx7ObhAe7OVtoEbuP4h/MuOTHJ+J8h/eBXotJYl0fBgR72xDFCKgIh22OJZIOVNxBMWuhAr10r8HdA==}
     engines: {node: '>=6'}
@@ -1862,6 +1947,10 @@ packages:
     dependencies:
       function-bind: 1.1.1
     dev: true
+
+  /hey-listen/1.0.8:
+    resolution: {integrity: sha512-COpmrF2NOg4TBWUJ5UVyaCU2A88wEMkUPK4hNqyCkqHbxT92BbvfjoSozkAIIm6XhicGlJHhFdullInrdhwU8Q==}
+    dev: false
 
   /hosted-git-info/2.8.9:
     resolution: {integrity: sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==}
@@ -2249,6 +2338,19 @@ packages:
   /minimist/1.2.6:
     resolution: {integrity: sha512-Jsjnk4bw3YJqYzbdyBiNsPWHPfO++UGG749Cxs6peCu5Xg4nrena6OVxOYxrQTqww0Jmwt+Ref8rggumkTLz9Q==}
     dev: true
+
+  /motion/10.7.0:
+    resolution: {integrity: sha512-O6eMDzspPnTcU3IfmwZl8uY5t6DndbJEEnWBw+OqZSCLeSaDs4+gB0JnvqFkyrGl8vpE9H3UrRD5RDy1Z3TZmw==}
+    dependencies:
+      '@motionone/animation': 10.7.0
+      '@motionone/dom': 10.7.0
+      '@motionone/react': 10.7.0
+      '@motionone/svelte': 10.7.0
+      '@motionone/vue': 10.7.0
+    transitivePeerDependencies:
+      - react
+      - react-dom
+    dev: false
 
   /ms/2.0.0:
     resolution: {integrity: sha1-VgiurfwAvmwpAd9fmGF4jeDVl8g=}
@@ -3066,6 +3168,10 @@ packages:
   /tslib/1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
     dev: true
+
+  /tslib/2.3.1:
+    resolution: {integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==}
+    dev: false
 
   /tsutils/3.21.0_typescript@4.6.3:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}

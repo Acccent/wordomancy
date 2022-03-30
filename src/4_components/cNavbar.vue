@@ -1,8 +1,16 @@
+<script setup lang="ts">
+import { user } from '@/3_stores';
+</script>
+
 <template>
-  <div class="border-b mb-8">
+  <div class="border-b h-[var(--navbar-height)]">
     <div class="navbar column">
       <div class="flex-1">
-        <h1 class="text-s font-display">Wordomancy</h1>
+        <h1 class="text-s logo">
+          <router-link :to="{ name: user.isSignedIn ? 'home' : 'index' }"
+            >Wordomancy</router-link
+          >
+        </h1>
       </div>
       <div class="flex-none gap-2">
         <button class="btn btn-square btn-ghost">

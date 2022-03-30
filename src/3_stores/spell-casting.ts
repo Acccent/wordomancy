@@ -1,8 +1,5 @@
 import { SpellPhase, getKeysNeeded } from '@/2_utils/global';
-import { useAppState, useCloud, useLocal } from './';
-const appState = useAppState();
-const cloud = useCloud();
-const local = useLocal();
+import { app, local, cloud } from './';
 
 export const useSpellCasting = defineStore('spell-casting', {
   state: () => {
@@ -33,13 +30,13 @@ export const useSpellCasting = defineStore('spell-casting', {
   },
   actions: {
     async resetEnergy() {
-      appState.loading = true;
+      app.loading = true;
       this.$reset();
 
       const e = await cloud.getEnergyForecast();
       e.forEach(kv => this.energy.set(kv[0], kv[1]));
 
-      appState.loading = false;
+      app.loading = false;
     },
 
     async submitInput() {
@@ -61,15 +58,12 @@ export const useSpellCasting = defineStore('spell-casting', {
 
     async submitSpell() {
       this.phase = SpellPhase.submitting;
-      const { word, keys, code } = await cloud.submitSpell(this.word, [
-        ...this.keys,
-      ]);
-      console.log(keys());
+      const data = await cloud.submitSpell(this.word, [...this.keys]);
 
       this.$patch({
-        word,
-        keys: new Set(keys),
-        code,
+        word: data[0].spellword,
+        keys: new Set(data[0].keys),
+        code: data[0].code,
       });
       this.phase = SpellPhase.submitted;
     },

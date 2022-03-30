@@ -1,7 +1,5 @@
 import { LS, KnownInfo } from '@/2_utils/global';
-import { useAppState, useCloud } from './';
-const cloud = useCloud();
-const appState = useAppState();
+import { app, cloud } from './';
 
 const maxGuesses = 6;
 
@@ -12,21 +10,26 @@ export const useSpellSolving = defineStore('spell-solving', {
       kbInput: '',
       inputOffset: 0,
       showWrongState: false,
-      unknownGuess: false,
+      invalidGuess: false,
+      usedFirstHint: false,
       knownInfo: new KnownInfo(5),
       currentGuess: new Map() as GuessedWord,
-      allGuesses: [] as GuessedWord[],
+      previousGuesses: [] as GuessedWord[],
       solution: '',
     };
   },
   getters: {
     isValidGuess: s =>
       new RegExp(`^[A-Z]{5,${s.knownInfo.length}}$`).test(s.kbInput),
-    remainingGuesses: s => maxGuesses - s.allGuesses.length,
+    remainingGuesses: s => maxGuesses - s.previousGuesses.length,
     canGetHint(): boolean {
+      const allKnown = new Set([
+        ...this.knownInfo.corrects.keys(),
+        ...this.knownInfo.keys.keys(),
+      ]);
       return (
-        this.knownInfo.corrects.size + this.knownInfo.keys.size <
-          this.knownInfo.length && this.remainingGuesses > 1
+        !this.usedFirstHint ||
+        this.knownInfo.length - allKnown.size >= this.remainingGuesses
       );
     },
     won: s => s.spellExists && s.knownInfo.corrects.size === s.knownInfo.length,
@@ -47,7 +50,7 @@ export const useSpellSolving = defineStore('spell-solving', {
 
     // Setup a new Spell
     async resetSpell(code: string) {
-      appState.loading = true;
+      app.loading = true;
       this.$reset();
 
       const foundSpellInfo = await cloud.solveNewSpell(code);
@@ -60,7 +63,7 @@ export const useSpellSolving = defineStore('spell-solving', {
 
       this.updateCurrentGuess();
 
-      appState.loading = false;
+      app.loading = false;
     },
 
     // Reset the user input and get ready for a new guess
@@ -79,11 +82,14 @@ export const useSpellSolving = defineStore('spell-solving', {
 
       // Normalize the input and offset first
       this.$patch({
-        unknownGuess: false,
+        invalidGuess: false,
         kbInput: this.kbInput.slice(0, this.knownInfo.length),
-        inputOffset: Math.min(
-          this.inputOffset,
-          this.knownInfo.length - this.kbInput.length
+        inputOffset: Math.max(
+          Math.min(
+            this.inputOffset,
+            this.knownInfo.length - this.kbInput.length
+          ),
+          0
         ),
       });
 
@@ -108,16 +114,16 @@ export const useSpellSolving = defineStore('spell-solving', {
     },
 
     async submitCurrentGuess() {
-      appState.loading = true;
+      app.loading = true;
 
       const v = await cloud.validateGuess(
         new Map([...this.currentGuess].map(([i, { letter }]) => [i, letter]))
       );
 
       if (!v) {
-        this.unknownGuess = true;
+        this.invalidGuess = true;
       } else {
-        this.allGuesses.push(v.result);
+        this.previousGuesses.push(v.result);
 
         if (v.solution) {
           this.solution = v.solution;
@@ -128,21 +134,25 @@ export const useSpellSolving = defineStore('spell-solving', {
         this.resetInput();
       }
 
-      appState.loading = false;
+      app.loading = false;
     },
 
     async submitGetHint() {
       if (!this.canGetHint) {
         return;
       }
-      appState.loading = true;
+      app.loading = true;
 
-      const { result, newKnown } = await cloud.getHint();
-      this.allGuesses.push(result);
-      this.knownInfo = newKnown;
-      this.resetInput();
+      const v = await cloud.getHint();
 
-      appState.loading = false;
+      if (v) {
+        this.usedFirstHint = true;
+        this.previousGuesses.push(v.result);
+        this.knownInfo = v.newKnown;
+        this.resetInput();
+      }
+
+      app.loading = false;
     },
   },
 });

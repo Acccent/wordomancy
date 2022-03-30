@@ -84,6 +84,7 @@ declare global {
   type GuessedWord = Map<number, GuessedLetter>;
   type UserSolveData = {
     previousGuesses: GuessedWord[];
+    usedFirstHint: boolean;
     knownInfo: KnownInfo;
   };
 }

@@ -2,8 +2,7 @@
 import vSpellLettersSolve from './vSpellLettersSolve.vue';
 import vKeyboard from './vKeyboard.vue';
 import vSpellNotFound from './vSpellNotFound.vue';
-import { useSpellSolving } from '@/3_stores';
-const spell = useSpellSolving();
+import { solving as spell } from '@/3_stores';
 const route = useRoute();
 const router = useRouter();
 
@@ -31,39 +30,63 @@ onMounted(async () => {
     spellNotFoundModal.value?.open();
   }
 });
+
+const scroller = ref<HTMLInputElement | null>(null);
 </script>
 
 <template>
   <c-navbar />
-  <div v-if="spell.spellExists" class="column flex flex-col h-full">
-    <div class="grow">
+  <div v-if="spell.spellExists" class="column pt-8 flex flex-col flex-none">
+    <div class="grow mb-12">
       <v-spell-letters-solve
-        v-for="(guess, i) in spell.allGuesses"
+        v-for="(guess, i) in spell.previousGuesses"
         :guess="guess"
         :key="`guess-${i}`" />
       <v-spell-letters-solve v-if="!spell.gameOver" />
-    </div>
-    <div v-if="spell.gameOver" class="flex-none py-12 text-center">
-      <template v-if="spell.won">
-        <p>Congratulations!</p>
-      </template>
-      <template v-else>
-        <p>
-          You lost! The Spellword was
-          <span class="text-error">{{ spell.solution }}</span
-          >.
+      <div class="text-center italic opacity-50">
+        <p v-if="spell.remainingGuesses > 2">
+          {{ spell.remainingGuesses }} guesses left
         </p>
-      </template>
-      <p class="w-96 my-8 mx-auto">
-        Normally, you would only be able to solve one Spell per day (plus any
-        that your friends create) but for the Alpha, you can solve new ones
-        forever!
-      </p>
-      <a-button big @click="goToRandom">Solve another Spell</a-button>
+        <p v-else-if="spell.remainingGuesses > 1" class="text-warning">
+          {{ spell.remainingGuesses }} guesses left
+        </p>
+        <p v-else class="text-error">
+          {{ spell.remainingGuesses }} guess left!
+        </p>
+      </div>
     </div>
-    <div v-else class="flex-none">
-      <v-keyboard />
+    <div class="flex-none" ref="scroller">
+      <div v-if="spell.gameOver" class="py-12 text-center">
+        <template v-if="spell.won">
+          <p>Congratulations!</p>
+        </template>
+        <template v-else>
+          <p>
+            You lost! The Spellword was
+            <span class="text-error">{{ spell.solution }}</span
+            >.
+          </p>
+        </template>
+        <p class="w-96 my-8 mx-auto">
+          Normally, you would only be able to solve one Spell per day (plus any
+          that your friends create) but for the Alpha, you can solve new ones
+          forever!
+        </p>
+        <a-button big @click="goToRandom">Solve another Spell</a-button>
+      </div>
+      <div v-else>
+        <v-keyboard @submitted="scroller?.scrollIntoView()" />
+      </div>
     </div>
   </div>
-  <v-spell-not-found ref="spellNotFoundModal" @picked-random="goToRandom" />
+  <v-spell-not-found
+    v-if="!spell.spellExists"
+    ref="spellNotFoundModal"
+    @picked-random="goToRandom" />
 </template>
+
+<style scoped lang="postcss">
+.column {
+  height: calc(100vh - var(--navbar-height));
+}
+</style>

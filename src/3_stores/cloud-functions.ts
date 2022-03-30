@@ -4,9 +4,7 @@ import {
   getKeysNeeded,
   getSetFromArray,
 } from '@/2_utils/global';
-import { useAppState, useLocal } from './';
-const app = useAppState();
-const local = useLocal();
+import { app, user, local } from './';
 
 const maxGuesses = 6;
 
@@ -50,6 +48,7 @@ export const useCloud = defineStore('cloud-functions', {
 
     async submitSpell(spellword: string, keys: number[]) {
       return await this.fetchNetlify('submit-spell', {
+        userId: user.user?.id,
         spellword,
         keys,
       });
@@ -59,28 +58,24 @@ export const useCloud = defineStore('cloud-functions', {
       this.ud.previousGuesses = [];
 
       if (code !== 'random') {
-        try {
-          const { data, error } = await app.supabase
-            .from('spells')
-            .select()
-            .eq('code', code)
-            .single();
+        const { data, error } = await app.supabase
+          .from('spells')
+          .select()
+          .eq('code', code)
+          .single();
 
-          if (data === null) {
-            return false;
-          }
-
-          if (error) {
-            throw error.message;
-          }
-
-          this.$patch({
-            word: data.spellword,
-            keys: new Set(data.keys),
-          });
-        } catch (e) {
-          alert(e);
+        if (data === null) {
+          return false;
         }
+
+        if (error) {
+          throw error;
+        }
+
+        this.$patch({
+          word: data.spellword,
+          keys: new Set(data.keys),
+        });
       } else {
         this.word = await this.getRandomSpellword();
         const wordAsArray = [...this.word];
@@ -92,6 +87,7 @@ export const useCloud = defineStore('cloud-functions', {
       }
 
       this.ud.knownInfo = new KnownInfo(this.word.length);
+      this.ud.usedFirstHint = false;
 
       this.keys.forEach(i => this.ud.knownInfo.keys.set(i, this.word[i]));
 
@@ -205,6 +201,14 @@ export const useCloud = defineStore('cloud-functions', {
         }
       }
 
+      if (
+        this.ud.usedFirstHint &&
+        this.word.length - unknownPositions.length >=
+          maxGuesses - this.ud.previousGuesses.length
+      ) {
+        return false;
+      }
+
       const newKeyPosition =
         unknownPositions[Math.floor(Math.random() * unknownPositions.length)];
 
@@ -216,6 +220,7 @@ export const useCloud = defineStore('cloud-functions', {
       });
 
       this.ud.previousGuesses.push(hintResult);
+      this.ud.usedFirstHint = true;
 
       return {
         result: hintResult,

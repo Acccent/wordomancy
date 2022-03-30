@@ -15,7 +15,11 @@ const nanoid = customAlphabet('346789BCDFGHJLMNPQRTVWXYbcdfghjmnpqrstvwxyz', 8);
 const handler: Handler = async event => {
   try {
     const json = JSON.parse(event.body);
-    const { spellword, keys }: { spellword: string; keys: number[] } = json;
+    const {
+      userId: creator,
+      spellword,
+      keys,
+    }: { userId: string; spellword: string; keys: number[] } = json;
 
     if (!spellwords.includes(spellword)) {
       throw new Error("This isn't a valid Spellword");
@@ -37,7 +41,7 @@ const handler: Handler = async event => {
 
     const { data, error } = await supabase
       .from('spells')
-      .insert([{ code, spellword, keys }]);
+      .insert([{ code, spellword, keys, creator }]);
 
     if (error) {
       throw error;

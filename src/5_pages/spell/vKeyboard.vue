@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { useSpellSolving } from '@/3_stores';
-const spell = useSpellSolving();
+import { solving as spell } from '@/3_stores';
 
 const kbKeys = [
   ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
@@ -50,14 +49,28 @@ function getLetterButtonState(l: string) {
 
   return '';
 }
+
+function submitGuess() {
+  spell.submitCurrentGuess();
+  emit('submitted');
+}
+
+function submitHint() {
+  spell.submitGetHint();
+  emit('submitted');
+}
+
+const emit = defineEmits<{
+  (e: 'submitted'): void;
+}>();
 </script>
 
 <template>
-  <form id="guess-text-input" @submit.prevent="spell.submitCurrentGuess">
+  <form id="guess-text-input" @submit.prevent="submitGuess">
     <div class="w-[30rem] max-w-full mb-4 mx-auto">
       <c-spell-input
         class="text-xl"
-        :tooltip="spell.unknownGuess ? 'This is not a valid guess.' : ''"
+        :tooltip="spell.invalidGuess ? 'This is not a valid guess.' : ''"
         tip-position="top"
         v-model="spell.kbInput"
         @update:modelValue="spell.updateCurrentGuess" />
@@ -114,7 +127,7 @@ function getLetterButtonState(l: string) {
       class="btn-accent shrink min-w-min py-2"
       title="Get hint"
       :disabled="!spell.canGetHint"
-      @click.prevent="spell.submitGetHint">
+      @click.prevent="submitHint">
       <a-icon name="f-hint" />
     </a-button>
   </div>

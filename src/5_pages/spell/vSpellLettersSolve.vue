@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { LS } from '@/2_utils/global';
-import { useSpellSolving } from '@/3_stores';
-const spell = useSpellSolving();
+import { solving as spell } from '@/3_stores';
 
 const props = defineProps<{
   guess?: GuessedWord;

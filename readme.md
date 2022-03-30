@@ -17,15 +17,11 @@ There's still a lot missing and some things might not work, so feedback is very 
 - Layout issues on small screens
 - No sharing metadata
   - Share Spell url creates accessible image
-- Feedback on remaining guesses
-- Hint feature probably needs tweaking
-- Guesses should scroll up when new ones are added and the screen is too small (instead of pushing the keyboard down)
 - Word lists need to be filtered, may contain inappropriate words right now
 
 ### Planned features
 
 - Friends page (with their latest Spells)
-- Daily Spell
 - Explanations + acknowledgments
 - Settings
   - Choose color for letter states
@@ -36,5 +32,6 @@ There's still a lot missing and some things might not work, so feedback is very 
 - Stats, play history
 - Animations everywhere ✨
 - Other languages / kb layouts
+- Ability to give names to Spells?
 - Word definitions at game end
 - Maybe add button to shuffle letters of forecast words

@@ -2,9 +2,10 @@
 const props = defineProps<{
   buttonClass?: string;
   buttonText?: string;
+  startsOpen?: boolean;
 }>();
 
-const isOpen = ref(false);
+const isOpen = ref(props.startsOpen ?? false);
 
 function open() {
   emit('opened');
@@ -27,12 +28,14 @@ defineExpose({ open, close });
 <template>
   <teleport to="body">
     <div :class="['modal', { 'modal-open': isOpen }]">
-      <div class="w-auto max-w p-4">
-        <div class="modal-box max-w-none py-8 px-16">
+      <div class="w-auto w-auto min-w-[50%] max-w p-4">
+        <div class="modal-box w-full py-8 px-16">
           <slot />
           <div class="modal-action mt-8">
             <slot name="modal-action">
-              <a-button :class="[props.buttonClass]" @click="close">
+              <a-button
+                :class="['btn-primary', props.buttonClass]"
+                @click="close">
                 {{ props.buttonText || 'OK' }}
               </a-button>
             </slot>

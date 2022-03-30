@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { SpellPhase } from '@/2_utils/global';
 import cModal from '@/4_components/cModal.vue';
-import { useSpellCasting } from '@/3_stores';
-const spell = useSpellCasting();
+import { casting as spell } from '@/3_stores';
 
 const modal = ref<InstanceType<typeof cModal> | null>(null);
 
@@ -18,7 +17,6 @@ function goToSolveSpells() {
 
 onMounted(() => {
   spell.resetEnergy();
-  modal.value?.open();
 });
 
 const emit = defineEmits<{
@@ -27,7 +25,10 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <c-modal ref="modal" @closed="spell.phase = SpellPhase.inputtingWord">
+  <c-modal
+    ref="modal"
+    starts-open
+    @closed="spell.phase = SpellPhase.inputtingWord">
     <p class="text-center">Welcome!</p>
     <template v-if="spell.energy.size < 1">
       <p class="text-center">Getting your energy forecast...</p>
@@ -35,7 +36,7 @@ const emit = defineEmits<{
     </template>
     <template v-else>
       <p class="text-center">Here is your energy forecast for today:</p>
-      <div class="flex justify-center gap-8 my-10">
+      <div class="flex justify-around gap-8 my-10">
         <div v-for="e in spell.energy" :key="e[0]" class="text-center">
           <a-emoji
             :name="e[0]"

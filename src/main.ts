@@ -1,5 +1,5 @@
 import { createApp } from 'vue';
-import store from './pinia';
+import { store } from '@/3_stores';
 import router from './router';
 import App from './App.vue';
 
@@ -9,6 +9,12 @@ import '@/2_utils/icons';
 const app = createApp(App);
 app.use(store);
 app.use(router);
+
+app.config.errorHandler = (err, instance, info) => {
+  alert(err);
+  console.log(instance);
+  console.log(info);
+};
 
 router.isReady().then(() => {
   app.mount('#app');
