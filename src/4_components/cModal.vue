@@ -28,7 +28,7 @@ defineExpose({ open, close });
 <template>
   <teleport to="body">
     <div :class="['modal', { 'modal-open': isOpen }]">
-      <div class="w-auto w-auto min-w-[50%] max-w p-4">
+      <div class="w-auto w-auto min-w-[50%] max-w m-auto p-4">
         <div class="modal-box w-full py-8 px-16">
           <slot />
           <div class="modal-action mt-8">

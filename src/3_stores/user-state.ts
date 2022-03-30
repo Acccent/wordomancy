@@ -21,6 +21,8 @@ export const useUser = defineStore('user', {
         .select('display-name')
         .single();
 
+      console.log(data);
+
       this.displayName = data['display-name'];
 
       if (error) {

@@ -73,10 +73,7 @@ const tooltip = computed(() => {
   </div>
   <form class="form-control w-full mt-12" @submit.prevent="submitInput">
     <label class="mb-2" for="spellword-input">
-      <p>
-        Type in your <strong><em>Spellword</em></strong> below using letters
-        from those words:
-      </p>
+      <p>Type in your Spellword below using letters from those words:</p>
     </label>
     <c-spell-input
       id="spellword"

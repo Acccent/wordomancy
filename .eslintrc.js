@@ -21,11 +21,6 @@ module.exports = {
       rules: {
         'no-unused-vars': 'off',
         'no-undef': 'off',
-      },
-    },
-    {
-      files: ['[*.vue', 'index.vue'],
-      rules: {
         'vue/multi-word-component-names': 'off',
       },
     },

@@ -7,6 +7,7 @@ declare module 'vue' {
     AButton: typeof import('./src/4_components/atoms/aButton.vue')['default']
     AEmoji: typeof import('./src/4_components/atoms/aEmoji.vue')['default']
     AIcon: typeof import('./src/4_components/atoms/aIcon.vue')['default']
+    ALoading: typeof import('./src/4_components/atoms/aLoading.vue')['default']
     ATextInput: typeof import('./src/4_components/atoms/aTextInput.vue')['default']
     'CDebug.dev': typeof import('./src/4_components/cDebug.dev.vue')['default']
     CModal: typeof import('./src/4_components/cModal.vue')['default']

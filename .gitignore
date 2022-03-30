@@ -1,8 +1,6 @@
 .DS_Store
 .vscode
-.history
 node_modules
-cloud
 dist
 *.local
 *.log
