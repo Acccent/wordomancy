@@ -38,8 +38,8 @@ export const useUser = defineStore('user', {
         },
         {
           redirectTo: import.meta.env.PROD
-            ? 'https://wordomancy.app/home'
-            : 'http://localhost:8888/home',
+            ? 'https://wordomancy.app/loading'
+            : 'http://localhost:8888/loading',
         }
       );
 
