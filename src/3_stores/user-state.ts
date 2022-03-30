@@ -20,9 +20,8 @@ export const useUser = defineStore('user', {
       const { data, error } = await app.supabase
         .from('profiles')
         .select('display-name')
+        .eq('id', this.user?.id)
         .single();
-
-      console.log(data);
 
       this.displayName = data['display-name'];
 
