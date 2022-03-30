@@ -17,14 +17,23 @@ export const useUser = defineStore('user', {
     async getUser() {
       this.user = await app.supabase.auth.user();
 
+      console.log('read user from store', this.user);
+
       if (this.isSignedIn) {
         const { data, error } = await app.supabase
           .from('profiles')
           .select('display-name')
           .eq('id', this.user?.id)
-          .single();
+          .limit(1);
 
-        this.displayName = data['display-name'];
+        console.log(data);
+
+        if (data?.length) {
+          console.log('saving display name');
+
+          this.displayName = data[0]['display-name'];
+        }
+
         if (error) {
           throw error;
         }
