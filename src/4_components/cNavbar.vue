@@ -7,25 +7,38 @@ import { user } from '@/3_stores';
     <div class="navbar column">
       <div class="flex-1">
         <h1 class="text-s logo">
-          <router-link :to="{ name: user.isSignedIn ? 'home' : 'index' }"
+          <template
+            v-if="
+              (user.isSignedIn && $route.name === 'home') ||
+              (!user.isSignedIn && $route.name === 'index')
+            "
+            >Wordomancy</template
+          >
+          <router-link v-else :to="{ name: user.isSignedIn ? 'home' : 'index' }"
             >Wordomancy</router-link
           >
         </h1>
       </div>
       <div class="flex-none gap-2">
-        <button class="btn btn-square btn-ghost">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            class="inline-block w-5 h-5 stroke-current">
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
-          </svg>
+        <button class="btn btn-square btn-ghost" title="Help">
+          <a-icon name="f-question" />
         </button>
+        <template v-if="user.isSignedIn">
+          <button class="btn btn-square btn-ghost" title="Settings">
+            <a-icon name="f-settings" />
+          </button>
+          <button
+            class="btn btn-square btn-ghost"
+            title="Sign out"
+            @click="user.signout">
+            <a-icon name="f-signout" />
+          </button>
+        </template>
+        <template v-else>
+          <button class="btn btn-square btn-ghost" title="Sign in">
+            <a-icon name="f-signin" :horizontalFlip="true" />
+          </button>
+        </template>
       </div>
     </div>
   </div>

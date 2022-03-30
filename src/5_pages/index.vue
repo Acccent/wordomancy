@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import ReadMe from '@/../readme.md';
 import { user } from '@/3_stores';
+const router = useRouter();
+
+onBeforeMount(async () => {
+  await user.getUser();
+
+  if (user.isSignedIn) {
+    router.replace({ name: 'home' });
+  }
+});
 </script>
 
 <template>
@@ -13,7 +22,7 @@ import { user } from '@/3_stores';
         :key="p"
         class="btn btn-primary btn-outline w-24"
         :title="p.replace(p[0], p[0].toUpperCase())"
-        @click="user.loginWithProvider(p)">
+        @click="user.signinWithProvider(p)">
         <a-icon :name="`a-${p}`" />
       </button>
     </div>

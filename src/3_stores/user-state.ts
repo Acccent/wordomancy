@@ -1,5 +1,6 @@
 import type { User } from '@supabase/supabase-js';
 import { app } from './';
+import router from '@/router';
 
 export const useUser = defineStore('user', {
   state: () => {
@@ -30,7 +31,7 @@ export const useUser = defineStore('user', {
       }
     },
 
-    async loginWithProvider(provider: typeof this.providers[number]) {
+    async signinWithProvider(provider: typeof this.providers[number]) {
       const { error } = await app.supabase.auth.signIn(
         {
           provider,
@@ -45,6 +46,18 @@ export const useUser = defineStore('user', {
       if (error) {
         throw error;
       }
+    },
+
+    async signout() {
+      const { error } = await app.supabase.auth.signOut();
+
+      if (error) {
+        throw error;
+      }
+
+      this.$reset();
+
+      router.push({ name: 'index' });
     },
 
     async saveDisplayName(name: string) {

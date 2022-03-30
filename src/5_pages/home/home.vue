@@ -20,9 +20,7 @@ async function submitDisplayName() {
   showForecast.value = true;
 }
 
-onMounted(async () => {
-  await user.getUser();
-
+onMounted(() => {
   if (!user.displayName) {
     showWelcome.value = true;
   } else {

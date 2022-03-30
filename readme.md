@@ -1,4 +1,4 @@
-Welcome to the Wordomancy Alpha! If you're here, you should know how to get in.
+Welcome to the Wordomancy Alpha!
 
 
 There's still a lot missing and some things might not work, so feedback is very encouraged and appreciated. You can send it to me (Robin) [by email](mailto:wordomancy@cosmogr.am) or any other way.

@@ -13,7 +13,6 @@ const router = createRouter({
       path: '/',
       name: 'index',
       component: Index,
-      beforeEnter: () => (user.isSignedIn ? { name: 'home' } : true),
     },
     { path: '/index', redirect: '/' },
     { path: '/loading', name: 'loading', component: Loading },
