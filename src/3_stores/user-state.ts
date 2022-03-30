@@ -17,16 +17,17 @@ export const useUser = defineStore('user', {
     async getUser() {
       this.user = await app.supabase.auth.user();
 
-      const { data, error } = await app.supabase
-        .from('profiles')
-        .select('display-name')
-        .eq('id', this.user?.id)
-        .single();
+      if (this.isSignedIn) {
+        const { data, error } = await app.supabase
+          .from('profiles')
+          .select('display-name')
+          .eq('id', this.user?.id)
+          .single();
 
-      this.displayName = data['display-name'];
-
-      if (error) {
-        throw error;
+        this.displayName = data['display-name'];
+        if (error) {
+          throw error;
+        }
       }
     },
 

@@ -16,7 +16,7 @@ onBeforeMount(async () => {
   <div class="column max-w-min mt-[40vh]">
     <h1 class="mb-16 text-6xl text-center logo">Wordomancy</h1>
     <p class="text-center">Sign in with one of the following services:</p>
-    <div class="flex justify-center mt-2 mb-6 input-group">
+    <div class="flex justify-center mt-4 mb-6 input-group">
       <button
         v-for="p in user.providers"
         :key="p"
