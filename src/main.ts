@@ -11,9 +11,9 @@ app.use(store);
 app.use(router);
 
 app.config.errorHandler = (err, instance, info) => {
-  alert(err);
-  console.log(instance);
-  console.log(info);
+  console.log('error:', err);
+  console.log('instance:', instance);
+  console.log('info:', info);
 };
 
 router.isReady().then(() => {

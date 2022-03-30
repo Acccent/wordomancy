@@ -3,8 +3,10 @@ import ReadMe from '@/../readme.md';
 import { user } from '@/3_stores';
 const router = useRouter();
 
-onBeforeMount(async () => {
+onMounted(async () => {
   await user.getUser();
+
+  console.log('read user from index', user.user);
 
   if (user.isSignedIn) {
     router.replace({ name: 'home' });
