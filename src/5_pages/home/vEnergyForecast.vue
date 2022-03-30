@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SpellPhase } from '@/2_utils/global';
 import cModal from '@/4_components/cModal.vue';
-import { casting as spell } from '@/3_stores';
+import { user, casting as spell } from '@/3_stores';
 
 const modal = ref<InstanceType<typeof cModal> | null>(null);
 
@@ -29,7 +29,7 @@ const emit = defineEmits<{
     ref="modal"
     starts-open
     @closed="spell.phase = SpellPhase.inputtingWord">
-    <p class="text-center">Welcome!</p>
+    <p class="text-center">Hi {{ user.displayName }}!</p>
     <template v-if="spell.energy.size < 1">
       <p class="text-center">Getting your energy forecast...</p>
       <p class="text-center">Just a moment...</p>
