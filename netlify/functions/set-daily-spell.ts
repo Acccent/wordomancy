@@ -1,4 +1,4 @@
-import { schedule } from '@netlify/functions';
+import { Handler } from '@netlify/functions';
 import { createClient } from '@supabase/supabase-js';
 import { getSpellword } from './get-spellword';
 import { getSetFromArray, getKeysNeeded } from '../../src/2_utils/global';
@@ -8,7 +8,7 @@ const supabase = createClient(
   process.env.SECRET_SUPABASE_SERVICE as string
 );
 
-const handler = schedule('@daily', async () => {
+const handler: Handler = async () => {
   try {
     const spellword = getSpellword();
     const keys = getSetFromArray(
@@ -16,9 +16,9 @@ const handler = schedule('@daily', async () => {
       getKeysNeeded(spellword)
     );
 
-    const { data, error } = await supabase
+    const { error } = await supabase
       .from('spells')
-      .update({ spellword, keys })
+      .update({ spellword, keys: [...keys] })
       .eq('code', 'daily');
 
     if (error) {
@@ -27,7 +27,6 @@ const handler = schedule('@daily', async () => {
 
     return {
       statusCode: 200,
-      body: JSON.stringify(data),
     };
   } catch (e) {
     console.log(e);
@@ -37,6 +36,6 @@ const handler = schedule('@daily', async () => {
       body: JSON.stringify(e.message),
     };
   }
-});
+};
 
 export { handler };
