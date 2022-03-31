@@ -7,6 +7,9 @@
   functions = "netlify/functions"
   publish = "dist"
 
+[functions."set-daily-spell"]
+schedule = "@daily"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
