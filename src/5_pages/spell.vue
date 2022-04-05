@@ -1,42 +1,23 @@
 <script setup lang="ts">
-import vSpellLettersSolve from './vSpellLettersSolve.vue';
-import vKeyboard from './vKeyboard.vue';
-import vSpellNotFound from './vSpellNotFound.vue';
-import { solving as spell } from '@/3_stores';
+import vSpellLettersSolve from './spell/vSpellLettersSolve.vue';
+import vKeyboard from './spell/vKeyboard.vue';
+import vSpellNotFound from './spell/vSpellNotFound.vue';
+import { app, solving as spell } from '@/3_stores';
 const route = useRoute();
-const router = useRouter();
 
-const spellNotFoundModal = ref<InstanceType<typeof vSpellNotFound> | null>(
-  null
-);
+await spell.resetSpell(route.params.code?.toString() || 'daily');
 
-async function goToRandom() {
-  if (route.params.code !== 'random') {
-    router.replace({ name: 'spell', params: { code: 'random' } });
-  }
-  await spell.resetSpell('random');
-}
-
-onMounted(async () => {
-  const code = route.params.code.toString();
-
-  if (!code) {
-    await goToRandom();
-  } else {
-    await spell.resetSpell(code);
-  }
-
+onMounted(() => {
   if (!spell.spellExists) {
-    spellNotFoundModal.value?.open();
+    app.openModal();
   }
 });
 
-const scroller = ref<HTMLInputElement | null>(null);
+const scroller = ref<HTMLElement | null>(null);
 </script>
 
 <template>
-  <c-navbar />
-  <div v-if="spell.spellExists" class="column pt-8 flex flex-col flex-none">
+  <div v-if="spell.spellExists" class="column pt-8 flex flex-col">
     <div class="grow mb-12">
       <v-spell-letters-solve
         v-for="(guess, i) in spell.previousGuesses"
@@ -72,17 +53,15 @@ const scroller = ref<HTMLInputElement | null>(null);
           that your friends create) but for the Alpha, you can solve new ones
           forever!
         </p>
-        <a-button big @click="goToRandom">Solve another Spell</a-button>
       </div>
       <div v-else>
         <v-keyboard @submitted="scroller?.scrollIntoView()" />
       </div>
     </div>
   </div>
-  <v-spell-not-found
-    v-if="!spell.spellExists"
-    ref="spellNotFoundModal"
-    @picked-random="goToRandom" />
+  <template v-else>
+    <v-spell-not-found />
+  </template>
 </template>
 
 <style scoped lang="postcss">

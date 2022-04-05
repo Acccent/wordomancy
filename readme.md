@@ -35,3 +35,4 @@ There's still a lot missing and some things might not work, so feedback is very 
 - Ability to give names to Spells?
 - Word definitions at game end
 - Maybe add button to shuffle letters of forecast words
+- Share energy forecast

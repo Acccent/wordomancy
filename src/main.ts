@@ -1,10 +1,13 @@
 import { createApp } from 'vue';
+import { gsap } from 'gsap';
 import { store } from '@/3_stores';
 import router from './router';
 import App from './App.vue';
 
 import '@/1_styles/main.css';
 import '@/2_utils/icons';
+
+gsap.defaults({ ease: 'none' });
 
 const app = createApp(App);
 app.use(store);

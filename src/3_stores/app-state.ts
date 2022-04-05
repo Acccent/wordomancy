@@ -9,8 +9,22 @@ export const useAppState = defineStore('app-state', {
   state: () => {
     return {
       supabase,
-      loading: false,
-      error: null,
+      viewTransition: true,
+      modalOpen: false,
+      modalWaiting: false,
     };
+  },
+  actions: {
+    openModal() {
+      if (this.viewTransition) {
+        this.modalWaiting = true;
+      } else {
+        this.modalWaiting = false;
+        this.modalOpen = true;
+      }
+    },
+    closeModal() {
+      this.modalOpen = false;
+    },
   },
 });

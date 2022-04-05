@@ -1,9 +1,4 @@
-import {
-  LS,
-  KnownInfo,
-  getKeysNeeded,
-  getSetFromArray,
-} from '@/2_utils/global';
+import { LS, KnownInfo } from '@/2_utils/global';
 import { app, user, local } from './';
 
 const maxGuesses = 6;
@@ -38,10 +33,6 @@ export const useCloud = defineStore('cloud-functions', {
       })) as string[];
     },
 
-    async getRandomSpellword() {
-      return (await this.fetchNetlify('get-spellword')) as string;
-    },
-
     async getEnergyForecast() {
       return (await this.fetchNetlify('get-forecast')) as string[][];
     },
@@ -57,34 +48,24 @@ export const useCloud = defineStore('cloud-functions', {
     async solveNewSpell(code: string) {
       this.ud.previousGuesses = [];
 
-      if (code !== 'random') {
-        const { data, error } = await app.supabase
-          .from('spells')
-          .select()
-          .eq('code', code)
-          .single();
+      const { data, error } = await app.supabase
+        .from('spells')
+        .select()
+        .eq('code', code)
+        .single();
 
-        if (data === null) {
-          return false;
-        }
-
-        if (error) {
-          throw error;
-        }
-
-        this.$patch({
-          word: data.spellword,
-          keys: new Set(data.keys),
-        });
-      } else {
-        this.word = await this.getRandomSpellword();
-        const wordAsArray = [...this.word];
-
-        this.keys = getSetFromArray(
-          wordAsArray.map((l, i) => i),
-          getKeysNeeded(this.word)
-        );
+      if (data === null) {
+        return false;
       }
+
+      if (error) {
+        throw error;
+      }
+
+      this.$patch({
+        word: data.spellword,
+        keys: new Set(data.keys),
+      });
 
       this.ud.knownInfo = new KnownInfo(this.word.length);
       this.ud.usedFirstHint = false;

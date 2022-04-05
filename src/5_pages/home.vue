@@ -1,30 +1,27 @@
 <script setup lang="ts">
-import { user } from '@/3_stores';
-import vEnergyForecast from './vEnergyForecast.vue';
-import castSpell from './cast-spell/vCastSpell.vue';
-import friendSpells from './friend-spells/vFriendSpells.vue';
+import { app, user } from '@/3_stores';
+import vWelcome from './home/welcome/vWelcome.vue';
+import VSolveSpells from './home/solve-spells/vSolveSpells.vue';
+import vYourSpells from './home/your-spells/vYourSpells.vue';
 
-const showWelcome = ref(false);
-const showForecast = ref(false);
+const showIntro = ref(false);
 const displayNameInput = ref('');
 
 const tabNames: Record<string, string> = {
-  cast: 'Cast a Spell',
-  solve: 'Solve Spells',
+  welcome: 'Welcome',
+  solveSpells: 'Solve Spells',
+  yourSpells: 'Your Spells',
 };
-const activeTab = ref(tabNames.cast);
 
 async function submitDisplayName() {
   await user.saveDisplayName(displayNameInput.value);
-  showWelcome.value = false;
-  showForecast.value = true;
+  showIntro.value = false;
 }
 
 onMounted(() => {
   if (!user.displayName) {
-    showWelcome.value = true;
-  } else {
-    showForecast.value = true;
+    showIntro.value = true;
+    app.openModal();
   }
 });
 
@@ -36,9 +33,23 @@ const tooltip = computed(() =>
 </script>
 
 <template>
-  <c-navbar />
-  <template v-if="showWelcome">
-    <c-modal starts-open>
+  <template v-if="!showIntro">
+    <div class="column pt-8">
+      <c-tabs-container :initial-tab="tabNames.welcome">
+        <template #[tabNames.welcome]>
+          <v-welcome />
+        </template>
+        <template #[tabNames.solveSpells]>
+          <v-solve-spells />
+        </template>
+        <template #[tabNames.yourSpells]>
+          <v-your-spells />
+        </template>
+      </c-tabs-container>
+    </div>
+  </template>
+  <template v-else>
+    <c-modal>
       <p class="text-center mb-4">Welcome!</p>
       <p class="mb-4">
         Before you can play Wordomancy, you need to create your display name:
@@ -68,20 +79,5 @@ const tooltip = computed(() =>
         </a-button>
       </template>
     </c-modal>
-  </template>
-  <template v-else>
-    <div class="column pt-8">
-      <c-tabs-container :initial-tab="activeTab">
-        <template #[tabNames.cast]>
-          <cast-spell />
-        </template>
-        <template #[tabNames.solve]>
-          <friend-spells />
-        </template>
-      </c-tabs-container>
-    </div>
-    <template v-if="showForecast">
-      <v-energy-forecast @acknowledged="tab => (activeTab = tabNames[tab])" />
-    </template>
   </template>
 </template>

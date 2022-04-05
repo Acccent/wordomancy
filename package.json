@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@supabase/supabase-js": "^1.33.2",
-    "motion": "^10.7.0",
+    "gsap": "^3.10.2",
     "pinia": "^2.0.12",
     "pnpm": "^6.32.3",
     "vue": "^3.2.31",

@@ -10,8 +10,8 @@ module.exports = {
   bracketSameLine: true,
   arrowParens: 'avoid',
   proseWrap: 'preserve',
-  htmlWhiteSpaceSensitivity: 'css',
-  vueIndentScriptAndStle: false,
+  htmlWhitespaceSensitivity: 'css',
+  vueIndentScriptAndStyle: false,
   endOfLine: 'lf',
   embeddedLanguageFormatting: 'auto',
 }

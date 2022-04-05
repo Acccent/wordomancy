@@ -1,5 +1,5 @@
 import { SpellPhase, getKeysNeeded } from '@/2_utils/global';
-import { app, local, cloud } from './';
+import { local, cloud } from './';
 
 export const useSpellCasting = defineStore('spell-casting', {
   state: () => {
@@ -29,14 +29,15 @@ export const useSpellCasting = defineStore('spell-casting', {
     },
   },
   actions: {
-    async resetEnergy() {
-      app.loading = true;
-      this.$reset();
+    async resetCasting() {
+      if (this.phase === SpellPhase.noEnergy) {
+        this.$reset();
 
-      const e = await cloud.getEnergyForecast();
-      e.forEach(kv => this.energy.set(kv[0], kv[1]));
+        const e = await cloud.getEnergyForecast();
+        e.forEach(kv => this.energy.set(kv[0], kv[1]));
+      }
 
-      app.loading = false;
+      this.phase = SpellPhase.inputtingWord;
     },
 
     async submitInput() {

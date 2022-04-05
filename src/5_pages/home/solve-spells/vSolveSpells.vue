@@ -6,14 +6,6 @@ const spellCodeInput = ref('');
 function goToSpell() {
   router.push({ name: 'spell', params: { code: spellCodeInput.value } });
 }
-
-function goToDailySpell() {
-  router.push({ name: 'spell', params: { code: 'daily' } });
-}
-
-function goToRandomSpell() {
-  router.push({ name: 'spell', params: { code: 'random' } });
-}
 </script>
 
 <template>
@@ -27,20 +19,12 @@ function goToRandomSpell() {
           placeholder="Enter code here..."
           class="input input-bordered font-mono text-lg"
           v-model="spellCodeInput" />
-        <button class="btn btn-primary font-bold" @click="goToSpell">
-          Solve Spell
-        </button>
+        <a-link-button @click="goToSpell"> Solve Spell </a-link-button>
       </div>
     </div>
-    <p class="mt-8">You can also solve the daily Spell:</p>
-    <a-button class="btn-primary mt-4" @click="goToDailySpell">
+    <p class="mt-8 mb-4">You can also solve the daily Spell:</p>
+    <a-link-button @click="router.push({ name: 'spell' })">
       Solve daily Spell
-    </a-button>
-    <p class="mt-8">
-      Or (just for the Alpha) solve a randomly-generated Spell:
-    </p>
-    <a-button class="btn-primary mt-4" @click="goToRandomSpell"
-      >Solve Random Spell</a-button
-    >
+    </a-link-button>
   </div>
 </template>

@@ -1,10 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router';
-import { user } from '@/3_stores';
-import Loading from './5_pages/loading.vue';
-const Index = () => import('./5_pages/index.vue');
-const Home = () => import('./5_pages/home/home.vue');
-const Spell = () => import('./5_pages/spell/spell.vue');
-const NotFound = () => import('./5_pages/not-found.vue');
+import Index from './5_pages/index.vue';
+import Home from './5_pages/home.vue';
+import Spell from './5_pages/spell.vue';
+import NotFound from './5_pages/not-found.vue';
+
+const devRoutes = import.meta.env.PROD
+  ? []
+  : ['loading', 'emojis'].map(r => ({
+      path: `/${r}`,
+      name: r,
+      component: () => import(`./5_pages/${r}.dev.vue`),
+    }));
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,22 +21,22 @@ const router = createRouter({
       component: Index,
     },
     { path: '/index', redirect: '/' },
-    { path: '/loading', name: 'loading', component: Loading },
-    { path: '/home', name: 'home', component: Home },
-    { path: '/spell/:code?', name: 'spell', component: Spell },
+    {
+      path: '/home',
+      name: 'home',
+      component: Home,
+      meta: { showNavbar: true },
+    },
+    {
+      path: '/spell/:code?',
+      name: 'spell',
+      component: Spell,
+      meta: { showNavbar: true },
+    },
     { path: '/notfound', name: 'not found', component: NotFound },
     { path: '/:pathMatch(.*)*', redirect: '/notfound' },
+    ...devRoutes,
   ],
-});
-
-router.beforeEach(to => {
-  if (to.name !== 'index' && to.name !== 'loading' && !user.isSignedIn) {
-    return {
-      name: 'loading',
-      query: { to: to.fullPath },
-      replace: true,
-    };
-  }
 });
 
 export default router;

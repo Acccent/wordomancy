@@ -8,10 +8,11 @@ export const useUser = defineStore('user', {
       providers: ['twitter', 'google', 'discord'] as const,
       user: null as User | null,
       displayName: '',
+      checkedUser: false,
     };
   },
   getters: {
-    isSignedIn: s => s.user?.role === 'authenticated',
+    isSignedIn: s => s.user?.aud === 'authenticated',
   },
   actions: {
     async getUser() {
@@ -30,11 +31,7 @@ export const useUser = defineStore('user', {
           throw error;
         }
 
-        console.log(data);
-
         if (data?.length) {
-          console.log('saving display name');
-
           this.displayName = data[0]['display-name'];
         }
       }
@@ -47,8 +44,8 @@ export const useUser = defineStore('user', {
         },
         {
           redirectTo: import.meta.env.PROD
-            ? 'https://wordomancy.app/loading'
-            : 'http://localhost:8888/loading',
+            ? 'https://wordomancy.app/home'
+            : 'http://localhost:8888/home',
         }
       );
 

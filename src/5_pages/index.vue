@@ -1,32 +1,21 @@
 <script setup lang="ts">
 import ReadMe from '@/../readme.md';
 import { user } from '@/3_stores';
-const router = useRouter();
-
-onMounted(async () => {
-  await user.getUser();
-
-  console.log('read user from index', user.user);
-
-  if (user.isSignedIn) {
-    router.replace({ name: 'home' });
-  }
-});
 </script>
 
 <template>
-  <div class="column max-w-min mt-[40vh]">
+  <div class="column mt-[30vh]">
     <h1 class="mb-16 text-6xl text-center logo">Wordomancy</h1>
     <p class="text-center">Sign in with one of the following services:</p>
     <div class="flex justify-center mt-4 mb-6 input-group">
-      <button
+      <a-link-button
         v-for="p in user.providers"
         :key="p"
-        class="btn btn-primary btn-outline w-24"
+        class="btn-outline w-24 h-6"
         :title="p.replace(p[0], p[0].toUpperCase())"
         @click="user.signinWithProvider(p)">
         <a-icon :name="`a-${p}`" />
-      </button>
+      </a-link-button>
     </div>
   </div>
   <div class="column my-20 prose">

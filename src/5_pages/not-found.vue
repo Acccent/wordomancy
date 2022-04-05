@@ -3,19 +3,15 @@ const router = useRouter();
 </script>
 
 <template>
-  <div class="column max-w-min mt-[40vh] text-center">
+  <div class="column max-w-min mt-[30vh] text-center">
     <h1 class="mb-16 text-4xl logo">Wordomancy</h1>
-    <p class="mb-6">Looks like you got lost!</p>
-    <button
-      class="btn btn-sm btn-primary"
-      @click="router.push({ name: 'index' })">
+    <p class="mb-8">Looks like you got lost!</p>
+    <a-link-button @click="router.push({ name: 'index' })">
       Go back home
-    </button>
+    </a-link-button>
     <p class="my-4">or</p>
-    <button
-      class="btn btn-sm btn-primary"
-      @click="router.push({ name: 'spell', params: { code: 'daily' } })">
+    <a-link-button @click="router.push({ name: 'spell' })">
       Solve daily Spell
-    </button>
+    </a-link-button>
   </div>
 </template>

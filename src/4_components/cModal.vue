@@ -1,45 +1,14 @@
 <script setup lang="ts">
-const props = defineProps<{
-  buttonClass?: string;
-  buttonText?: string;
-  startsOpen?: boolean;
-}>();
-
-const isOpen = ref(props.startsOpen ?? false);
-
-function open() {
-  emit('opened');
-  isOpen.value = true;
-}
-
-function close() {
-  isOpen.value = false;
-  emit('closed');
-}
-
-const emit = defineEmits<{
-  (e: 'opened'): void;
-  (e: 'closed'): void;
-}>();
-
-defineExpose({ open, close });
+import { app } from '@/3_stores';
 </script>
 
 <template>
-  <teleport to="body">
-    <div :class="['modal', { 'modal-open': isOpen }]">
-      <div class="modal-box w-min min-w-[38rem] max-w-full p-12 m-4">
-        <slot />
-        <div class="modal-action mt-8">
-          <slot name="modal-action">
-            <a-button
-              :class="['btn-primary', props.buttonClass]"
-              @click="close">
-              {{ props.buttonText || 'OK' }}
-            </a-button>
-          </slot>
-        </div>
-      </div>
+  <teleport to="#modal-box">
+    <slot />
+    <div class="flex justify-center mt-8">
+      <slot name="modal-action">
+        <a-button class="btn-primary" @click="app.closeModal">OK</a-button>
+      </slot>
     </div>
   </teleport>
 </template>

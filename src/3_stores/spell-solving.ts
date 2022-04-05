@@ -1,5 +1,5 @@
 import { LS, KnownInfo } from '@/2_utils/global';
-import { app, cloud } from './';
+import { cloud } from './';
 
 const maxGuesses = 6;
 
@@ -50,7 +50,7 @@ export const useSpellSolving = defineStore('spell-solving', {
 
     // Setup a new Spell
     async resetSpell(code: string) {
-      app.loading = true;
+      // app.loading = true;
       this.$reset();
 
       const foundSpellInfo = await cloud.solveNewSpell(code);
@@ -63,7 +63,7 @@ export const useSpellSolving = defineStore('spell-solving', {
 
       this.updateCurrentGuess();
 
-      app.loading = false;
+      // app.loading = false;
     },
 
     // Reset the user input and get ready for a new guess
@@ -114,7 +114,7 @@ export const useSpellSolving = defineStore('spell-solving', {
     },
 
     async submitCurrentGuess() {
-      app.loading = true;
+      // app.loading = true;
 
       const v = await cloud.validateGuess(
         new Map([...this.currentGuess].map(([i, { letter }]) => [i, letter]))
@@ -134,14 +134,14 @@ export const useSpellSolving = defineStore('spell-solving', {
         this.resetInput();
       }
 
-      app.loading = false;
+      // app.loading = false;
     },
 
     async submitGetHint() {
       if (!this.canGetHint) {
         return;
       }
-      app.loading = true;
+      // app.loading = true;
 
       const v = await cloud.getHint();
 
@@ -152,7 +152,7 @@ export const useSpellSolving = defineStore('spell-solving', {
         this.resetInput();
       }
 
-      app.loading = false;
+      // app.loading = false;
     },
   },
 });

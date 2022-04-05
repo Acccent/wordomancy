@@ -7,13 +7,13 @@ const missingKeysCount = computed(() => spell.keysNeeded - spell.keys.size);
 
 <template>
   <p>
-    Every Spell requires some <strong><em>Key Letters</em></strong> depending on
-    the Spellword's length. They will be given to players who try to solve the
-    Spell.
+    Every Spell requires some Key Letters depending on the Spellword's
+    length.<br />
+    They will be given to players who try to solve the Spell.
   </p>
   <form class="form-control w-full mt-6" @submit.prevent="spell.submitSpell">
     <fieldset>
-      <legend>
+      <legend class="w-full">
         <p v-if="spell.keys.size === 0">
           <span>{{ spell.word.length }}-letter Spellwords need </span>
           <span class="text-error">{{ spell.keysNeeded }}</span>
