@@ -2,35 +2,37 @@
 import { generateAnims } from '@/2_utils/anims';
 import { user } from '@/3_stores';
 
-const [_barSetup, _barIn, _barOut] = generateAnims(
-  { opacity: 1, y: 0 },
-  { opacity: 0, y: -10 }
-);
+const {
+  setup: barSetup,
+  enter: barEnter,
+  leave: barLeave,
+} = generateAnims({ opacity: 1, y: 0 }, { opacity: 0, y: -10 });
 
-const [_btnsSetup, _btnsIn, _btnsOut] = generateAnims(
-  { opacity: 1, x: 0 },
-  { opacity: 0, x: 30 }
-);
+const {
+  setup: btnsSetup,
+  enter: btnsEnter,
+  leave: btnsLeave,
+} = generateAnims({ opacity: 1, x: 0 }, { opacity: 0, x: 30 });
 
-function btnsIn(el: Element, done: () => void) {
+function btnsDelayedEnter(el: Element, done: () => void) {
   const eIndex = (el as HTMLElement).dataset.index;
-  _btnsIn(el, done).delay((eIndex ? parseInt(eIndex) * 0.1 : 0) + 0.1);
+  btnsEnter(el, done).delay((eIndex ? parseInt(eIndex) * 0.1 : 0) + 0.1);
 }
 
-function btnsOut(el: Element, done: () => void) {
+function btnsDelayedLeave(el: Element, done: () => void) {
   const eIndex = (el as HTMLElement).dataset.index;
-  _btnsOut(el, done).delay(eIndex ? parseInt(eIndex) * 0.1 : 0);
+  btnsLeave(el, done).delay(eIndex ? parseInt(eIndex) * 0.1 : 0);
 }
 </script>
 
 <template>
   <transition
-    @before-enter="_barSetup"
-    @enter="(e:Element, d: () => void) => _barIn(e, d).duration(0.3)"
-    @leave="(e:Element, d: () => void) => _barOut(e, d)"
+    @before-enter="barSetup"
+    @enter="(e:Element, d: () => void) => barEnter(e, d).duration(0.3)"
+    @leave="(e:Element, d: () => void) => barLeave(e, d)"
     appear>
     <div class="border-b h-[var(--navbar-height)]">
-      <div class="navbar column">
+      <div class="navbar w-full max-w mx-auto px-8">
         <div class="flex-1">
           <h1 class="text-s logo">
             <template
@@ -49,9 +51,9 @@ function btnsOut(el: Element, done: () => void) {
         </div>
         <div class="flex-none gap-2">
           <transition-group
-            @before-enter="_btnsSetup"
-            @enter="btnsIn"
-            @leave="btnsOut"
+            @before-enter="btnsSetup"
+            @enter="btnsDelayedEnter"
+            @leave="btnsDelayedLeave"
             appear
             :css="false">
             <button

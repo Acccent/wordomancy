@@ -5,11 +5,18 @@ import vSpellNotFound from './spell/vSpellNotFound.vue';
 import { app, solving as spell } from '@/3_stores';
 const route = useRoute();
 
+// We need a per-component "visibility variable" to handle the case of
+//  navigating from a "spell not found" url to a "spell found" one —
+//  the component from the old page needs to remain hidden
+const showSpell = ref(false);
+
 await spell.resetSpell(route.params.code?.toString() || 'daily');
 
 onMounted(() => {
   if (!spell.spellExists) {
     app.openModal();
+  } else {
+    showSpell.value = true;
   }
 });
 
@@ -17,7 +24,7 @@ const scroller = ref<HTMLElement | null>(null);
 </script>
 
 <template>
-  <div v-if="spell.spellExists" class="column pt-8 flex flex-col">
+  <div v-if="showSpell" class="flex flex-col h-screen-w/o-nav">
     <div class="grow mb-12">
       <v-spell-letters-solve
         v-for="(guess, i) in spell.previousGuesses"
@@ -63,9 +70,3 @@ const scroller = ref<HTMLElement | null>(null);
     <v-spell-not-found />
   </template>
 </template>
-
-<style scoped lang="postcss">
-.column {
-  height: calc(100vh - var(--navbar-height));
-}
-</style>

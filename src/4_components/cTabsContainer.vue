@@ -1,17 +1,22 @@
 <script setup lang="ts">
+import { generateAnims } from '@/2_utils/anims';
+
 const props = defineProps<{
   initialTab?: string;
 }>();
+
 const tabNames = Object.keys(useSlots());
 
-const activatedTab = ref('');
-const activeTab = computed(
-  () => activatedTab.value || props.initialTab || tabNames[0]
-);
+const activeTab = ref(props.initialTab || tabNames[0]);
 
 function switchSlot(name: string) {
-  activatedTab.value = name;
+  activeTab.value = name;
 }
+
+const { setup, enter, leave } = generateAnims(
+  { opacity: 1, filter: 'blur(0)' },
+  { opacity: 0, filter: 'blur(1px)' }
+);
 </script>
 
 <template>
@@ -27,7 +32,15 @@ function switchSlot(name: string) {
   </div>
   <div class="w-full pt-12 pb-8">
     <keep-alive>
-      <slot :name="activeTab"></slot>
+      <transition
+        @before-enter="setup"
+        @enter="enter"
+        @leave="leave"
+        mode="out-in"
+        appear
+        :css="false">
+        <slot :name="activeTab"></slot>
+      </transition>
     </keep-alive>
   </div>
 </template>

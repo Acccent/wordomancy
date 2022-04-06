@@ -5,15 +5,11 @@ const route = useRoute();
 
 if (!user.checkedUser) {
   await user.getUser();
-  console.log('awaited');
 }
 
 if (route.name === 'home' && !user.isSignedIn) {
-  console.log('going index');
-
   router.replace({ name: 'index' });
 } else if (route.name === 'index' && user.isSignedIn) {
-  console.log('going home');
   router.replace({ name: 'home' });
 }
 

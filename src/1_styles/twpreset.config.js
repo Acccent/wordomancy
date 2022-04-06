@@ -17,6 +17,9 @@ module.exports = {
       spell: ['Bluu Next', ...defaultTheme.fontFamily.serif],
     },
     extend: {
+      height: {
+        'screen-w/o-nav': 'calc(100vh - var(--navbar-height) - 2rem)',
+      },
       width: {
         '1/10': '10%',
       },

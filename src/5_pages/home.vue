@@ -34,19 +34,17 @@ const tooltip = computed(() =>
 
 <template>
   <template v-if="!showIntro">
-    <div class="column pt-8">
-      <c-tabs-container :initial-tab="tabNames.welcome">
-        <template #[tabNames.welcome]>
-          <v-welcome />
-        </template>
-        <template #[tabNames.solveSpells]>
-          <v-solve-spells />
-        </template>
-        <template #[tabNames.yourSpells]>
-          <v-your-spells />
-        </template>
-      </c-tabs-container>
-    </div>
+    <c-tabs-container :initial-tab="tabNames.welcome">
+      <template #[tabNames.welcome]>
+        <v-welcome />
+      </template>
+      <template #[tabNames.solveSpells]>
+        <v-solve-spells />
+      </template>
+      <template #[tabNames.yourSpells]>
+        <v-your-spells />
+      </template>
+    </c-tabs-container>
   </template>
   <template v-else>
     <c-modal>

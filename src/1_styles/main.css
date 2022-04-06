@@ -5,10 +5,6 @@
 @import 'tweaks';
 
 @layer components {
-  .column {
-    @apply w-full max-w mx-auto px-4;
-  }
-
   .logo {
     @apply font-display drop-shadow-spell;
   }

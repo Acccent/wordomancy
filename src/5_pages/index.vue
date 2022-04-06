@@ -4,7 +4,7 @@ import { user } from '@/3_stores';
 </script>
 
 <template>
-  <div class="column mt-[30vh]">
+  <div class="mt-[25vh]">
     <h1 class="mb-16 text-6xl text-center logo">Wordomancy</h1>
     <p class="text-center">Sign in with one of the following services:</p>
     <div class="flex justify-center mt-4 mb-6 input-group">
@@ -18,7 +18,7 @@ import { user } from '@/3_stores';
       </a-link-button>
     </div>
   </div>
-  <div class="column my-20 prose">
+  <div class="my-20 prose">
     <read-me />
   </div>
 </template>

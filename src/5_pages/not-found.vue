@@ -3,7 +3,7 @@ const router = useRouter();
 </script>
 
 <template>
-  <div class="column max-w-min mt-[30vh] text-center">
+  <div class="max-w-min mt-[25vh] mx-auto text-center">
     <h1 class="mb-16 text-4xl logo">Wordomancy</h1>
     <p class="mb-8">Looks like you got lost!</p>
     <a-link-button @click="router.push({ name: 'index' })">

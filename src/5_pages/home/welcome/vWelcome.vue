@@ -5,7 +5,7 @@ import { user, casting as spell } from '@/3_stores';
 import vInputSpellword from './vInputSpellword.vue';
 import vSelectKeys from './vSelectKeys.vue';
 
-const [_castSetup, _castIn, _castOut] = generateAnims(
+const { setup, enter, leave } = generateAnims(
   { opacity: 1, blur: 0, scale: 1 },
   { opacity: 0, blur: 10, scale: 0.98 }
 );
@@ -35,9 +35,9 @@ onMounted(() => {
         </div>
       </div>
       <transition
-        @before-enter="_castSetup"
-        @enter="(e:Element, d: () => void) => _castIn(e, d)"
-        @leave="(e:Element, d: () => void) => _castOut(e, d)"
+        @before-enter="setup"
+        @enter="enter"
+        @leave="leave"
         mode="out-in">
         <div v-if="spell.phase === SpellPhase.inputtingWord">
           <v-input-spellword />
