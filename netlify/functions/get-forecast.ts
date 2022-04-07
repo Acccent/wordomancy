@@ -5,14 +5,16 @@ import { getSpellword } from './get-spellword';
 const handler: Handler = async () => {
   try {
     const emojis = getEmojis(3);
+    const body = JSON.stringify(emojis.map(e => [e, getSpellword()]));
 
     return {
       statusCode: 200,
-      body: JSON.stringify(emojis.map(e => [e, getSpellword()])),
+      body,
     };
-  } catch {
+  } catch (e) {
     return {
       statusCode: 500,
+      body: e.message,
     };
   }
 };

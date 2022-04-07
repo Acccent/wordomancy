@@ -11,12 +11,12 @@ declare module 'vue' {
     ALoading: typeof import('./src/4_components/atoms/aLoading.vue')['default']
     ATextInput: typeof import('./src/4_components/atoms/aTextInput.vue')['default']
     'CDebug.dev': typeof import('./src/4_components/cDebug.dev.vue')['default']
-    CModal: typeof import('./src/4_components/cModal.vue')['default']
     CNavbar: typeof import('./src/4_components/cNavbar.vue')['default']
     CSpellInput: typeof import('./src/4_components/cSpellInput.vue')['default']
     CSpellSingleLetter: typeof import('./src/4_components/cSpellSingleLetter.vue')['default']
     CTabsContainer: typeof import('./src/4_components/cTabsContainer.vue')['default']
     CUserManager: typeof import('./src/4_components/cUserManager.vue')['default']
+    MError: typeof import('./src/4_components/mError.vue')['default']
   }
 }
 

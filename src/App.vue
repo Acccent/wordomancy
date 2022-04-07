@@ -3,74 +3,54 @@ import { gsap } from 'gsap';
 import { generateAnims } from '@/2_utils/anims';
 import { app } from '@/3_stores';
 
-const { setup, enter, leave } = generateAnims(
+const viewTransition = ref(false);
+
+const {
+  setup: viewSetup,
+  enter: _viewEnter,
+  leave: _viewLeave,
+} = generateAnims(
   { opacity: 1, blur: 0, scale: 1 },
   { opacity: 0, blur: 10, scale: 0.98 }
 );
 
-function viewSetup(el: Element) {
-  setup(el);
-}
-
-function viewIn(el: Element, done: () => void) {
-  enter(el, () => {
+function viewEnter(el: Element, done: () => void) {
+  _viewEnter(el, () => {
+    viewTransition.value = false;
     done();
-    app.viewTransition = false;
-    if (app.modalWaiting) {
-      app.openModal();
-    }
   }).delay(0.1);
 }
 
-function viewOut(el: Element, done: () => void) {
-  app.closeModal();
-  app.viewTransition = true;
-  leave(el, done).add(gsap.set(el, { position: 'absolute' }), 0);
+function viewLeave(el: Element, done: () => void) {
+  viewTransition.value = true;
+  _viewLeave(el, done).add(gsap.set(el, { position: 'absolute' }), 0);
 }
 
-const modalOverlay = ref<HTMLElement | null>(null);
-const modalBox = ref<HTMLElement | null>(null);
-
-const initModalVars = {
-  opacity: 0,
-  blur: 5,
-  scale: 0.94,
-  y: '1rem',
-};
-onMounted(() => gsap.set(modalBox.value, initModalVars));
-
-watch(
-  () => app.modalOpen,
-  isOpening => {
-    const overlay = modalOverlay.value;
-    const box = modalBox.value;
-
-    if (overlay && box) {
-      if (isOpening) {
-        gsap
-          .timeline()
-          .to(overlay, { display: 'flex', opacity: 1, duration: 0.1 })
-          .to(box, {
-            opacity: 1,
-            blur: 0,
-            scale: 1,
-            y: 0,
-            duration: 0.2,
-            ease: 'power2.out',
-          });
-      } else {
-        gsap
-          .timeline()
-          .to(box, {
-            ...initModalVars,
-            duration: 0.1,
-            ease: 'power1.in',
-          })
-          .to(overlay, { display: 'none', opacity: 0, duration: 0.1 });
-      }
-    }
-  }
+const {
+  setup: mOverlaySetup,
+  enter: mOverlayEnter,
+  leave: _mOverlayLeave,
+} = generateAnims(
+  { display: 'flex', opacity: 1 },
+  { display: 'none', opacity: 0 }
 );
+
+function mOverlayLeave(el: Element, done: () => void) {
+  _mOverlayLeave(el, done).delay(0.1);
+}
+
+const {
+  setup: mBoxSetup,
+  enter: _mBoxEnter,
+  leave: mBoxLeave,
+} = generateAnims(
+  { opacity: 1, scale: 1, y: 0, blur: 0 },
+  { opacity: 0, scale: 0.94, y: '1rem', blur: 5 }
+);
+
+function mBoxEnter(el: Element, done: () => void) {
+  _mBoxEnter(el, done).delay(0.1);
+}
 </script>
 
 <template>
@@ -81,8 +61,8 @@ watch(
       <router-view v-slot="{ Component, route }">
         <transition
           @before-enter="viewSetup"
-          @enter="viewIn"
-          @leave="viewOut"
+          @enter="viewEnter"
+          @leave="viewLeave"
           appear
           :css="false">
           <Suspense>
@@ -100,16 +80,33 @@ watch(
       </router-view>
     </div>
   </main>
-  <div id="modal-overlay" :class="{ open: app.modalOpen }" ref="modalOverlay">
-    <div id="modal-box" ref="modalBox"></div>
-  </div>
+  <transition
+    @before-enter="mOverlaySetup"
+    @enter="mOverlayEnter"
+    @leave="mOverlayLeave"
+    :css="false">
+    <div
+      v-show="app.modalQueue.length > 0 && !viewTransition"
+      id="modal-overlay"
+      :class="{ open: app.modalQueue.length }">
+      <transition
+        @before-enter="mBoxSetup"
+        @enter="mBoxEnter"
+        @leave="mBoxLeave"
+        mode="out-in"
+        :css="false">
+        <div id="modal-box" :key="app.modalQueue[0]?.name">
+          <component :is="app.modalQueue[0]?.component" />
+        </div>
+      </transition>
+    </div>
+  </transition>
 </template>
 
 <style scoped lang="postcss">
 #modal-overlay {
-  @apply fixed inset-0 hidden justify-center items-center;
+  @apply fixed inset-0 justify-center items-center;
   @apply bg-neutral-focus bg-opacity-40;
-  @apply opacity-0;
   overflow-y: hidden;
   overscroll-behavior: contain;
   z-index: 999;
@@ -119,7 +116,7 @@ watch(
   }
 }
 #modal-box {
-  @apply rounded-box bg-base-100 w-min max-w-full sm:min-w-[40rem] p-12 m-4;
+  @apply rounded-box bg-base-100 w-fit max-w-full p-12 m-4;
   max-height: calc(100vh - 4rem);
   overflow-y: auto;
   overscroll-behavior: contain;

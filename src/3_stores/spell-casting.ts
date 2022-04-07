@@ -1,5 +1,5 @@
 import { SpellPhase, getKeysNeeded } from '@/2_utils/global';
-import { local, cloud } from './';
+import { user, local, cloud } from './';
 
 export const useSpellCasting = defineStore('spell-casting', {
   state: () => {
@@ -29,20 +29,34 @@ export const useSpellCasting = defineStore('spell-casting', {
     },
   },
   actions: {
-    async resetCasting() {
-      if (this.phase === SpellPhase.noEnergy) {
-        this.$reset();
+    async getNewEnergy() {
+      this.energy.clear();
 
-        const e = await cloud.getEnergyForecast();
-        e.forEach(kv => this.energy.set(kv[0], kv[1]));
+      const { ok, result } = await cloud.NetlifyFunction('get-forecast');
+
+      if (!ok) {
+        this.phase = SpellPhase.error;
+        throw 'There was a problem getting your forecast: ' + result;
       }
 
-      this.phase = SpellPhase.inputtingWord;
+      (result as string[][]).forEach(kv => this.energy.set(kv[0], kv[1]));
+
+      this.resetCasting();
+    },
+
+    resetCasting() {
+      this.$patch({
+        phase: SpellPhase.inputtingWord,
+        word: '',
+        keys: new Set<number>(),
+        code: '',
+      });
     },
 
     async submitInput() {
       if (await local.checkIfSpellwordExists(this.word)) {
         this.phase = SpellPhase.selectingKeys;
+        return true;
       } else {
         return false;
       }
@@ -58,14 +72,23 @@ export const useSpellCasting = defineStore('spell-casting', {
     },
 
     async submitSpell() {
-      this.phase = SpellPhase.submitting;
-      const data = await cloud.submitSpell(this.word, [...this.keys]);
+      const { ok, result } = await cloud.NetlifyFunction('submit-spell', {
+        userId: user.user?.id,
+        spellword: this.word,
+        keys: [...this.keys],
+      });
+
+      if (!ok) {
+        this.phase = SpellPhase.error;
+        throw 'There was a problem submitting the Spell: ' + result;
+      }
 
       this.$patch({
-        word: data[0].spellword,
-        keys: new Set(data[0].keys),
-        code: data[0].code,
+        word: result[0].spellword,
+        keys: new Set(result[0].keys),
+        code: result[0].code,
       });
+
       this.phase = SpellPhase.submitted;
     },
   },

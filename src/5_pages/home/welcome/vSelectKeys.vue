@@ -3,6 +3,13 @@ import vSpellLettersCast from './vSpellLettersCast.vue';
 import { casting as spell } from '@/3_stores';
 
 const missingKeysCount = computed(() => spell.keysNeeded - spell.keys.size);
+
+const btnLoading = ref(false);
+async function submitKeys() {
+  btnLoading.value = true;
+  await spell.submitSpell();
+  btnLoading.value = false;
+}
 </script>
 
 <template>
@@ -11,7 +18,7 @@ const missingKeysCount = computed(() => spell.keysNeeded - spell.keys.size);
     length.<br />
     They will be given to players who try to solve the Spell.
   </p>
-  <form class="form-control w-full mt-6" @submit.prevent="spell.submitSpell">
+  <form class="form-control w-full mt-6" @submit.prevent="submitKeys">
     <fieldset>
       <legend class="w-full">
         <p v-if="spell.keys.size === 0">
@@ -38,8 +45,8 @@ const missingKeysCount = computed(() => spell.keysNeeded - spell.keys.size);
       </legend>
       <v-spell-letters-cast />
     </fieldset>
-    <a-button big type="submit" :disabled="!spell.hasEnoughKeys">
-      Cast Spell!
-    </a-button>
+    <a-button big :disabled="!spell.hasEnoughKeys" :loading="btnLoading"
+      >Cast Spell!</a-button
+    >
   </form>
 </template>

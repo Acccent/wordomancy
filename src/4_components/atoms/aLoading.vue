@@ -9,7 +9,13 @@ const props = defineProps<{
 
 const droplets = ref(new Map<number, Element>());
 
-const size = ref(props.size ? ~~props.size : 1);
+const size = ref(
+  props.size
+    ? typeof props.size === 'string'
+      ? parseFloat(props.size)
+      : props.size
+    : 1
+);
 const initDelay = ref(props.delay ? ~~props.delay : 0);
 const fontSize = ref(`${size.value}rem`);
 const bgColor = ref(props.color ?? 'currentColor');

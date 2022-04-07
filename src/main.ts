@@ -1,6 +1,6 @@
 import { createApp } from 'vue';
 import { gsap } from 'gsap';
-import { store } from '@/3_stores';
+import { store, app as appState } from '@/3_stores';
 import router from './router';
 import App from './App.vue';
 
@@ -14,6 +14,7 @@ app.use(store);
 app.use(router);
 
 app.config.errorHandler = (err, instance, info) => {
+  appState.createError(err as string);
   console.log('error:', err);
   console.log('instance:', instance);
   console.log('info:', info);

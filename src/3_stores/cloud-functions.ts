@@ -1,5 +1,5 @@
 import { LS, KnownInfo } from '@/2_utils/global';
-import { app, user, local } from './';
+import { app, local } from './';
 
 const maxGuesses = 6;
 
@@ -16,7 +16,7 @@ export const useCloud = defineStore('cloud-functions', {
   },
   actions: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async fetchNetlify(f: string, params?: Record<string, any>) {
+    async NetlifyFunction(f: string, params?: Record<string, any>) {
       const res = await fetch(`/.netlify/functions/${f}`, {
         method: params !== undefined ? 'POST' : 'GET',
         headers: {
@@ -24,25 +24,8 @@ export const useCloud = defineStore('cloud-functions', {
         },
         body: params !== undefined ? JSON.stringify(params) : undefined,
       });
-      return await res.json();
-    },
 
-    async getEmojis(n?: number) {
-      return (await this.fetchNetlify('get-emojis', {
-        amount: n,
-      })) as string[];
-    },
-
-    async getEnergyForecast() {
-      return (await this.fetchNetlify('get-forecast')) as string[][];
-    },
-
-    async submitSpell(spellword: string, keys: number[]) {
-      return await this.fetchNetlify('submit-spell', {
-        userId: user.user?.id,
-        spellword,
-        keys,
-      });
+      return { ok: res.ok, result: await (res.ok ? res.json() : res.text()) };
     },
 
     async solveNewSpell(code: string) {

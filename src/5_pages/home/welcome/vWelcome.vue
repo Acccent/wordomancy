@@ -10,8 +10,15 @@ const { setup, enter, leave } = generateAnims(
   { opacity: 0, blur: 10, scale: 0.98 }
 );
 
-onMounted(() => {
-  spell.resetCasting();
+function restart() {
+  spell.phase = SpellPhase.noEnergy;
+  spell.getNewEnergy();
+}
+
+onMounted(async () => {
+  if (spell.phase === SpellPhase.noEnergy) {
+    spell.getNewEnergy();
+  }
 });
 </script>
 
@@ -25,15 +32,31 @@ onMounted(() => {
       </div>
     </template>
     <template v-else>
-      <p>Here is your energy forecast for today:</p>
-      <div class="flex justify-center gap-16 mt-10 mb-16">
-        <div v-for="e in spell.energy" :key="e[0]">
-          <a-emoji
-            :name="e[0]"
-            class="w-16 h-16 mx-auto mb-4 drop-shadow-spell" />
-          <span class="block font-spell text-xl">{{ e[1] }}</span>
+      <template v-if="spell.phase === SpellPhase.error">
+        <p>It looks like there's been a little hiccup.</p>
+        <p class="my-4">
+          Please make sure to
+          <a
+            class="link"
+            href="https://github.com/Acccent/wordomancy/issues/new"
+            >submit an issue</a
+          >!
+        </p>
+        <a-button class="btn-secondary" type="button" @click="restart"
+          >Try casting a Spell again</a-button
+        >
+      </template>
+      <template v-else>
+        <p>Here is your energy forecast for today:</p>
+        <div class="flex justify-center gap-16 mt-10 mb-16">
+          <div v-for="e in spell.energy" :key="e[0]">
+            <a-emoji
+              :name="e[0]"
+              class="w-16 h-16 mx-auto mb-4 drop-shadow-spell" />
+            <span class="block font-spell text-xl">{{ e[1] }}</span>
+          </div>
         </div>
-      </div>
+      </template>
       <transition
         @before-enter="setup"
         @enter="enter"
@@ -45,10 +68,7 @@ onMounted(() => {
         <div v-else-if="spell.phase === SpellPhase.selectingKeys">
           <v-select-keys />
         </div>
-        <div v-else-if="spell.phase === SpellPhase.submitting">
-          <p>Your Spell is being submitted...</p>
-        </div>
-        <div v-else>
+        <div v-else-if="spell.phase === SpellPhase.submitted">
           <p class="mb-4">
             You submitted a Spell with the Spellword {{ spell.word }} and the
             Key Letter{{ spell.keys.size > 1 ? 's' : '' }}
@@ -59,6 +79,9 @@ onMounted(() => {
           <p class="mt-4">
             Open your Spells tab to review it and your past Spells.
           </p>
+          <a-button big type="button" @click="spell.resetCasting"
+            >Cast another Spell</a-button
+          >
         </div>
       </transition>
     </template>

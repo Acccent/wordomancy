@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import vSpellLettersSolve from './spell/vSpellLettersSolve.vue';
 import vKeyboard from './spell/vKeyboard.vue';
-import vSpellNotFound from './spell/vSpellNotFound.vue';
+import mSpellNotFound from './spell/mSpellNotFound.vue';
 import { app, solving as spell } from '@/3_stores';
 const route = useRoute();
 
@@ -14,7 +14,7 @@ await spell.resetSpell(route.params.code?.toString() || 'daily');
 
 onMounted(() => {
   if (!spell.spellExists) {
-    app.openModal();
+    app.openModal('spell not found', mSpellNotFound);
   } else {
     showSpell.value = true;
   }
@@ -66,7 +66,4 @@ const scroller = ref<HTMLElement | null>(null);
       </div>
     </div>
   </div>
-  <template v-else>
-    <v-spell-not-found />
-  </template>
 </template>

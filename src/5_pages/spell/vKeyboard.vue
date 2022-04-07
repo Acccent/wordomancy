@@ -84,6 +84,7 @@ const emit = defineEmits<{
       v-if="i === 2 && spell.knownInfo.length > 5"
       class="btn w-12 p-0 shrink"
       :disabled="spell.inputOffset <= 0"
+      type="button"
       @click.prevent="moveLeft">
       <a-icon name="f-move-left" />
     </button>
@@ -92,6 +93,7 @@ const emit = defineEmits<{
       :key="`letter-${letter}`"
       class="btn w-12 p-0 shrink"
       :class="getLetterButtonState(letter)"
+      type="button"
       @click.prevent="addLetter(letter)">
       {{ letter }}
     </button>
@@ -102,6 +104,7 @@ const emit = defineEmits<{
         spell.kbInput.length < 1 ||
         spell.inputOffset + spell.kbInput.length >= spell.knownInfo.length
       "
+      type="button"
       @click.prevent="moveRight">
       <a-icon name="f-move-right" />
     </button>

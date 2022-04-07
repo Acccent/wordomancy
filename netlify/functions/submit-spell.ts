@@ -14,12 +14,13 @@ const nanoid = customAlphabet('346789BCDFGHJLMNPQRTVWXYbcdfghjmnpqrstvwxyz', 8);
 
 const handler: Handler = async event => {
   try {
-    const json = JSON.parse(event.body);
     const {
       userId: creator,
       spellword,
       keys,
-    }: { userId: string; spellword: string; keys: number[] } = json;
+    }: { userId: string; spellword: string; keys: number[] } = JSON.parse(
+      event.body
+    );
 
     if (!spellwords.includes(spellword)) {
       throw new Error("This isn't a valid Spellword");
@@ -47,9 +48,11 @@ const handler: Handler = async event => {
       throw error;
     }
 
+    const body = JSON.stringify(data);
+
     return {
       statusCode: 200,
-      body: JSON.stringify(data),
+      body,
     };
   } catch (e) {
     console.log(e);

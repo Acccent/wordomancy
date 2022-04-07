@@ -1,8 +1,8 @@
 enum SpellPhase {
+  error,
   noEnergy,
   inputtingWord,
   selectingKeys,
-  submitting,
   submitted,
 }
 

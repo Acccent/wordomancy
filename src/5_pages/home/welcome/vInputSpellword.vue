@@ -37,11 +37,14 @@ function changeInput() {
   spell.word = newSpellword.value;
 }
 
+const btnLoading = ref(false);
 async function submitInput() {
+  btnLoading.value = true;
   const success = await spell.submitInput();
   if (!success) {
     failedSubmitting.value = true;
   }
+  btnLoading.value = false;
 }
 
 const tooltip = computed(() => {
@@ -72,7 +75,7 @@ const tooltip = computed(() => {
     >
   </div>
   <form class="form-control w-full mt-12" @submit.prevent="submitInput">
-    <label class="mb-2" for="spellword-input">
+    <label class="mb-4" for="spellword-input">
       <p>Type in your Spellword below using letters from those words:</p>
     </label>
     <c-spell-input
@@ -81,6 +84,8 @@ const tooltip = computed(() => {
       :tooltip="tooltip"
       v-model="newSpellword"
       @update:modelValue="changeInput" />
-    <a-button big :disabled="!spell.isValidWord"> Use this Spellword </a-button>
+    <a-button big :disabled="!spell.isValidWord" :loading="btnLoading"
+      >Use this Spellword</a-button
+    >
   </form>
 </template>

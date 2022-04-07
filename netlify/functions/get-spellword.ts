@@ -12,9 +12,10 @@ const handler: Handler = async () => {
       statusCode: 200,
       body,
     };
-  } catch {
+  } catch (e) {
     return {
       statusCode: 500,
+      body: e.message,
     };
   }
 };

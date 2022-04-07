@@ -14,8 +14,8 @@ function switchSlot(name: string) {
 }
 
 const { setup, enter, leave } = generateAnims(
-  { opacity: 1, filter: 'blur(0)' },
-  { opacity: 0, filter: 'blur(1px)' }
+  { opacity: 1, blur: 0 },
+  { opacity: 0, blur: 1 }
 );
 </script>
 
@@ -26,6 +26,7 @@ const { setup, enter, leave } = generateAnims(
       :key="tabName"
       class="tab tab-lg tab-bordered font-serif grow"
       :class="{ 'tab-active': tabName === activeTab }"
+      type="button"
       @click="switchSlot(tabName)">
       {{ tabName }}
     </button>
