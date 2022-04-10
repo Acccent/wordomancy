@@ -1,4 +1,5 @@
 import { Handler } from '@netlify/functions';
+import { DateTime } from 'luxon';
 import { customAlphabet } from 'nanoid';
 import { createClient } from '@supabase/supabase-js';
 import spellwords from '../../public/spellwords.json';
@@ -40,9 +41,15 @@ const handler: Handler = async event => {
 
     const code = nanoid();
 
-    const { data, error } = await supabase
-      .from('spells')
-      .insert([{ code, spellword, keys, creator }]);
+    const { data, error } = await supabase.from('spells').insert([
+      {
+        code,
+        spellword,
+        keys,
+        creator,
+        createdOn: DateTime.utc().toISO(),
+      },
+    ]);
 
     if (error) {
       throw error;

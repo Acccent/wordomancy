@@ -66,9 +66,9 @@ function mBoxEnter(el: Element, done: () => void) {
           appear
           :css="false">
           <Suspense>
-            <c-user-manager class="h-full w-full px-4" :key="route.path">
+            <c-data-manager class="h-full w-full px-4" :key="route.path">
               <component :is="Component" />
-            </c-user-manager>
+            </c-data-manager>
             <template #fallback>
               <div
                 class="flex justify-center items-center h-screen-w/o-nav w-full">

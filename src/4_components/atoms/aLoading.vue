@@ -19,10 +19,9 @@ const size = ref(
 const initDelay = ref(props.delay ? ~~props.delay : 0);
 const fontSize = ref(`${size.value}rem`);
 const bgColor = ref(props.color ?? 'currentColor');
+const duration = Math.pow(size.value * 3, 0.15);
 
 onMounted(() => {
-  const duration = Math.pow(size.value * 3, 0.15);
-
   droplets.value.forEach((e, i) => {
     gsap
       .timeline({

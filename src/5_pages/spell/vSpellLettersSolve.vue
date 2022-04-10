@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LS } from '@/2_utils/global';
+import { LetterState as LS } from '@/2_utils/global';
 import { solving as spell } from '@/3_stores';
 
 const props = defineProps<{
@@ -11,7 +11,7 @@ const guess = computed(() => (isCurrent ? spell.currentGuess : props.guess));
 
 const guessDisplay = computed(() => {
   const glArray = [] as GuessedLetter[];
-  for (let i = 0; i < spell.knownInfo.length; i++) {
+  for (let i = 0; i < spell.solution.length; i++) {
     const inputLetter = guess.value.get(i);
     if (inputLetter) {
       glArray.push(inputLetter);

@@ -28,7 +28,7 @@ const router = createRouter({
       meta: { showNavbar: true },
     },
     {
-      path: '/spell/:code?',
+      path: '/spell/:id?',
       name: 'spell',
       component: Spell,
       meta: { showNavbar: true },

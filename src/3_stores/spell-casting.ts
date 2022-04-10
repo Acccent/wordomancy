@@ -1,5 +1,5 @@
 import { SpellPhase, getKeysNeeded } from '@/2_utils/global';
-import { user, local, cloud } from './';
+import { user, local, spells } from './';
 
 export const useSpellCasting = defineStore('spell-casting', {
   state: () => {
@@ -32,7 +32,7 @@ export const useSpellCasting = defineStore('spell-casting', {
     async getNewEnergy() {
       this.energy.clear();
 
-      const { ok, result } = await cloud.NetlifyFunction('get-forecast');
+      const { ok, result } = await spells.netlifyFunction('get-forecast');
 
       if (!ok) {
         this.phase = SpellPhase.error;
@@ -72,7 +72,7 @@ export const useSpellCasting = defineStore('spell-casting', {
     },
 
     async submitSpell() {
-      const { ok, result } = await cloud.NetlifyFunction('submit-spell', {
+      const { ok, result } = await spells.netlifyFunction('submit-spell', {
         userId: user.user?.id,
         spellword: this.word,
         keys: [...this.keys],

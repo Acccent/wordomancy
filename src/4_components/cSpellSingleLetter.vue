@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LS } from '@/2_utils/global';
+import { LetterState as LS } from '@/2_utils/global';
 
 const props = defineProps<{
   letter: string;

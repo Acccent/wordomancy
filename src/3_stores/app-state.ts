@@ -1,5 +1,6 @@
 import type { Component } from 'vue';
 import { createClient } from '@supabase/supabase-js';
+import { DateTime } from 'luxon';
 import mError from '@/4_components/mError.vue';
 
 const supabase = createClient(
@@ -16,21 +17,25 @@ export const useAppState = defineStore('app-state', {
   state: () => {
     return {
       supabase,
+      gotInitialData: false,
       modalQueue: [] as QueuedModal[],
-      error: '',
+      error: [] as string[],
     };
   },
   actions: {
+    getLastMidnight() {
+      return DateTime.utc().minus({ hour: 1 }).startOf('day').toISODate();
+    },
     openModal(name: string, component: Component) {
+      console.log('queuing', name);
       this.modalQueue.push(markRaw({ name, component }));
     },
-    async closeModal() {
+    closeModal() {
       this.modalQueue.splice(0, 1);
-      // this.modalOpen = false;
     },
     createError(message: string) {
-      this.error = message;
-      this.modalQueue.length = 0;
+      this.error.push(message);
+      // this.modalQueue.length = 0;
       this.openModal('error', mError);
     },
   },

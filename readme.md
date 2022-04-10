@@ -7,32 +7,32 @@ There's still a lot missing and some things might not work, so feedback is very 
 
 ### Known issues
 
-- ⚠️ There may be a bug where a misplaced letter is highlighted several times in a guess, when it's only once in the solution 
+- [ ] ⚠️ There may be a bug where a misplaced letter is highlighted several times in a guess, when it's only once in the solution 
 - Text fields can be weird
-  - Focus state isn't predictable
-  - Changing the text in the middle of the word moves the caret to the end
-- Spellword & Guess inputs lets you add repeat invalid letters
-- Colors need tweaking and accessibility check
-  - Focused buttons retain their color even if they become disabled (until unfocused)
-- Layout issues on small screens
-- No sharing metadata
-  - Share Spell url creates accessible image
-- Word lists need to be filtered, may contain inappropriate words right now
+  - [ ] Focus state isn't predictable
+  - [ ] Changing the text in the middle of the word moves the caret to the end
+- [ ] Spellword & Guess inputs lets you add repeat invalid letters
+- [ ] Colors need tweaking and accessibility check
+- [ ] Layout issues on small screens
+- [ ] Word lists need to be filtered, may contain inappropriate words right now
 
 ### Planned features
 
-- Friends page (with their latest Spells)
-- Explanations + acknowledgments
+- Sharing
+  - [ ] Spell url creates accessible image
+  - [ ] Share energy forecast button
+  - [ ] Add page metadada
+- [ ] Friends page (with their latest Spells)
+- [ ] Explanations + acknowledgments
 - Settings
-  - Choose color for letter states
-  - Toggle letter hints
+  - [ ] Choose color for letter states
+  - [ ] Toggle letter hints
 
 ### Future considerations
 
-- Stats, play history
-- Animations everywhere ✨
-- Other languages / kb layouts
-- Ability to give names to Spells?
-- Word definitions at game end
-- Maybe add button to shuffle letters of forecast words
-- Share energy forecast
+- [ ] Stats, play history
+- [ ] Animations everywhere ✨
+- [ ] Other languages / kb layouts
+- [ ] Ability to give names to Spells?
+- [ ] Word definitions at game end
+- [ ] Maybe add button to shuffle letters of forecast words

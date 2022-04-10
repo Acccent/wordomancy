@@ -1,6 +1,5 @@
 import { Handler } from '@netlify/functions';
-import { getEmojis } from './get-emojis';
-import { getSpellword } from './get-spellword';
+import { getEmojis, getSpellword } from '../helpers';
 
 const handler: Handler = async () => {
   try {

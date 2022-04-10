@@ -10,12 +10,15 @@ declare module 'vue' {
     ALinkButton: typeof import('./src/4_components/atoms/aLinkButton.vue')['default']
     ALoading: typeof import('./src/4_components/atoms/aLoading.vue')['default']
     ATextInput: typeof import('./src/4_components/atoms/aTextInput.vue')['default']
+    CDataManager: typeof import('./src/4_components/cDataManager.vue')['default']
     'CDebug.dev': typeof import('./src/4_components/cDebug.dev.vue')['default']
     CNavbar: typeof import('./src/4_components/cNavbar.vue')['default']
     CSpellInput: typeof import('./src/4_components/cSpellInput.vue')['default']
+    CSpellList: typeof import('./src/4_components/cSpellList.vue')['default']
+    'CSpellList copy': typeof import('./src/4_components/cSpellList copy.vue')['default']
+    CSpellListItem: typeof import('./src/4_components/cSpellListItem.vue')['default']
     CSpellSingleLetter: typeof import('./src/4_components/cSpellSingleLetter.vue')['default']
     CTabsContainer: typeof import('./src/4_components/cTabsContainer.vue')['default']
-    CUserManager: typeof import('./src/4_components/cUserManager.vue')['default']
     MError: typeof import('./src/4_components/mError.vue')['default']
   }
 }

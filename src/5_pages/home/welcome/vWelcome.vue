@@ -24,7 +24,7 @@ onMounted(async () => {
 
 <template>
   <div class="text-center">
-    <p class="mb-8">Hi {{ user.displayName }}!</p>
+    <p class="mb-8">Hi {{ user.data.displayName }}!</p>
     <template v-if="spell.phase === SpellPhase.noEnergy">
       <p class="mb-6">Getting your energy forecast...</p>
       <div class="flex justify-center items-center h-full w-full">

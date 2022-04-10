@@ -10,7 +10,7 @@ const route = useRoute();
 //  the component from the old page needs to remain hidden
 const showSpell = ref(false);
 
-await spell.resetSpell(route.params.code?.toString() || 'daily');
+await spell.resetSpell(route.params.id?.toString());
 
 onMounted(() => {
   if (!spell.spellExists) {
@@ -30,18 +30,20 @@ const scroller = ref<HTMLElement | null>(null);
         v-for="(guess, i) in spell.previousGuesses"
         :guess="guess"
         :key="`guess-${i}`" />
-      <v-spell-letters-solve v-if="!spell.gameOver" />
-      <div class="text-center italic opacity-50">
-        <p v-if="spell.remainingGuesses > 2">
-          {{ spell.remainingGuesses }} guesses left
-        </p>
-        <p v-else-if="spell.remainingGuesses > 1" class="text-warning">
-          {{ spell.remainingGuesses }} guesses left
-        </p>
-        <p v-else class="text-error">
-          {{ spell.remainingGuesses }} guess left!
-        </p>
-      </div>
+      <template v-if="!spell.gameOver">
+        <v-spell-letters-solve />
+        <div class="text-center italic opacity-50">
+          <p v-if="spell.remainingGuesses > 2">
+            {{ spell.remainingGuesses }} guesses left
+          </p>
+          <p v-else-if="spell.remainingGuesses > 1" class="text-warning">
+            {{ spell.remainingGuesses }} guesses left
+          </p>
+          <p v-else class="text-error">
+            {{ spell.remainingGuesses }} guess left!
+          </p>
+        </div>
+      </template>
     </div>
     <div class="flex-none" ref="scroller">
       <div v-if="spell.gameOver" class="py-12 text-center">

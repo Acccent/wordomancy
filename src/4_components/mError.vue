@@ -3,7 +3,7 @@ import { app } from '@/3_stores';
 
 function acknowledge() {
   app.closeModal();
-  app.error = '';
+  app.error.splice(0, 1);
 }
 </script>
 
