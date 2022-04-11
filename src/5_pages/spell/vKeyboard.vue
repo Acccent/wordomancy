@@ -96,6 +96,7 @@ const emit = defineEmits<{
     <button
       v-if="i === 2 && spell.solution.length > 5"
       class="btn w-12 p-0 shrink"
+      title="Move input left"
       type="button"
       :disabled="spell.inputOffset <= 0 || inputsDisabled"
       @click.prevent="moveLeft">
@@ -114,6 +115,7 @@ const emit = defineEmits<{
     <button
       v-if="i === 2 && spell.solution.length > 5"
       class="btn w-12 p-0 shrink"
+      title="Move input right"
       type="button"
       :disabled="
         spell.kbInput.length < 1 ||

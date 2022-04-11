@@ -5,7 +5,7 @@ import { app, user } from './';
 function sortSpellsDescending(a: MetaSpellData, b: MetaSpellData) {
   const dateA = DateTime.fromISO(a.spell.createdOn);
   const dateB = DateTime.fromISO(b.spell.createdOn);
-  return dateB.toMillis() - dateA.toMillis();
+  return dateA.toMillis() - dateB.toMillis();
 }
 
 export const useSpellData = defineStore('spell-data', {
@@ -162,17 +162,18 @@ export const useSpellData = defineStore('spell-data', {
     ) {
       const isDaily = source === SpellSource.daily;
       const spellId = this.getSpellId(spell, isDaily);
+
       this.allSpells.set(spellId, {
         spell,
         solvingStatus:
           SpellStatus[
             Object.hasOwn(
-              user.data[isDaily ? 'solving' : 'solvingDailies'],
+              user.data[isDaily ? 'solvingDailies' : 'solving'],
               spellId
             )
               ? 'solving'
               : Object.hasOwn(
-                  user.data[isDaily ? 'finished' : 'finishedDailies'],
+                  user.data[isDaily ? 'finishedDailies' : 'finished'],
                   spellId
                 )
               ? 'finished'

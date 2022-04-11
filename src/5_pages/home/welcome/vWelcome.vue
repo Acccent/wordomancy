@@ -23,67 +23,62 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="text-center">
-    <p class="mb-8">Hi {{ user.data.displayName }}!</p>
-    <template v-if="spell.phase === SpellPhase.noEnergy">
-      <p class="mb-6">Getting your energy forecast...</p>
-      <div class="flex justify-center items-center h-full w-full">
-        <a-loading color="hsl(var(--a))" size="8" />
-      </div>
+  <h3 class="home-section-title">Hi {{ user.data.displayName }}!</h3>
+  <template v-if="spell.phase === SpellPhase.noEnergy">
+    <p class="mb-6">Getting your energy forecast...</p>
+    <div class="flex justify-center items-center h-full w-full">
+      <a-loading color="hsl(var(--a))" size="8" />
+    </div>
+  </template>
+  <template v-else>
+    <template v-if="spell.phase === SpellPhase.error">
+      <p>It looks like there's been a little hiccup.</p>
+      <p class="my-4">
+        Please make sure to
+        <a class="link" href="https://github.com/Acccent/wordomancy/issues/new"
+          >submit an issue</a
+        >!
+      </p>
+      <a-button class="btn-secondary" type="button" @click="restart"
+        >Try casting a Spell again</a-button
+      >
     </template>
     <template v-else>
-      <template v-if="spell.phase === SpellPhase.error">
-        <p>It looks like there's been a little hiccup.</p>
-        <p class="my-4">
-          Please make sure to
-          <a
-            class="link"
-            href="https://github.com/Acccent/wordomancy/issues/new"
-            >submit an issue</a
-          >!
-        </p>
-        <a-button class="btn-secondary" type="button" @click="restart"
-          >Try casting a Spell again</a-button
-        >
-      </template>
-      <template v-else>
-        <p>Here is your energy forecast for today:</p>
-        <div class="flex justify-center gap-16 mt-10 mb-16">
-          <div v-for="e in spell.energy" :key="e[0]">
-            <a-emoji
-              :name="e[0]"
-              class="w-16 h-16 mx-auto mb-4 drop-shadow-spell" />
-            <span class="block font-spell text-xl">{{ e[1] }}</span>
-          </div>
+      <p>Here is your energy forecast for today:</p>
+      <div class="flex justify-center gap-16 mt-10 mb-16">
+        <div v-for="e in spell.energy" :key="e[0]">
+          <a-emoji
+            :name="e[0]"
+            class="w-16 h-16 mx-auto mb-4 drop-shadow-spell" />
+          <span class="block font-spell text-xl">{{ e[1] }}</span>
         </div>
-      </template>
-      <transition
-        @before-enter="setup"
-        @enter="enter"
-        @leave="leave"
-        mode="out-in">
-        <div v-if="spell.phase === SpellPhase.inputtingWord">
-          <v-input-spellword />
-        </div>
-        <div v-else-if="spell.phase === SpellPhase.selectingKeys">
-          <v-select-keys />
-        </div>
-        <div v-else-if="spell.phase === SpellPhase.submitted">
-          <p class="mb-4">
-            You submitted a Spell with the Spellword {{ spell.word }} and the
-            Key Letter{{ spell.keys.size > 1 ? 's' : '' }}
-            {{ spell.keysAsPhrase }}.
-          </p>
-          <p>Your Spell code is:</p>
-          <code class="text-xl">{{ spell.code }}</code>
-          <p class="mt-4">
-            Open your Spells tab to review it and your past Spells.
-          </p>
-          <a-button big type="button" @click="spell.resetCasting"
-            >Cast another Spell</a-button
-          >
-        </div>
-      </transition>
+      </div>
     </template>
-  </div>
+    <transition
+      @before-enter="setup"
+      @enter="enter"
+      @leave="leave"
+      mode="out-in">
+      <div v-if="spell.phase === SpellPhase.inputtingWord">
+        <v-input-spellword />
+      </div>
+      <div v-else-if="spell.phase === SpellPhase.selectingKeys">
+        <v-select-keys />
+      </div>
+      <div v-else-if="spell.phase === SpellPhase.submitted">
+        <p class="mb-4">
+          You submitted a Spell with the Spellword {{ spell.word }} and the Key
+          Letter{{ spell.keys.size > 1 ? 's' : '' }} {{ spell.keysAsPhrase }}.
+        </p>
+        <p>Your Spell code is:</p>
+        <code class="text-xl">{{ spell.code }}</code>
+        <p class="mt-4">
+          Open your Spells tab to review it and your past Spells.
+        </p>
+        <a-button big type="button" @click="spell.resetCasting"
+          >Cast another Spell</a-button
+        >
+      </div>
+    </transition>
+  </template>
 </template>

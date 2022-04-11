@@ -40,7 +40,9 @@ const { setup, enter, leave } = generateAnims(
         mode="out-in"
         appear
         :css="false">
-        <slot :name="activeTab"></slot>
+        <div class="text-center" :key="activeTab">
+          <slot :name="activeTab"></slot>
+        </div>
       </transition>
     </keep-alive>
   </div>

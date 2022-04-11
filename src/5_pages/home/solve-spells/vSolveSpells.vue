@@ -1,11 +1,13 @@
 <script setup lang="ts">
 // import { SpellSource } from '@/2_utils/global';
 import { spells } from '@/3_stores';
+import CInputWithButton from '../../../4_components/cInputWithButton.vue';
 const router = useRouter();
 
-const spellCodeInput = ref('');
-function goToSpell() {
-  router.push({ name: 'spell', params: { code: spellCodeInput.value } });
+function goToSpell(code: string) {
+  console.log(code);
+
+  router.push({ name: 'spell', params: { id: code } });
 }
 
 // const loading = reactive({
@@ -20,30 +22,24 @@ function goToSpell() {
 </script>
 
 <template>
-  <div class="text-center">
-    <a-link-button @click="router.push({ name: 'spell' })">
-      Solve daily Spell
-    </a-link-button>
-
-    <p class="mt-8">If you know a Spell code, you can enter it below:</p>
-    <div class="form-control mt-4">
-      <div class="input-group justify-center">
-        <input
-          type="text"
-          placeholder="Enter code here..."
-          class="input input-bordered font-mono text-lg"
-          v-model="spellCodeInput" />
-        <a-link-button @click="goToSpell"> Solve Spell </a-link-button>
-      </div>
-    </div>
-
-    <h3>New Spells:</h3>
+  <template v-if="spells.unplayedSpells.length">
+    <h3 class="home-section-title text-primary">New Spells!</h3>
     <c-spell-list :list="spells.unplayedSpells" />
+  </template>
 
-    <p>Spells you've started:</p>
+  <template v-if="spells.solvingSpells.length">
+    <h3 class="mt-12 home-section-title">Spells you've started:</h3>
     <c-spell-list :list="spells.solvingSpells" />
+  </template>
 
-    <p>Spells you've finished:</p>
+  <p class="mt-16">If you know a Spell code, you can enter it below:</p>
+  <c-input-with-button
+    placeholder="Enter code here..."
+    button-text="Solve Spell"
+    @submitted="c => goToSpell(c)" />
+
+  <template v-if="spells.finishedSpells.length">
+    <h3 class="mt-16 home-section-title">Spells you've finished:</h3>
     <c-spell-list :list="spells.finishedSpells" />
-  </div>
+  </template>
 </template>

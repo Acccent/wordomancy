@@ -57,10 +57,18 @@ function btnsDelayedLeave(el: Element, done: () => void) {
             appear
             :css="false">
             <button
+              v-if="$route.name === 'spell'"
+              class="btn btn-square btn-ghost"
+              title="Info"
+              key="info"
+              data-index="0">
+              <a-icon name="f-info" />
+            </button>
+            <button
               class="btn btn-square btn-ghost"
               title="Help"
               key="help"
-              data-index="0">
+              data-index="1">
               <a-icon name="f-question" />
             </button>
             <template v-if="user.isSignedIn">
@@ -68,14 +76,14 @@ function btnsDelayedLeave(el: Element, done: () => void) {
                 class="btn btn-square btn-ghost"
                 title="Settings"
                 key="settings"
-                data-index="1">
+                data-index="2">
                 <a-icon name="f-settings" />
               </button>
               <button
                 class="btn btn-square btn-ghost"
                 title="Sign out"
                 key="signout"
-                data-index="2"
+                data-index="3"
                 @click="user.signout">
                 <a-icon name="f-signout" />
               </button>
@@ -85,7 +93,7 @@ function btnsDelayedLeave(el: Element, done: () => void) {
                 class="btn btn-square btn-ghost"
                 title="Sign in"
                 key="signin"
-                data-index="1">
+                data-index="2">
                 <a-icon name="f-signin" :horizontalFlip="true" />
               </button>
             </template>

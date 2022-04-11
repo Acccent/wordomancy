@@ -66,8 +66,6 @@ export const useSpellSolving = defineStore('spell-solving', {
 
       const foundSpell = await spells.getSpell(this.spellId, this.isDaily);
 
-      console.log(foundSpell);
-
       if (!foundSpell) {
         return;
       }
@@ -79,8 +77,6 @@ export const useSpellSolving = defineStore('spell-solving', {
       foundSpell.keys.forEach(i =>
         this.knownInfo.keys.set(i, this.solution[i])
       );
-
-      console.log(this.$state);
 
       const solvingGuesses = user.data[this.solvingProp][this.spellId];
       if (solvingGuesses) {

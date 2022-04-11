@@ -1,23 +1,84 @@
 <script setup lang="ts">
+import { DateTime } from 'luxon';
+import { LetterState as LS, SpellSource, SpellStatus } from '@/2_utils/global';
 import { spells } from '@/3_stores';
 const props = defineProps<{
   spell: MetaSpellData;
 }>();
 
-const { spell, source } = reactive(props.spell);
-const id = spells.getSpellId(spell, source);
+const spell = reactive(props.spell.spell);
+const status = ref(props.spell.solvingStatus);
+const source = ref(props.spell.source);
+
+const id = spells.getSpellId(spell, source.value);
+
+const shownSpell = computed((): GuessedLetter[] => {
+  if (status.value === SpellStatus.finished) {
+    return [...spell.spellword].map((letter, i) => ({
+      letter,
+      state: spell.keys.includes(i) ? LS.key : LS.correct,
+    }));
+  }
+  return [...spell.spellword].map((letter, i) =>
+    spell.keys.includes(i)
+      ? { letter, state: LS.key }
+      : { letter: ' ', state: LS.default }
+  );
+});
 </script>
 
 <template>
-  <li>
+  <li class="flex justify-between my-4">
+    <div
+      v-if="source === SpellSource.daily"
+      class="flex items-center mr-3 text-primary">
+      <a-icon class="w-5" name="f-clock" />
+    </div>
+    <div
+      v-else-if="source === SpellSource.friend"
+      class="flex items-center mr-3 text-info">
+      <a-icon class="w-5" name="f-friend" />
+    </div>
     <router-link
+      class="flex items-center gap-0.5 w-fit"
+      :class="{ 'ml-9': source === SpellSource.other }"
       :to="{
         name: 'spell',
         params: {
           id,
         },
-      }"
-      >{{ id }}</router-link
-    >
+      }">
+      <c-spell-single-letter
+        v-for="(gl, i) in shownSpell"
+        :class="['w-8', { 'opacity-[0.9]': gl.state !== LS.key }]"
+        :letter="gl.letter"
+        :letterState="gl.state"
+        :key="i" />
+    </router-link>
+    <div class="flex items-center gap-1 ml-6 text-sm italic">
+      <span v-if="source === SpellSource.daily"
+        >Daily Spell ({{
+          DateTime.fromISO(spell.createdOn).toLocaleString({
+            weekday: 'long',
+            day: 'numeric',
+            month: 'short',
+          })
+        }})</span
+      >
+      <span v-else
+        >Created by
+        {{ ((spell as SpellData).creator as OtherUserData).displayName }}</span
+      >
+    </div>
   </li>
 </template>
+
+<style scoped lang="postcss">
+a {
+  transition: filter var(--animation-btn) ease;
+  &:hover,
+  &:focus {
+    filter: drop-shadow(0 0 10px hsl(var(--a)));
+  }
+}
+</style>
