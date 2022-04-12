@@ -144,7 +144,12 @@ export const useUser = defineStore('user', {
 
       const tempSpellsMap = new Map(spells.allSpells);
       tempSpellsMap.forEach((spell, id) => {
-        if (spell.spell?.creator?.displayName === name) {
+        const sd = spell.spell;
+        if (
+          'creator' in sd &&
+          typeof sd.creator !== 'string' &&
+          sd.creator?.displayName === name
+        ) {
           spells.allSpells.delete(id);
         }
       });
