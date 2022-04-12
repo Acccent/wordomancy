@@ -1,8 +1,8 @@
 enum SpellPhase {
+  error,
   noEnergy,
   inputtingWord,
   selectingKeys,
-  submitting,
   submitted,
 }
 
@@ -15,28 +15,30 @@ enum LetterState {
   unknown,
 }
 
+enum SpellStatus {
+  unplayed,
+  solving,
+  finished,
+}
+
+enum SpellSource {
+  user,
+  friend,
+  daily,
+  other,
+}
+
 class KnownInfo {
-  length: number;
   corrects: Map<number, string>;
   keys: Map<number, string>;
   misplaceds: Set<string>;
   notInWord: Set<string>;
 
-  constructor(l: number) {
-    this.length = l;
+  constructor() {
     this.corrects = new Map();
     this.keys = new Map();
     this.misplaceds = new Set();
     this.notInWord = new Set();
-  }
-
-  setSolution(w: string) {
-    this.length = w.length;
-    this.corrects = new Map([...w].map((l, i) => [i, l]));
-    this.keys = new Map();
-    this.misplaceds = new Set();
-    this.notInWord = new Set();
-    return this;
   }
 }
 
@@ -70,21 +72,10 @@ function getSetFromArray<T>(array: Array<T>, num: number): Set<T> {
 
 export {
   SpellPhase,
-  LetterState as LS,
+  LetterState,
+  SpellStatus,
+  SpellSource,
   KnownInfo,
   getKeysNeeded,
   getSetFromArray,
 };
-
-declare global {
-  type GuessedLetter = {
-    letter: string;
-    state: LetterState;
-  };
-  type GuessedWord = Map<number, GuessedLetter>;
-  type UserSolveData = {
-    previousGuesses: GuessedWord[];
-    usedFirstHint: boolean;
-    knownInfo: KnownInfo;
-  };
-}

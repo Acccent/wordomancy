@@ -1,46 +1,85 @@
 <script setup lang="ts">
-import { Motion } from 'motion/vue';
+import { gsap } from 'gsap';
 
 const props = defineProps<{
   size?: number | string;
   color?: string;
+  delay?: number | string;
 }>();
 
-const s = ref(props.size ? ~~props.size : 1);
-const duration = computed(() => Math.pow(s.value, 0.5) * 2);
-const fontSize = computed(() => `${s.value}rem`);
-const bgColor = computed(() => props.color ?? 'currentColor');
+const droplets = ref(new Map<number, Element>());
+
+const size = ref(
+  props.size
+    ? typeof props.size === 'string'
+      ? parseFloat(props.size)
+      : props.size
+    : 1
+);
+const initDelay = ref(props.delay ? ~~props.delay : 0);
+const fontSize = ref(`${size.value}rem`);
+const bgColor = ref(props.color ?? 'currentColor');
+const duration = Math.pow(size.value * 3, 0.15);
+
+onMounted(() => {
+  droplets.value.forEach((e, i) => {
+    gsap
+      .timeline({
+        delay: i * (duration / 4) + initDelay.value,
+        repeat: -1,
+        repeatDelay: duration / 4,
+      })
+      .to(e, {
+        opacity: 1,
+        duration,
+        ease: 'power1.out',
+      })
+      .to(
+        e,
+        {
+          scale: 0.01,
+          duration,
+          ease: 'expoScale(1, 0.01)',
+        },
+        0
+      )
+      .to(e, {
+        opacity: 0,
+        duration,
+        ease: 'power1.in',
+      })
+      .to(
+        e,
+        {
+          scale: 1.2,
+          filter: 'blur(0.5em)',
+          duration,
+          ease: 'expoScale(0.01, 1.2)',
+        },
+        duration
+      );
+  });
+});
 </script>
 
 <template>
-  <div class="droplet">
-    <Motion
+  <div class="drop">
+    <div
       v-for="n in 3"
       :key="n"
-      :animate="{
-        opacity: [0, 0.8, 1, 0, 0],
-        scale: [1, 0.5, 0.01, 1.2, 1.2],
-        filter: ['blur(0)', 'blur(0)', 'blur(0)', 'blur(0.6em)', 'blur(1em)'],
-      }"
-      :transition="{
-        easing: ['ease-in', 'ease-out', 'linear'],
-        offset: [0, 0.22, 0.44, 0.88, 1],
-        duration,
-        delay: (n - 1) * duration * 0.12,
-        repeat: Infinity,
-      }" />
+      :ref="el => droplets.set(n, el as Element)"></div>
   </div>
 </template>
 
 <style scoped lang="postcss">
-.droplet {
+.drop {
   position: relative;
   height: 1em;
   width: 1em;
   font-size: v-bind(fontSize);
 
   & > div {
-    @apply block absolute inset-0 m-auto;
+    @apply block absolute inset-0 m-auto opacity-0;
     background-color: v-bind(bgColor);
     border-radius: 100%;
   }

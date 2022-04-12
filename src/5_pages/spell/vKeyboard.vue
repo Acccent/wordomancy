@@ -25,7 +25,7 @@ function moveLeft() {
 function moveRight() {
   spell.inputOffset = Math.min(
     spell.inputOffset + 1,
-    spell.knownInfo.length - spell.kbInput.length
+    spell.solution.length - spell.kbInput.length
   );
   spell.updateCurrentGuess();
 }
@@ -50,15 +50,27 @@ function getLetterButtonState(l: string) {
   return '';
 }
 
-function submitGuess() {
-  spell.submitCurrentGuess();
+const guessBtnLoading = ref(false);
+async function submitGuess() {
+  guessBtnLoading.value = true;
+  await spell.evaluateGuess();
   emit('submitted');
+  spell.resetInput();
+  guessBtnLoading.value = false;
 }
 
-function submitHint() {
-  spell.submitGetHint();
+const hintBtnLoading = ref(false);
+async function submitHint() {
+  hintBtnLoading.value = true;
+  await spell.receiveHint();
   emit('submitted');
+  spell.resetInput();
+  hintBtnLoading.value = false;
 }
+
+const inputsDisabled = computed(
+  () => guessBtnLoading.value || hintBtnLoading.value
+);
 
 const emit = defineEmits<{
   (e: 'submitted'): void;
@@ -73,6 +85,7 @@ const emit = defineEmits<{
         :tooltip="spell.invalidGuess ? 'This is not a valid guess.' : ''"
         tip-position="top"
         v-model="spell.kbInput"
+        :disabled="inputsDisabled"
         @update:modelValue="spell.updateCurrentGuess" />
     </div>
   </form>
@@ -81,9 +94,11 @@ const emit = defineEmits<{
     :key="`row-${i}`"
     class="flex justify-center gap-2 mb-2">
     <button
-      v-if="i === 2 && spell.knownInfo.length > 5"
+      v-if="i === 2 && spell.solution.length > 5"
       class="btn w-12 p-0 shrink"
-      :disabled="spell.inputOffset <= 0"
+      title="Move input left"
+      type="button"
+      :disabled="spell.inputOffset <= 0 || inputsDisabled"
       @click.prevent="moveLeft">
       <a-icon name="f-move-left" />
     </button>
@@ -92,15 +107,20 @@ const emit = defineEmits<{
       :key="`letter-${letter}`"
       class="btn w-12 p-0 shrink"
       :class="getLetterButtonState(letter)"
+      type="button"
+      :disabled="inputsDisabled"
       @click.prevent="addLetter(letter)">
       {{ letter }}
     </button>
     <button
-      v-if="i === 2 && spell.knownInfo.length > 5"
+      v-if="i === 2 && spell.solution.length > 5"
       class="btn w-12 p-0 shrink"
+      title="Move input right"
+      type="button"
       :disabled="
         spell.kbInput.length < 1 ||
-        spell.inputOffset + spell.kbInput.length >= spell.knownInfo.length
+        spell.inputOffset + spell.kbInput.length >= spell.solution.length ||
+        inputsDisabled
       "
       @click.prevent="moveRight">
       <a-icon name="f-move-right" />
@@ -111,7 +131,7 @@ const emit = defineEmits<{
     <a-button
       class="btn-secondary shrink min-w-min py-2"
       title="Backspace"
-      :disabled="!spell.kbInput.length"
+      :disabled="!spell.kbInput.length || inputsDisabled"
       @click.prevent="backspace">
       <a-icon name="f-backspace" />
     </a-button>
@@ -119,13 +139,15 @@ const emit = defineEmits<{
       class="btn-primary grow basis-2/3 py-2"
       title="Submit"
       form="guess-text-input"
-      :disabled="!spell.isValidGuess">
+      :disabled="!spell.isValidGuess || inputsDisabled"
+      :loading="guessBtnLoading">
       <a-icon name="u-upload" />
     </a-button>
     <a-button
       class="btn-accent shrink min-w-min py-2"
       title="Get hint"
-      :disabled="!spell.canGetHint"
+      :disabled="!spell.canGetHint || inputsDisabled"
+      :loading="hintBtnLoading"
       @click.prevent="submitHint">
       <a-icon name="f-hint" />
     </a-button>

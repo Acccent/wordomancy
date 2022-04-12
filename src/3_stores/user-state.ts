@@ -1,28 +1,29 @@
 import type { User } from '@supabase/supabase-js';
-import { app } from './';
+import { app, spells } from './';
 import router from '@/router';
+import { SpellSource } from '@/2_utils/global';
 
 export const useUser = defineStore('user', {
   state: () => {
     return {
       providers: ['twitter', 'google', 'discord'] as const,
       user: null as User | null,
-      displayName: '',
+      data: {} as UserData,
+      friendsData: new Map<string, OtherUserData>(),
     };
   },
   getters: {
-    isSignedIn: s => s.user?.role === 'authenticated',
+    isSignedIn: s => s.user?.aud === 'authenticated',
+    friendNames: s => [...s.friendsData.keys()].sort(),
   },
   actions: {
     async getUser() {
       this.user = await app.supabase.auth.user();
 
-      console.log('read user from store', this.user);
-
       if (this.isSignedIn) {
         const { data, error } = await app.supabase
           .from('profiles')
-          .select('display-name')
+          .select()
           .eq('id', this.user?.id)
           .limit(1);
 
@@ -30,12 +31,8 @@ export const useUser = defineStore('user', {
           throw error;
         }
 
-        console.log(data);
-
         if (data?.length) {
-          console.log('saving display name');
-
-          this.displayName = data[0]['display-name'];
+          this.data = data[0];
         }
       }
     },
@@ -47,8 +44,8 @@ export const useUser = defineStore('user', {
         },
         {
           redirectTo: import.meta.env.PROD
-            ? 'https://wordomancy.app/loading'
-            : 'http://localhost:8888/loading',
+            ? 'https://wordomancy.app/home'
+            : 'http://localhost:8888/home',
         }
       );
 
@@ -69,33 +66,88 @@ export const useUser = defineStore('user', {
       router.push({ name: 'index' });
     },
 
-    async saveDisplayName(name: string) {
-      const { error } = await app.supabase.from('profiles').upsert(
-        {
-          id: this.user?.id,
-          'display-name': name,
-        },
-        {
+    async updateUser(newData: Partial<UserData>) {
+      const { error } = await app.supabase
+        .from('profiles')
+        .update(newData, {
           returning: 'minimal',
-        }
-      );
+        })
+        .eq('id', this.user?.id)
+        .limit(1);
 
       if (error) {
         throw error;
       }
 
-      this.displayName = name;
+      this.data = { ...this.data, ...newData };
+    },
+
+    async saveDisplayName(name: string) {
+      await this.updateUser({
+        displayName: name,
+      });
     },
 
     async getFriends() {
       const { data, error } = await app.supabase
         .from('profiles')
-        .select('friends');
-      console.log(JSON.stringify(data));
+        .select('id, displayName, stats')
+        .in('id', this.data.friends);
 
       if (error) {
         throw error;
       }
+
+      this.friendsData = new Map(
+        (data as OtherUserData[]).reduce((p, c) => {
+          if (c.displayName) {
+            p.push([c.displayName, c]);
+          }
+          return p;
+        }, [] as [string, OtherUserData][])
+      );
+    },
+
+    async addFriend(name: string) {
+      const { data, error } = await app.supabase
+        .from('profiles')
+        .select('id, displayName, stats')
+        .eq('displayName', name)
+        .limit(1);
+
+      if (error) {
+        throw error;
+      }
+
+      if (!data.length) {
+        return false;
+      }
+
+      await this.updateUser({
+        friends: [...this.data.friends, data[0].id],
+      });
+      (await spells.getSpellsFromUser(data[0].id)).forEach(spell => {
+        spells.addSpellLocally(spell, SpellSource.friend);
+      });
+    },
+
+    async removeFriend(name: string) {
+      const fIndex = this.data.friends.indexOf(name);
+
+      if (fIndex < 0) {
+        throw 'This friend has already been removed.';
+      }
+
+      await this.updateUser({
+        friends: this.data.friends.splice(fIndex, 1),
+      });
+
+      const tempSpellsMap = new Map(spells.allSpells);
+      tempSpellsMap.forEach((spell, id) => {
+        if (spell.spell?.creator?.displayName === name) {
+          spells.allSpells.delete(id);
+        }
+      });
     },
   },
 });

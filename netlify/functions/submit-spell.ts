@@ -1,4 +1,5 @@
 import { Handler } from '@netlify/functions';
+import { DateTime } from 'luxon';
 import { customAlphabet } from 'nanoid';
 import { createClient } from '@supabase/supabase-js';
 import spellwords from '../../public/spellwords.json';
@@ -14,12 +15,13 @@ const nanoid = customAlphabet('346789BCDFGHJLMNPQRTVWXYbcdfghjmnpqrstvwxyz', 8);
 
 const handler: Handler = async event => {
   try {
-    const json = JSON.parse(event.body);
     const {
       userId: creator,
       spellword,
       keys,
-    }: { userId: string; spellword: string; keys: number[] } = json;
+    }: { userId: string; spellword: string; keys: number[] } = JSON.parse(
+      event.body
+    );
 
     if (!spellwords.includes(spellword)) {
       throw new Error("This isn't a valid Spellword");
@@ -39,17 +41,25 @@ const handler: Handler = async event => {
 
     const code = nanoid();
 
-    const { data, error } = await supabase
-      .from('spells')
-      .insert([{ code, spellword, keys, creator }]);
+    const { data, error } = await supabase.from('spells').insert([
+      {
+        code,
+        spellword,
+        keys,
+        creator,
+        createdOn: DateTime.utc().toISO(),
+      },
+    ]);
 
     if (error) {
       throw error;
     }
 
+    const body = JSON.stringify(data);
+
     return {
       statusCode: 200,
-      body: JSON.stringify(data),
+      body,
     };
   } catch (e) {
     console.log(e);

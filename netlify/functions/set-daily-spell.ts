@@ -1,6 +1,7 @@
 import { Handler } from '@netlify/functions';
+import { DateTime } from 'luxon';
 import { createClient } from '@supabase/supabase-js';
-import { getSpellword } from './get-spellword';
+import { getSpellword } from '../helpers';
 import { getSetFromArray, getKeysNeeded } from '../../src/2_utils/global';
 
 const supabase = createClient(
@@ -16,10 +17,11 @@ const handler: Handler = async () => {
       getKeysNeeded(spellword)
     );
 
-    const { error } = await supabase
-      .from('spells')
-      .update({ spellword, keys: [...keys] })
-      .eq('code', 'daily');
+    const { error } = await supabase.from('daily-spells').insert({
+      createdOn: DateTime.utc().startOf('day').toISODate(),
+      spellword,
+      keys: [...keys],
+    });
 
     if (error) {
       throw error;
@@ -33,7 +35,6 @@ const handler: Handler = async () => {
 
     return {
       statusCode: 500,
-      body: JSON.stringify(e.message),
     };
   }
 };

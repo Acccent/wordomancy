@@ -1,5 +1,5 @@
-import { SpellPhase, getKeysNeeded } from '@/2_utils/global';
-import { app, local, cloud } from './';
+import { SpellPhase, getKeysNeeded, SpellSource } from '@/2_utils/global';
+import { user, local, spells } from './';
 
 export const useSpellCasting = defineStore('spell-casting', {
   state: () => {
@@ -29,19 +29,34 @@ export const useSpellCasting = defineStore('spell-casting', {
     },
   },
   actions: {
-    async resetEnergy() {
-      app.loading = true;
-      this.$reset();
+    async getNewEnergy() {
+      this.energy.clear();
 
-      const e = await cloud.getEnergyForecast();
-      e.forEach(kv => this.energy.set(kv[0], kv[1]));
+      const { ok, result } = await spells.netlifyFunction('get-forecast');
 
-      app.loading = false;
+      if (!ok || !result.length) {
+        this.phase = SpellPhase.error;
+        throw 'There was a problem getting your forecast. ' + result;
+      }
+
+      (result as string[][]).forEach(kv => this.energy.set(kv[0], kv[1]));
+
+      this.resetCasting();
+    },
+
+    resetCasting() {
+      this.$patch({
+        phase: SpellPhase.inputtingWord,
+        word: '',
+        keys: new Set<number>(),
+        code: '',
+      });
     },
 
     async submitInput() {
       if (await local.checkIfSpellwordExists(this.word)) {
         this.phase = SpellPhase.selectingKeys;
+        return true;
       } else {
         return false;
       }
@@ -57,14 +72,21 @@ export const useSpellCasting = defineStore('spell-casting', {
     },
 
     async submitSpell() {
-      this.phase = SpellPhase.submitting;
-      const data = await cloud.submitSpell(this.word, [...this.keys]);
-
-      this.$patch({
-        word: data[0].spellword,
-        keys: new Set(data[0].keys),
-        code: data[0].code,
+      const { ok, result } = await spells.netlifyFunction('submit-spell', {
+        userId: user.user?.id,
+        spellword: this.word,
+        keys: [...this.keys],
       });
+
+      if (!ok || !result.length) {
+        this.phase = SpellPhase.error;
+        throw 'There was a problem submitting the Spell. ' + result;
+      }
+
+      this.code = result[0].code;
+
+      await spells.addSpellLocally(result[0] as SpellData, SpellSource.user);
+
       this.phase = SpellPhase.submitted;
     },
   },
