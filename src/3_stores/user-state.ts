@@ -2,6 +2,7 @@ import type { User } from '@supabase/supabase-js';
 import { app, spells } from './';
 import router from '@/router';
 import { SpellSource } from '@/2_utils/global';
+import mRemoveFriend from '@/5_pages/home/profile/mRemoveFriend.vue';
 
 export const useUser = defineStore('user', {
   state: () => {
@@ -10,11 +11,11 @@ export const useUser = defineStore('user', {
       user: null as User | null,
       data: {} as UserData,
       friendsData: new Map<string, OtherUserData>(),
+      friendToRemove: {} as OtherUserData,
     };
   },
   getters: {
     isSignedIn: s => s.user?.aud === 'authenticated',
-    friendNames: s => [...s.friendsData.keys()].sort(),
   },
   actions: {
     async getUser() {
@@ -31,9 +32,22 @@ export const useUser = defineStore('user', {
           throw error;
         }
 
-        if (data?.length) {
-          this.data = data[0];
+        if (!data?.length) {
+          throw 'Could not get user data.';
         }
+
+        const fetchedUser = {} as Record<string, unknown>;
+        Object.entries(data[0]).forEach(([k, v]) => {
+          if (k.startsWith('solving') || k.startsWith('finished')) {
+            fetchedUser[k] = new Map(
+              Object.entries(v as { [x: string]: PastGuesses })
+            );
+          } else {
+            fetchedUser[k] = v;
+          }
+        });
+
+        this.data = fetchedUser as UserData;
       }
     },
 
@@ -67,9 +81,19 @@ export const useUser = defineStore('user', {
     },
 
     async updateUser(newData: Partial<UserData>) {
+      const toUpload = {} as Record<string, unknown>;
+
+      Object.entries(newData).forEach(([k, v]) => {
+        if (k.startsWith('solving') || k.startsWith('finished')) {
+          toUpload[k] = Object.fromEntries(v as Map<string, PastGuesses>);
+        } else {
+          toUpload[k] = v;
+        }
+      });
+
       const { error } = await app.supabase
         .from('profiles')
-        .update(newData, {
+        .update(toUpload, {
           returning: 'minimal',
         })
         .eq('id', this.user?.id)
@@ -131,16 +155,30 @@ export const useUser = defineStore('user', {
       });
     },
 
-    async removeFriend(name: string) {
-      const fIndex = this.data.friends.indexOf(name);
+    async confirmRemoveFriend(friend: OtherUserData) {
+      const fIndex = this.data.friends.indexOf(friend.id);
 
       if (fIndex < 0) {
         throw 'This friend has already been removed.';
       }
 
+      this.friendToRemove = friend;
+
+      app.openModal('remove friend confirmation', mRemoveFriend);
+    },
+
+    async removeFriend() {
+      const friends = this.data.friends.splice(
+        this.data.friends.indexOf(this.friendToRemove.id),
+        1
+      );
       await this.updateUser({
-        friends: this.data.friends.splice(fIndex, 1),
+        friends,
       });
+
+      if (this.friendToRemove.displayName) {
+        this.friendsData.delete(this.friendToRemove.displayName);
+      }
 
       const tempSpellsMap = new Map(spells.allSpells);
       tempSpellsMap.forEach((spell, id) => {
@@ -148,11 +186,17 @@ export const useUser = defineStore('user', {
         if (
           'creator' in sd &&
           typeof sd.creator !== 'string' &&
-          sd.creator?.displayName === name
+          sd.creator.id === this.friendToRemove.id
         ) {
-          spells.allSpells.delete(id);
+          if (this.data.solving.has(id) || this.data.finished.has(id)) {
+            spell.source = SpellSource.other;
+          } else {
+            spells.allSpells.delete(id);
+          }
         }
       });
+
+      this.friendToRemove = {} as OtherUserData;
     },
   },
 });

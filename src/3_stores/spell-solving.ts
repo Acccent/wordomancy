@@ -7,6 +7,7 @@ const maxGuesses = 6;
 export const useSpellSolving = defineStore('spell-solving', {
   state: () => {
     return {
+      preloadedId: '',
       spellId: '',
       rawSpellData: {} as SpellData | DailySpellData,
       isDaily: false,
@@ -58,41 +59,48 @@ export const useSpellSolving = defineStore('spell-solving', {
     },
 
     // Setup a new Spell
-    async resetSpell(id?: string) {
-      this.$reset();
+    async resetSpell(id?: string, preload = false) {
+      if (this.preloadedId !== id) {
+        this.$reset();
 
-      this.spellId = id ? id : app.getLastMidnight();
-      this.isDaily = id ? DateTime.fromISO(id).isValid : true;
+        this.spellId = id ? id : app.getLastMidnight();
+        this.isDaily = id ? DateTime.fromISO(id).isValid : true;
 
-      const foundSpell = await spells.getSpell(this.spellId, this.isDaily);
+        if (preload) {
+          this.preloadedId = this.spellId;
+        }
 
-      if (!foundSpell) {
-        return;
-      }
-      this.spellExists = true;
-      this.$patch({
-        rawSpellData: foundSpell,
-        solution: foundSpell.spellword,
-      });
-      foundSpell.keys.forEach(i =>
-        this.knownInfo.keys.set(i, this.solution[i])
-      );
+        const foundSpell = await spells.getSpell(this.spellId, this.isDaily);
 
-      const solvingGuesses = user.data[this.solvingProp][this.spellId];
-      if (solvingGuesses) {
-        this.loadPastGuesses(solvingGuesses);
-        this.updateCurrentGuess();
-        return;
-      }
+        if (!foundSpell) {
+          return;
+        }
+        this.spellExists = true;
 
-      const finishedGuesses = user.data[this.finishedProp][this.spellId];
-      if (finishedGuesses) {
-        this.loadPastGuesses(finishedGuesses);
+        this.$patch({
+          rawSpellData: foundSpell,
+          solution: foundSpell.spellword,
+        });
+        foundSpell.keys.forEach(i =>
+          this.knownInfo.keys.set(i, this.solution[i])
+        );
+
+        const solvingGuesses = user.data[this.solvingProp].get(this.spellId);
+        if (solvingGuesses) {
+          this.loadPastGuesses(solvingGuesses);
+          this.updateCurrentGuess();
+          return;
+        }
+
+        const finishedGuesses = user.data[this.finishedProp].get(this.spellId);
+        if (finishedGuesses) {
+          this.loadPastGuesses(finishedGuesses);
+        }
       }
     },
 
     // Recover past attempts from user data
-    loadPastGuesses(guesses: (string | number)[]) {
+    loadPastGuesses(guesses: PastGuesses) {
       guesses.forEach(guess => {
         if (typeof guess === 'string') {
           const offset = guess.lastIndexOf(' ') + 1;
@@ -258,44 +266,9 @@ export const useSpellSolving = defineStore('spell-solving', {
 
         // Update user data
         if (user.isSignedIn) {
-          const id = this.spellId;
-          const solvingData = {
-            ...user.data[this.solvingProp],
-          };
-          const finishedData = {
-            ...user.data[this.finishedProp],
-          };
-          const allStats = { ...user.data.stats };
-
-          if (!solvingData[id]) {
-            solvingData[id] = [];
-          }
-          solvingData[id].push(' '.repeat(this.inputOffset) + this.kbInput);
-
-          if (this.gameOver) {
-            finishedData[id] = solvingData[id];
-            delete solvingData[id];
-
-            // Record the win/loss in the user's stats
-            const wLength = this.solution.length as 5 | 6 | 7 | 8 | 9 | 10;
-            const spellStats = allStats[`${wLength}-letters`];
-            const guesses = this.won ? '' + this.previousGuesses.length : 'x';
-            if (spellStats[guesses] === undefined) {
-              spellStats[guesses] = 1;
-            } else {
-              spellStats[guesses] += 1;
-            }
-          }
-
-          await user.updateUser({
-            [this.solvingProp]: solvingData,
-            ...(this.gameOver
-              ? {
-                  [this.finishedProp]: finishedData,
-                  stats: allStats,
-                }
-              : {}),
-          });
+          await this.updateUserStats(
+            ' '.repeat(this.inputOffset) + this.kbInput
+          );
         }
       }
 
@@ -347,20 +320,45 @@ export const useSpellSolving = defineStore('spell-solving', {
 
         // Update user data
         if (user.isSignedIn) {
-          await user.updateUser({
-            [this.solvingProp]: {
-              ...user.data[this.solvingProp],
-              [this.spellId]: [
-                ...user.data[this.solvingProp][this.spellId],
-                newKey,
-              ],
-            },
-          });
+          this.updateUserStats(newKey);
         }
       }
 
       this.usedFirstHint = true;
       this.submittedFirstGuess = true;
+    },
+
+    async updateUserStats(newGuess: string | number) {
+      const id = this.spellId;
+      const upd = {} as Partial<UserData>;
+      // const finishedData = new Map(user.data[this.finishedProp]);
+      // const allStats = { ...user.data.stats };
+
+      const solvingStat = new Map(user.data[this.solvingProp]);
+      const pastGuesses = solvingStat.get(id) ?? [];
+      pastGuesses.push(newGuess);
+      solvingStat.set(id, pastGuesses);
+
+      if (this.gameOver) {
+        const finishedStat = new Map(user.data[this.finishedProp]);
+        finishedStat.set(id, pastGuesses);
+        solvingStat.delete(id);
+        upd[this.finishedProp] = finishedStat;
+
+        // Record the win/loss in the user's stats
+        const wLength = this.solution.length as 5 | 6 | 7 | 8 | 9 | 10;
+        const spellsStats = { ...user.data.stats };
+
+        const guesses = this.won ? '' + this.previousGuesses.length : 'x';
+
+        spellsStats[`${wLength}-letters`][guesses] =
+          (spellsStats[`${wLength}-letters`][guesses] ?? 0) + 1;
+        upd.stats = spellsStats;
+      }
+
+      upd[this.solvingProp] = solvingStat;
+
+      await user.updateUser(upd);
     },
   },
 });
