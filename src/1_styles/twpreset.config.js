@@ -22,6 +22,7 @@ module.exports = {
       },
       width: {
         '1/10': '10%',
+        list: '36rem',
       },
       maxWidth: {
         DEFAULT: '50rem',

@@ -5,7 +5,7 @@ import { app, user } from './';
 function sortSpellsDescending(a: MetaSpellData, b: MetaSpellData) {
   const dateA = DateTime.fromISO(a.spell.createdOn);
   const dateB = DateTime.fromISO(b.spell.createdOn);
-  return dateA.toMillis() - dateB.toMillis();
+  return dateB.toMillis() - dateA.toMillis();
 }
 
 export const useSpellData = defineStore('spell-data', {

@@ -1,4 +1,4 @@
-import { SpellPhase, getKeysNeeded } from '@/2_utils/global';
+import { SpellPhase, getKeysNeeded, SpellSource } from '@/2_utils/global';
 import { user, local, spells } from './';
 
 export const useSpellCasting = defineStore('spell-casting', {
@@ -34,9 +34,9 @@ export const useSpellCasting = defineStore('spell-casting', {
 
       const { ok, result } = await spells.netlifyFunction('get-forecast');
 
-      if (!ok) {
+      if (!ok || !result.length) {
         this.phase = SpellPhase.error;
-        throw 'There was a problem getting your forecast: ' + result;
+        throw 'There was a problem getting your forecast. ' + result;
       }
 
       (result as string[][]).forEach(kv => this.energy.set(kv[0], kv[1]));
@@ -78,16 +78,14 @@ export const useSpellCasting = defineStore('spell-casting', {
         keys: [...this.keys],
       });
 
-      if (!ok) {
+      if (!ok || !result.length) {
         this.phase = SpellPhase.error;
-        throw 'There was a problem submitting the Spell: ' + result;
+        throw 'There was a problem submitting the Spell. ' + result;
       }
 
-      this.$patch({
-        word: result[0].spellword,
-        keys: new Set(result[0].keys),
-        code: result[0].code,
-      });
+      this.code = result[0].code;
+
+      await spells.addSpellLocally(result[0] as SpellData, SpellSource.user);
 
       this.phase = SpellPhase.submitted;
     },

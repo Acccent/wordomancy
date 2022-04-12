@@ -22,16 +22,20 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="form-control mt-2 mb-8">
-    <div class="input-group justify-center">
+  <div class="form-control items-center mt-2 mb-8">
+    <div class="input-group w-fit">
       <a-text-input
-        class="font-mono text-lg"
+        class="w-80 text-lg"
         v-bind="$attrs"
         v-model="inputVal"
         required />
-      <a-button class="btn-primary" :loading="props.loading" @click="submit">{{
-        props.buttonText ?? 'Submit'
-      }}</a-button>
+      <a-button
+        class="btn-primary"
+        :disabled="!inputVal"
+        :loading="props.loading"
+        @click="submit"
+        >{{ props.buttonText ?? 'Submit' }}</a-button
+      >
     </div>
   </div>
 </template>

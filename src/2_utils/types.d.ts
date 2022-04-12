@@ -37,12 +37,12 @@ declare global {
   }
 
   type UserStats = {
-    '5-letters': Record<number, number>;
-    '6-letters': Record<number, number>;
-    '7-letters': Record<number, number>;
-    '8-letters': Record<number, number>;
-    '9-letters': Record<number, number>;
-    '10-letters': Record<number, number>;
+    '5-letters': Record<string, number>;
+    '6-letters': Record<string, number>;
+    '7-letters': Record<string, number>;
+    '8-letters': Record<string, number>;
+    '9-letters': Record<string, number>;
+    '10-letters': Record<string, number>;
   }
 
   type SpellData = {

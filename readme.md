@@ -7,6 +7,8 @@ There's still a lot missing and some things might not work, so feedback is very 
 
 ### Known issues
 
+- [ ] ⚠️ Google sign-up doesn't work currently
+- [ ] ⚠️ After signing in and being redirected here, you need to reload the page
 - [ ] ⚠️ There may be a bug where a misplaced letter is highlighted several times in a guess, when it's only once in the solution 
 - Text fields can be weird
   - [ ] Focus state isn't predictable
@@ -22,7 +24,6 @@ There's still a lot missing and some things might not work, so feedback is very 
   - [ ] Spell url creates accessible image
   - [ ] Share energy forecast button
   - [ ] Add page metadada
-- [ ] Friends page (with their latest Spells)
 - [ ] Explanations + acknowledgments
 - Settings
   - [ ] Choose color for letter states
@@ -30,7 +31,6 @@ There's still a lot missing and some things might not work, so feedback is very 
 
 ### Future considerations
 
-- [ ] Stats, play history
 - [ ] Animations everywhere ✨
 - [ ] Other languages / kb layouts
 - [ ] Ability to give names to Spells?

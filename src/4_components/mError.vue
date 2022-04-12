@@ -2,13 +2,14 @@
 import { app } from '@/3_stores';
 
 function acknowledge() {
-  app.closeModal();
-  app.error.splice(0, 1);
+  app.modalQueue.length = 0;
+  app.error.length = 0;
 }
 </script>
 
 <template>
-  <p>{{ app.error }}</p>
+  <p class="text-center">Error:</p>
+  <p v-for="err in app.error" class="mt-2" :key="err">{{ err }}</p>
   <p class="mt-4">
     Please
     <a
@@ -18,7 +19,7 @@ function acknowledge() {
     >
     explaining what happened.<br />This will help me find and fix bugs!
   </p>
-  <div class="flex mt-8">
+  <div class="flex justify-center mt-8">
     <a-button class="btn-primary" @click="acknowledge">OK</a-button>
   </div>
 </template>

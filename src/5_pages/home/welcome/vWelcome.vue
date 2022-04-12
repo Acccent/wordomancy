@@ -73,7 +73,7 @@ onMounted(async () => {
         <p>Your Spell code is:</p>
         <code class="text-xl">{{ spell.code }}</code>
         <p class="mt-4">
-          Open your Spells tab to review it and your past Spells.
+          Open your Profile tab to review it and your past Spells.
         </p>
         <a-button big type="button" @click="spell.resetCasting"
           >Cast another Spell</a-button

@@ -130,5 +130,24 @@ export const useUser = defineStore('user', {
         spells.addSpellLocally(spell, SpellSource.friend);
       });
     },
+
+    async removeFriend(name: string) {
+      const fIndex = this.data.friends.indexOf(name);
+
+      if (fIndex < 0) {
+        throw 'This friend has already been removed.';
+      }
+
+      await this.updateUser({
+        friends: this.data.friends.splice(fIndex, 1),
+      });
+
+      const tempSpellsMap = new Map(spells.allSpells);
+      tempSpellsMap.forEach((spell, id) => {
+        if (spell.spell?.creator?.displayName === name) {
+          spells.allSpells.delete(id);
+        }
+      });
+    },
   },
 });

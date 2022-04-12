@@ -8,6 +8,7 @@ declare module 'vue' {
     AEmoji: typeof import('./src/4_components/atoms/aEmoji.vue')['default']
     AIcon: typeof import('./src/4_components/atoms/aIcon.vue')['default']
     ALinkButton: typeof import('./src/4_components/atoms/aLinkButton.vue')['default']
+    AListDottedLine: typeof import('./src/4_components/atoms/aListDottedLine.vue')['default']
     ALoading: typeof import('./src/4_components/atoms/aLoading.vue')['default']
     ATextInput: typeof import('./src/4_components/atoms/aTextInput.vue')['default']
     CDataManager: typeof import('./src/4_components/cDataManager.vue')['default']
@@ -17,8 +18,10 @@ declare module 'vue' {
     CSpellInput: typeof import('./src/4_components/cSpellInput.vue')['default']
     CSpellList: typeof import('./src/4_components/cSpellList.vue')['default']
     CSpellListItem: typeof import('./src/4_components/cSpellListItem.vue')['default']
+    CSpellListItemUser: typeof import('./src/4_components/cSpellListItemUser.vue')['default']
     CSpellSingleLetter: typeof import('./src/4_components/cSpellSingleLetter.vue')['default']
     CTabsContainer: typeof import('./src/4_components/cTabsContainer.vue')['default']
+    CUserSpellListItem: typeof import('./src/4_components/cUserSpellListItem.vue')['default']
     MError: typeof import('./src/4_components/mError.vue')['default']
   }
 }

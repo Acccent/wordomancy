@@ -279,7 +279,7 @@ export const useSpellSolving = defineStore('spell-solving', {
             // Record the win/loss in the user's stats
             const wLength = this.solution.length as 5 | 6 | 7 | 8 | 9 | 10;
             const spellStats = allStats[`${wLength}-letters`];
-            const guesses = this.won ? this.previousGuesses.length : 0;
+            const guesses = this.won ? '' + this.previousGuesses.length : 'x';
             if (spellStats[guesses] === undefined) {
               spellStats[guesses] = 1;
             } else {
@@ -306,7 +306,7 @@ export const useSpellSolving = defineStore('spell-solving', {
       const isPastHint = keyPosition !== undefined;
 
       if (!isPastHint && !this.canGetHint) {
-        throw "You can't get a hint right now";
+        throw "You can't get a hint right now.";
       }
 
       const hintResult = new Map() as GuessedWord;

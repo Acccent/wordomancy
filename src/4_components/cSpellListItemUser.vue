@@ -2,10 +2,10 @@
 import { LetterState as LS, SpellSource } from '@/2_utils/global';
 import { spells } from '@/3_stores';
 const props = defineProps<{
-  spell: SpellData;
+  spell: MetaSpellData;
 }>();
 
-const spell = reactive(props.spell);
+const spell = reactive(props.spell.spell);
 const id = spells.getSpellId(spell, SpellSource.user);
 
 const shownSpell = computed((): GuessedLetter[] => {
@@ -17,9 +17,9 @@ const shownSpell = computed((): GuessedLetter[] => {
 </script>
 
 <template>
-  <li class="flex justify-between my-4">
+  <li class="flex justify-between items-center my-4">
     <router-link
-      class="flex items-center gap-0.5 w-fit"
+      class="flex gap-0.5 w-fit"
       :to="{
         name: 'spell',
         params: {
@@ -33,23 +33,24 @@ const shownSpell = computed((): GuessedLetter[] => {
         :letterState="gl.state"
         :key="i" />
     </router-link>
-    <div class="flex items-center">
+    <a-list-dotted-line />
+    <div class="flex gap-2">
       <div
         v-for="t in ['played', 'solved', 'guesses', 'failed']"
         :title="t === 'guesses' ? 'Average guesses' : `Times ${t}`"
-        class="flex gap-1 ml-6"
+        class="flex gap-0.5 w-12"
         :key="t">
         <a-icon :name="`f-${t}`" />
         {{
-          spell[
-            t === 'played'
-              ? 'timesPlayed'
-              : t === 'solved'
-              ? 'timesSolved'
-              : t === 'guesses'
-              ? 'averageGuesses'
-              : 'timesFailed'
-          ]
+          t === 'guesses'
+            ? spell['averageGuesses'].toFixed(1)
+            : spell[
+                t === 'played'
+                  ? 'timesPlayed'
+                  : t === 'solved'
+                  ? 'timesSolved'
+                  : 'timesFailed'
+              ]
         }}
       </div>
     </div>

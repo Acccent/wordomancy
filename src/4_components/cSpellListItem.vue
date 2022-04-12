@@ -28,34 +28,34 @@ const shownSpell = computed((): GuessedLetter[] => {
 </script>
 
 <template>
-  <li class="flex justify-between my-4">
+  <li class="flex justify-between items-center my-4">
     <div
-      v-if="source === SpellSource.daily"
-      class="flex items-center mr-3 text-primary">
-      <a-icon class="w-5" name="f-clock" />
+      class="flex items-center"
+      :class="{ 'pl-9': source === SpellSource.other }">
+      <div v-if="source === SpellSource.daily" class="mr-3 text-primary">
+        <a-icon class="w-5" name="f-clock" />
+      </div>
+      <div v-else-if="source === SpellSource.friend" class="mr-3 text-info">
+        <a-icon class="w-5" name="f-friend" />
+      </div>
+      <router-link
+        class="flex items-center gap-0.5 w-fit"
+        :to="{
+          name: 'spell',
+          params: {
+            id,
+          },
+        }">
+        <c-spell-single-letter
+          v-for="(gl, i) in shownSpell"
+          :class="['w-8', { 'opacity-[0.9]': gl.state !== LS.key }]"
+          :letter="gl.letter"
+          :letterState="gl.state"
+          :key="i" />
+      </router-link>
     </div>
-    <div
-      v-else-if="source === SpellSource.friend"
-      class="flex items-center mr-3 text-info">
-      <a-icon class="w-5" name="f-friend" />
-    </div>
-    <router-link
-      class="flex items-center gap-0.5 w-fit"
-      :class="{ 'ml-9': source === SpellSource.other }"
-      :to="{
-        name: 'spell',
-        params: {
-          id,
-        },
-      }">
-      <c-spell-single-letter
-        v-for="(gl, i) in shownSpell"
-        :class="['w-8', { 'opacity-[0.9]': gl.state !== LS.key }]"
-        :letter="gl.letter"
-        :letterState="gl.state"
-        :key="i" />
-    </router-link>
-    <div class="flex items-center gap-1 ml-6 text-sm italic">
+    <a-list-dotted-line />
+    <div class="text-sm italic opacity-85">
       <span v-if="source === SpellSource.daily"
         >Daily Spell ({{
           DateTime.fromISO(spell.createdOn).toLocaleString({

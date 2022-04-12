@@ -15,7 +15,7 @@ app.use(router);
 
 app.config.errorHandler = (err, instance, info) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  appState.createError(('Error: ' + ((err as any).message ?? err)) as string);
+  appState.createError((err as any).message ?? err);
   console.log('error:', err);
   console.log('instance:', instance);
   console.log('info:', info);

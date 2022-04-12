@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ReadMe from '@/../readme.md';
 import { user } from '@/3_stores';
+import ReadMe from '@/../readme.md';
 </script>
 
 <template>

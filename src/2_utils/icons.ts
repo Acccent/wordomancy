@@ -23,6 +23,8 @@ Object.entries({
   'f-solved': 'checkmark-square-24-regular',
   'f-failed': 'dismiss-square-24-regular',
   'f-friend': 'emoji-sparkle-24-regular',
+  'f-remove-friend': 'person-delete-24-regular',
+  'f-stats': 'data-histogram-24-regular',
   'f-clock': 'clock-24-regular',
   'u-upload': 'upload-alt',
 }).forEach(([name, icon]) => {
