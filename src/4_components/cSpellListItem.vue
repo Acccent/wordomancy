@@ -2,12 +2,13 @@
 import { DateTime } from 'luxon';
 import { LetterState as LS, SpellSource, SpellStatus } from '@/2_utils/global';
 import { spells } from '@/3_stores';
+
 const props = defineProps<{
   spell: MetaSpellData;
 }>();
 
 const spell = reactive(props.spell.spell);
-const status = ref(props.spell.solvingStatus);
+const status = ref(props.spell.status);
 const source = ref(props.spell.source);
 
 const id = spells.getSpellId(spell, source.value);
@@ -31,12 +32,16 @@ const shownSpell = computed((): GuessedLetter[] => {
   <li class="flex justify-between items-center my-4">
     <div
       class="flex items-center"
-      :class="{ 'pl-9': source === SpellSource.other }">
-      <div v-if="source === SpellSource.daily" class="mr-3 text-primary">
-        <a-icon class="w-5" name="f-clock" />
+      :class="{ 'pl-8': source === SpellSource.other }">
+      <div
+        v-if="source === SpellSource.daily"
+        class="flex w-5 mr-3 text-primary">
+        <a-icon name="f-clock" />
       </div>
-      <div v-else-if="source === SpellSource.friend" class="mr-3 text-info">
-        <a-icon class="w-5" name="f-friend" />
+      <div
+        v-else-if="source === SpellSource.friend"
+        class="flex w-5 mr-3 text-info">
+        <a-icon name="f-friend" />
       </div>
       <router-link
         class="flex items-center gap-0.5 w-fit"
@@ -66,7 +71,7 @@ const shownSpell = computed((): GuessedLetter[] => {
         }})</span
       >
       <span v-else
-        >Created by
+        >Cast by
         {{ ((spell as SpellData).creator as OtherUserData).displayName }}</span
       >
     </div>

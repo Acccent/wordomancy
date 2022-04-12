@@ -20,15 +20,15 @@ export const useSpellData = defineStore('spell-data', {
       [...s.userSpells.values()].sort(sortSpellsDescending),
     unplayedSpells: s =>
       [...s.allSpells.values()]
-        .filter(s => s.solvingStatus === SpellStatus.unplayed)
+        .filter(s => s.status === SpellStatus.unplayed)
         .sort(sortSpellsDescending),
     solvingSpells: s =>
       [...s.allSpells.values()]
-        .filter(s => s.solvingStatus === SpellStatus.solving)
+        .filter(s => s.status === SpellStatus.solving)
         .sort(sortSpellsDescending),
     finishedSpells: s =>
       [...s.allSpells.values()]
-        .filter(s => s.solvingStatus === SpellStatus.finished)
+        .filter(s => s.status === SpellStatus.finished)
         .sort(sortSpellsDescending),
   },
   actions: {
@@ -85,7 +85,7 @@ export const useSpellData = defineStore('spell-data', {
         (await this.getSpellsFromUser(uId)).forEach(spell =>
           this.userSpells.set(spell.code, {
             spell,
-            solvingStatus: SpellStatus.finished,
+            status: SpellStatus.finished,
             source: SpellSource.user,
           })
         );
@@ -118,8 +118,8 @@ export const useSpellData = defineStore('spell-data', {
         )
         .or(
           `creator.in.(${user.data.friends}),code.in.(${[
-            ...Object.keys(user.data.solving),
-            ...Object.keys(user.data.finished),
+            ...user.data.solving.keys(),
+            ...user.data.finished.keys(),
           ]})`
         );
 
@@ -131,9 +131,7 @@ export const useSpellData = defineStore('spell-data', {
         .from('daily-spells')
         .select()
         .or(
-          `createdOn.in.(${user.data.solvingDailies}),createdOn.in.(${
-            user.data.finishedDailies
-          }),createdOn.eq.${app.getLastMidnight()}`
+          `createdOn.in.(${user.data.solvingDailies.keys()}),createdOn.in.(${user.data.finishedDailies.keys()}),createdOn.eq.${app.getLastMidnight()}`
         );
 
       if (dailiesError) {
@@ -165,17 +163,11 @@ export const useSpellData = defineStore('spell-data', {
 
       this.allSpells.set(spellId, {
         spell,
-        solvingStatus:
+        status:
           SpellStatus[
-            Object.hasOwn(
-              user.data[isDaily ? 'solvingDailies' : 'solving'],
-              spellId
-            )
+            user.data[isDaily ? 'solvingDailies' : 'solving'].has(spellId)
               ? 'solving'
-              : Object.hasOwn(
-                  user.data[isDaily ? 'finishedDailies' : 'finished'],
-                  spellId
-                )
+              : user.data[isDaily ? 'finishedDailies' : 'finished'].has(spellId)
               ? 'finished'
               : 'unplayed'
           ],

@@ -1,9 +1,18 @@
 <script setup lang="ts">
-import { spells } from '@/3_stores';
+import { app, spells, solving } from '@/3_stores';
+import mWrongSpellCode from './mWrongSpellCode.vue';
 const router = useRouter();
 
-function goToSpell(code: string) {
-  router.push({ name: 'spell', params: { id: code } });
+const loading = ref(false);
+async function tryGoToSpell(code: string) {
+  loading.value = true;
+  await solving.resetSpell(code, true);
+  if (!solving.spellExists) {
+    app.openModal('wrong spell code', mWrongSpellCode);
+  } else {
+    router.push({ name: 'spell', params: { id: code } });
+  }
+  loading.value = false;
 }
 </script>
 
@@ -23,7 +32,8 @@ function goToSpell(code: string) {
     class="font-mono"
     placeholder="Enter Spell code..."
     button-text="Solve Spell"
-    @submitted="c => goToSpell(c)" />
+    :loading="loading"
+    @submitted="c => tryGoToSpell(c)" />
 
   <template v-if="spells.finishedSpells.length">
     <h3 class="mt-16 home-section-title">Spells you've finished:</h3>

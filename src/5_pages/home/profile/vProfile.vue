@@ -13,23 +13,19 @@ async function addFriend(friend: string) {
   loading.btnFriends = false;
   loading.friendsList = false;
 }
-
-async function removeFriend(friend: string) {
-  await user.addFriend(friend);
-}
 </script>
 
 <template>
   <h3 class="home-section-title">Your friends:</h3>
-  <ul class="w-list mx-auto mb-8">
+  <ul v-if="user.data.friends.length" class="w-list mx-auto mb-8">
     <li
-      v-for="[name] in user.friendsData"
+      v-for="[name, friend] in user.friendsData"
       class="flex justify-between items-center my-4"
       :key="name">
       <button
         class="btn btn-ghost -ml-8 text-base normal-case remove-friend-btn"
         title="Remove friend"
-        @click="removeFriend(name)">
+        @click="user.confirmRemoveFriend(friend)">
         <a-icon class="mr-3" name="f-remove-friend" />
         {{ name }}
       </button>
@@ -42,6 +38,7 @@ async function removeFriend(friend: string) {
       </div>
     </li>
   </ul>
+  <p v-else>You don't have any friends! :(</p>
 
   <p class="mt-12">Add a friend:</p>
   <c-input-with-button

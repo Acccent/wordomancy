@@ -24,11 +24,13 @@ declare global {
     friends: string[];
     settings: Record<string, string | number | boolean>;
     stats: UserStats;
-    solving: Record<string, (string | number)[]>;
-    finished: Record<string, (string | number)[]>;
-    solvingDailies: Record<string, (string | number)[]>;
-    finishedDailies: Record<string, (string | number)[]>;
+    solving: Map<string, PastGuesses>;
+    finished: Map<string, PastGuesses>;
+    solvingDailies: Map<string, PastGuesses>;
+    finishedDailies: Map<string, PastGuesses>;
   }
+
+  type PastGuesses = (string | number)[];
   
   type OtherUserData = {
     id: string;
@@ -65,7 +67,7 @@ declare global {
 
   type MetaSpellData = {
     spell: SpellData | DailySpellData;
-    solvingStatus: SpellStatus;
+    status: SpellStatus;
     source: SpellSource;
   }
 }

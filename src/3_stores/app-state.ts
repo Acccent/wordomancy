@@ -35,7 +35,6 @@ export const useAppState = defineStore('app-state', {
     },
     createError(message: string) {
       this.error.push(message);
-      // this.modalQueue.length = 0;
       this.openModal('error', mError);
     },
   },
