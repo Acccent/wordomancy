@@ -5,13 +5,13 @@ const props = defineProps<{
   spell: MetaSpellData;
 }>();
 
-const spell = reactive(props.spell.spell);
-const id = spells.getSpellId(spell, SpellSource.user);
+const sData = reactive(props.spell.spell as SpellData);
+const id = spells.getSpellId(sData, SpellSource.user);
 
 const shownSpell = computed((): GuessedLetter[] => {
-  return [...spell.spellword].map((letter, i) => ({
+  return [...sData.spellword].map((letter, i) => ({
     letter,
-    state: spell.keys.includes(i) ? LS.key : LS.default,
+    state: sData.keys.includes(i) ? LS.key : LS.default,
   }));
 });
 </script>
@@ -43,8 +43,8 @@ const shownSpell = computed((): GuessedLetter[] => {
         <a-icon :name="`f-${t}`" />
         {{
           t === 'guesses'
-            ? spell['averageGuesses'].toFixed(1)
-            : spell[
+            ? sData.averageGuesses.toFixed(1)
+            : sData[
                 t === 'played'
                   ? 'timesPlayed'
                   : t === 'solved'
