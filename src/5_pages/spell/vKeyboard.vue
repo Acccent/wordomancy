@@ -97,7 +97,6 @@ const emit = defineEmits<{
       v-if="i === 2 && spell.solution.length > 5"
       class="btn w-12 p-0 shrink"
       title="Move input left"
-      type="button"
       :disabled="spell.inputOffset <= 0 || inputsDisabled"
       @click.prevent="moveLeft">
       <a-icon name="f-move-left" />
@@ -107,7 +106,6 @@ const emit = defineEmits<{
       :key="`letter-${letter}`"
       class="btn w-12 p-0 shrink"
       :class="getLetterButtonState(letter)"
-      type="button"
       :disabled="inputsDisabled"
       @click.prevent="addLetter(letter)">
       {{ letter }}
@@ -116,7 +114,6 @@ const emit = defineEmits<{
       v-if="i === 2 && spell.solution.length > 5"
       class="btn w-12 p-0 shrink"
       title="Move input right"
-      type="button"
       :disabled="
         spell.kbInput.length < 1 ||
         spell.inputOffset + spell.kbInput.length >= spell.solution.length ||
@@ -139,6 +136,7 @@ const emit = defineEmits<{
       class="btn-primary grow basis-2/3 py-2"
       title="Submit"
       form="guess-text-input"
+      type="submit"
       :disabled="!spell.isValidGuess || inputsDisabled"
       :loading="guessBtnLoading">
       <a-icon name="u-upload" />

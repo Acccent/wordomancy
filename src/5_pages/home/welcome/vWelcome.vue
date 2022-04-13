@@ -39,7 +39,7 @@ onMounted(async () => {
           >submit an issue</a
         >!
       </p>
-      <a-button class="btn-secondary" type="button" @click="restart"
+      <a-button class="btn-secondary" @click="restart"
         >Try casting a Spell again</a-button
       >
     </template>
@@ -75,9 +75,7 @@ onMounted(async () => {
         <p class="mt-4">
           Open your Profile tab to review it and your past Spells.
         </p>
-        <a-button big type="button" @click="spell.resetCasting"
-          >Cast another Spell</a-button
-        >
+        <a-button big @click="spell.resetCasting">Cast another Spell</a-button>
       </div>
     </transition>
   </template>

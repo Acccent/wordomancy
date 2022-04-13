@@ -22,7 +22,7 @@ const emit = defineEmits<{
 </script>
 
 <template>
-  <div class="form-control items-center mt-2 mb-8">
+  <form class="form-control items-center mt-2 mb-8" @submit.prevent="submit">
     <div class="input-group w-fit">
       <a-text-input
         class="w-80 text-lg"
@@ -31,11 +31,11 @@ const emit = defineEmits<{
         required />
       <a-button
         class="btn-primary"
+        type="submit"
         :disabled="!inputVal"
         :loading="props.loading"
-        @click="submit"
         >{{ props.buttonText ?? 'Submit' }}</a-button
       >
     </div>
-  </div>
+  </form>
 </template>

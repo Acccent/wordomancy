@@ -3,13 +3,15 @@ import { app } from '@/3_stores';
 
 function acknowledge() {
   app.modalQueue.length = 0;
-  app.error.length = 0;
+  app.error.clear();
 }
 </script>
 
 <template>
   <p class="text-center">Error:</p>
-  <p v-for="err in app.error" class="mt-2" :key="err">{{ err }}</p>
+  <p v-for="[err, count] in app.error" class="mt-2" :key="err">
+    {{ err }}{{ count > 1 ? ` (${count})` : '' }}
+  </p>
   <p class="mt-4">
     Please
     <a

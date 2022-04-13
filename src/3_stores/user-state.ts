@@ -1,8 +1,11 @@
 import type { User } from '@supabase/supabase-js';
+import { customAlphabet } from 'nanoid';
 import { app, spells } from './';
 import router from '@/router';
 import { SpellSource } from '@/2_utils/global';
 import mRemoveFriend from '@/5_pages/home/profile/mRemoveFriend.vue';
+
+const nanoid = customAlphabet('0123456789', 4);
 
 export const useUser = defineStore('user', {
   state: () => {
@@ -16,16 +19,18 @@ export const useUser = defineStore('user', {
   },
   getters: {
     isSignedIn: s => s.user?.aud === 'authenticated',
+    displayNameSet: s =>
+      s.data.displayName && !s.data.displayName.startsWith('guest-'),
   },
   actions: {
     async getUser() {
       this.user = await app.supabase.auth.user();
 
-      if (this.isSignedIn) {
+      if (this.isSignedIn && this.user?.id) {
         const { data, error } = await app.supabase
           .from('profiles')
           .select()
-          .eq('id', this.user?.id)
+          .eq('id', this.user.id)
           .limit(1);
 
         if (error) {
@@ -33,21 +38,46 @@ export const useUser = defineStore('user', {
         }
 
         if (!data?.length) {
-          throw 'Could not get user data.';
-        }
+          this.data = {
+            id: this.user.id,
+            displayName: 'guest-' + nanoid(),
+            friends: [],
+            settings: {},
+            stats: {
+              '5-letters': {},
+              '6-letters': {},
+              '7-letters': {},
+              '8-letters': {},
+              '9-letters': {},
+              '10-letters': {},
+            },
+            solving: new Map(),
+            finished: new Map(),
+            solvingDailies: new Map(),
+            finishedDailies: new Map(),
+          };
 
-        const fetchedUser = {} as Record<string, unknown>;
-        Object.entries(data[0]).forEach(([k, v]) => {
-          if (k.startsWith('solving') || k.startsWith('finished')) {
-            fetchedUser[k] = new Map(
-              Object.entries(v as { [x: string]: PastGuesses })
-            );
-          } else {
-            fetchedUser[k] = v;
+          const { error } = await app.supabase
+            .from('profiles')
+            .insert(this.formatUserData(this.data));
+
+          if (error) {
+            throw error;
           }
-        });
+        } else {
+          const fetchedUser = {} as Record<string, unknown>;
+          Object.entries(data[0]).forEach(([k, v]) => {
+            if (k.startsWith('solving') || k.startsWith('finished')) {
+              fetchedUser[k] = new Map(
+                Object.entries(v as { [x: string]: PastGuesses })
+              );
+            } else {
+              fetchedUser[k] = v;
+            }
+          });
 
-        this.data = fetchedUser as UserData;
+          this.data = fetchedUser as UserData;
+        }
       }
     },
 
@@ -81,21 +111,18 @@ export const useUser = defineStore('user', {
     },
 
     async updateUser(newData: Partial<UserData>) {
-      const toUpload = {} as Record<string, unknown>;
-
-      Object.entries(newData).forEach(([k, v]) => {
-        if (k.startsWith('solving') || k.startsWith('finished')) {
-          toUpload[k] = Object.fromEntries(v as Map<string, PastGuesses>);
-        } else {
-          toUpload[k] = v;
-        }
-      });
-
+      const toUpdate = this.formatUserData(newData);
       const { error } = await app.supabase
         .from('profiles')
-        .update(toUpload, {
-          returning: 'minimal',
-        })
+        .update(
+          {
+            id: this.user?.id,
+            ...toUpdate,
+          },
+          {
+            returning: 'minimal',
+          }
+        )
         .eq('id', this.user?.id)
         .limit(1);
 
@@ -104,6 +131,20 @@ export const useUser = defineStore('user', {
       }
 
       this.data = { ...this.data, ...newData };
+    },
+
+    formatUserData(data: Partial<UserData>) {
+      const formatted = {} as Record<string, unknown>;
+
+      Object.entries(data).forEach(([k, v]) => {
+        if (k.startsWith('solving') || k.startsWith('finished')) {
+          formatted[k] = Object.fromEntries(v as Map<string, PastGuesses>);
+        } else {
+          formatted[k] = v;
+        }
+      });
+
+      return formatted;
     },
 
     async saveDisplayName(name: string) {
@@ -124,9 +165,7 @@ export const useUser = defineStore('user', {
 
       this.friendsData = new Map(
         (data as OtherUserData[]).reduce((p, c) => {
-          if (c.displayName) {
-            p.push([c.displayName, c]);
-          }
+          p.push([c.displayName, c]);
           return p;
         }, [] as [string, OtherUserData][])
       );
@@ -147,10 +186,14 @@ export const useUser = defineStore('user', {
         return false;
       }
 
+      const newFriend = data[0] as OtherUserData;
+
       await this.updateUser({
-        friends: [...this.data.friends, data[0].id],
+        friends: [...this.data.friends, newFriend.id],
       });
-      (await spells.getSpellsFromUser(data[0].id)).forEach(spell => {
+
+      this.friendsData.set(newFriend.displayName, newFriend);
+      (await spells.getSpellsFromUser(newFriend.id, true)).forEach(spell => {
         spells.addSpellLocally(spell, SpellSource.friend);
       });
     },
@@ -168,17 +211,14 @@ export const useUser = defineStore('user', {
     },
 
     async removeFriend() {
-      const friends = this.data.friends.splice(
-        this.data.friends.indexOf(this.friendToRemove.id),
-        1
-      );
+      const friends = [...this.data.friends];
+      friends.splice(friends.indexOf(this.friendToRemove.id), 1);
+
       await this.updateUser({
         friends,
       });
 
-      if (this.friendToRemove.displayName) {
-        this.friendsData.delete(this.friendToRemove.displayName);
-      }
+      this.friendsData.delete(this.friendToRemove.displayName);
 
       const tempSpellsMap = new Map(spells.allSpells);
       tempSpellsMap.forEach((spell, id) => {
@@ -190,6 +230,7 @@ export const useUser = defineStore('user', {
         ) {
           if (this.data.solving.has(id) || this.data.finished.has(id)) {
             spell.source = SpellSource.other;
+            spells.allSpells.set(id, spell);
           } else {
             spells.allSpells.delete(id);
           }

@@ -83,19 +83,24 @@ export const useSpellData = defineStore('spell-data', {
       const uId = user.user?.id;
       if (uId) {
         (await this.getSpellsFromUser(uId)).forEach(spell =>
-          this.userSpells.set(spell.code, {
-            spell,
-            status: SpellStatus.finished,
-            source: SpellSource.user,
-          })
+          this.addSpellLocally(spell, SpellSource.user)
         );
       }
     },
 
-    async getSpellsFromUser(uId: string) {
+    async getSpellsFromUser(uId: string, getCreatorProfile = false) {
+      const columns = getCreatorProfile
+        ? `*,
+          creator:profiles (
+            id,
+            displayName,
+            stats
+          )`
+        : '*';
+
       const { data, error } = await app.supabase
         .from('spells')
-        .select()
+        .select(columns)
         .eq('creator', uId);
 
       if (error) {
@@ -161,18 +166,28 @@ export const useSpellData = defineStore('spell-data', {
       const isDaily = source === SpellSource.daily;
       const spellId = this.getSpellId(spell, isDaily);
 
-      this.allSpells.set(spellId, {
-        spell,
-        status:
-          SpellStatus[
-            user.data[isDaily ? 'solvingDailies' : 'solving'].has(spellId)
-              ? 'solving'
-              : user.data[isDaily ? 'finishedDailies' : 'finished'].has(spellId)
-              ? 'finished'
-              : 'unplayed'
-          ],
-        source,
-      });
+      if (source === SpellSource.user) {
+        this.userSpells.set(spellId, {
+          spell,
+          status: SpellStatus.finished,
+          source: SpellSource.user,
+        });
+      } else {
+        this.allSpells.set(spellId, {
+          spell,
+          status:
+            SpellStatus[
+              user.data[isDaily ? 'solvingDailies' : 'solving'].has(spellId)
+                ? 'solving'
+                : user.data[isDaily ? 'finishedDailies' : 'finished'].has(
+                    spellId
+                  )
+                ? 'finished'
+                : 'unplayed'
+            ],
+          source,
+        });
+      }
     },
 
     async updateSpellStats(

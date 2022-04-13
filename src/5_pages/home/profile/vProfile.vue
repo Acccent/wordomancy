@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { user } from '@/3_stores';
+import { user, spells } from '@/3_stores';
 
 const loading = reactive({
   btnFriends: false,
@@ -20,7 +20,7 @@ async function addFriend(friend: string) {
   <ul v-if="user.data.friends.length" class="w-list mx-auto mb-8">
     <li
       v-for="[name, friend] in user.friendsData"
-      class="flex justify-between items-center my-4"
+      class="flex justify-between items-center"
       :key="name">
       <button
         class="btn btn-ghost -ml-8 text-base normal-case remove-friend-btn"
@@ -51,7 +51,8 @@ async function addFriend(friend: string) {
   <p class="italic text-neutral">WIP</p>
 
   <h3 class="mt-16 home-section-title">Your Spells:</h3>
-  <c-spell-list />
+  <c-spell-list v-if="spells.userSpells.size" />
+  <p v-else>You haven't cast any Spells! Go to the Welcome tab to cast one.</p>
 </template>
 
 <style scoped lang="postcss">

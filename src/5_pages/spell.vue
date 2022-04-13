@@ -10,13 +10,7 @@ const route = useRoute();
 //  the component from the old page needs to remain hidden
 const showSpell = ref(false);
 
-console.log(
-  route.params.id,
-  route.params.id?.toString(),
-  route.params.id?.toString() === ''
-);
-
-await spell.resetSpell(route.params.id?.toString());
+await spell.resetSpell(route.params.id?.toString() || undefined);
 
 onMounted(() => {
   if (!spell.spellExists) {

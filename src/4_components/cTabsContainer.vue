@@ -26,7 +26,6 @@ const { setup, enter, leave } = generateAnims(
       :key="tabName"
       class="tab tab-lg tab-bordered font-serif grow"
       :class="{ 'tab-active': tabName === activeTab }"
-      type="button"
       @click="switchSlot(tabName)">
       {{ tabName }}
     </button>

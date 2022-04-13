@@ -45,7 +45,11 @@ async function submitKeys() {
       </legend>
       <v-spell-letters-cast />
     </fieldset>
-    <a-button big :disabled="!spell.hasEnoughKeys" :loading="btnLoading"
+    <a-button
+      type="submit"
+      big
+      :disabled="!spell.hasEnoughKeys"
+      :loading="btnLoading"
       >Cast Spell!</a-button
     >
   </form>

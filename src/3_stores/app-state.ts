@@ -19,7 +19,7 @@ export const useAppState = defineStore('app-state', {
       supabase,
       gotInitialData: false,
       modalQueue: [] as QueuedModal[],
-      error: [] as string[],
+      error: new Map<string, number>(),
     };
   },
   actions: {
@@ -34,8 +34,15 @@ export const useAppState = defineStore('app-state', {
       this.modalQueue.splice(0, 1);
     },
     createError(message: string) {
-      this.error.push(message);
-      this.openModal('error', mError);
+      const thisErrorCount = this.error.get(message);
+
+      if (thisErrorCount) {
+        this.error.set(message, thisErrorCount + 1);
+      } else {
+        this.error.set(message, 1);
+        this.modalQueue.length = 0;
+        this.openModal('error', mError);
+      }
     },
   },
 });

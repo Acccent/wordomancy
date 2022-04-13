@@ -20,7 +20,7 @@ declare global {
 
   type UserData = {
     id: string;
-    displayName?: string;
+    displayName: string;
     friends: string[];
     settings: Record<string, string | number | boolean>;
     stats: UserStats;
@@ -34,7 +34,7 @@ declare global {
   
   type OtherUserData = {
     id: string;
-    displayName?: string;
+    displayName: string;
     stats: UserStats;
   }
 

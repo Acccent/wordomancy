@@ -12,14 +12,14 @@ const tabNames: Record<string, string> = {
 };
 
 onMounted(() => {
-  if (!user.data.displayName) {
+  if (!user.displayNameSet) {
     app.openModal('display name prompt', mDisplayName);
   }
 });
 </script>
 
 <template>
-  <template v-if="user.data.displayName">
+  <template v-if="user.displayNameSet">
     <c-tabs-container :initial-tab="tabNames.welcome">
       <template #[tabNames.welcome]>
         <v-welcome />
