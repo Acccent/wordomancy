@@ -1,4 +1,4 @@
-Welcome to the Wordomancy Alpha!
+Welcome to the Wordomancy Beta!
 
 
 There's still a lot missing and some things might not work, so feedback is very encouraged and appreciated. You can send it to me (Robin) [by email](mailto:wordomancy@cosmogr.am) or any other way.
@@ -8,7 +8,6 @@ There's still a lot missing and some things might not work, so feedback is very 
 ### Known issues
 
 - [ ] ⚠️ Google sign-up doesn't work currently
-- [ ] ⚠️ After signing in and being redirected here, you need to reload the page
 - [ ] ⚠️ There may be a bug where a misplaced letter is highlighted several times in a guess, when it's only once in the solution 
 - Text fields can be weird
   - [ ] Focus state isn't predictable
@@ -24,15 +23,15 @@ There's still a lot missing and some things might not work, so feedback is very 
   - [ ] Spell url creates accessible image
   - [ ] Share energy forecast button
   - [ ] Add page metadada
-- [ ] Explanations + acknowledgments
+- [ ] Explanations + acknowledgments (via intro popups and navbar buttons)
 - Settings
-  - [ ] Choose color for letter states
   - [ ] Toggle letter hints
+  - [ ] Toggle text input
+  - [ ] Choose color for letter states
 
 ### Future considerations
 
 - [ ] Animations everywhere ✨
 - [ ] Other languages / kb layouts
-- [ ] Ability to give names to Spells?
 - [ ] Word definitions at game end
 - [ ] Maybe add button to shuffle letters of forecast words

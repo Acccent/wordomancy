@@ -19,33 +19,33 @@ const size = ref(
 const initDelay = ref(props.delay ? ~~props.delay : 0);
 const fontSize = ref(`${size.value}rem`);
 const bgColor = ref(props.color ?? 'currentColor');
-const duration = Math.pow(size.value * 3, 0.15);
+const d = computed(() => Math.pow(size.value * 3, 0.15));
 
 onMounted(() => {
   droplets.value.forEach((e, i) => {
     gsap
       .timeline({
-        delay: i * (duration / 4) + initDelay.value,
+        delay: i * (d.value / 4) + initDelay.value,
         repeat: -1,
-        repeatDelay: duration / 4,
+        repeatDelay: d.value / 4,
       })
       .to(e, {
         opacity: 1,
-        duration,
+        duration: d.value,
         ease: 'power1.out',
       })
       .to(
         e,
         {
           scale: 0.01,
-          duration,
+          duration: d.value,
           ease: 'expoScale(1, 0.01)',
         },
         0
       )
       .to(e, {
         opacity: 0,
-        duration,
+        duration: d.value,
         ease: 'power1.in',
       })
       .to(
@@ -53,10 +53,10 @@ onMounted(() => {
         {
           scale: 1.2,
           filter: 'blur(0.5em)',
-          duration,
+          duration: d.value,
           ease: 'expoScale(0.01, 1.2)',
         },
-        duration
+        d.value
       );
   });
 });

@@ -2,16 +2,13 @@
 import { user, spells } from '@/3_stores';
 
 const loading = reactive({
-  btnFriends: false,
-  friendsList: false,
+  friends: false,
 });
 
 async function addFriend(friend: string) {
-  loading.btnFriends = true;
-  loading.friendsList = true;
+  loading.friends = true;
   await user.addFriend(friend);
-  loading.btnFriends = false;
-  loading.friendsList = false;
+  loading.friends = false;
 }
 </script>
 
@@ -44,7 +41,7 @@ async function addFriend(friend: string) {
   <c-input-with-button
     placeholder="Enter friend's name..."
     button-text="Add friend"
-    :loading="loading.btnFriends"
+    :loading="loading.friends"
     @submitted="f => addFriend(f)" />
 
   <h3 class="mt-16 home-section-title">Your stats:</h3>

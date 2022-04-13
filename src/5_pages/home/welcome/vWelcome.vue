@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SpellPhase } from '@/2_utils/global';
 import { generateAnims } from '@/2_utils/anims';
-import { user, casting as spell } from '@/3_stores';
+import { user, casting } from '@/3_stores';
 import vInputSpellword from './vInputSpellword.vue';
 import vSelectKeys from './vSelectKeys.vue';
 
@@ -11,27 +11,27 @@ const { setup, enter, leave } = generateAnims(
 );
 
 function restart() {
-  spell.phase = SpellPhase.noEnergy;
-  spell.getNewEnergy();
+  casting.phase = SpellPhase.noEnergy;
+  casting.getNewEnergy();
 }
 
 onMounted(async () => {
-  if (spell.phase === SpellPhase.noEnergy) {
-    spell.getNewEnergy();
+  if (casting.phase === SpellPhase.noEnergy) {
+    casting.getNewEnergy();
   }
 });
 </script>
 
 <template>
   <h3 class="home-section-title">Hi {{ user.data.displayName }}!</h3>
-  <template v-if="spell.phase === SpellPhase.noEnergy">
+  <template v-if="casting.phase === SpellPhase.noEnergy">
     <p class="mb-6">Getting your energy forecast...</p>
     <div class="flex justify-center items-center h-full w-full">
       <a-loading color="hsl(var(--a))" size="8" />
     </div>
   </template>
   <template v-else>
-    <template v-if="spell.phase === SpellPhase.error">
+    <template v-if="casting.phase === SpellPhase.error">
       <p>It looks like there's been a little hiccup.</p>
       <p class="my-4">
         Please make sure to
@@ -46,7 +46,7 @@ onMounted(async () => {
     <template v-else>
       <p>Here is your energy forecast for today:</p>
       <div class="flex justify-center gap-16 mt-10 mb-16">
-        <div v-for="e in spell.energy" :key="e[0]">
+        <div v-for="e in casting.energy" :key="e[0]">
           <a-emoji
             :name="e[0]"
             class="w-16 h-16 mx-auto mb-4 drop-shadow-spell" />
@@ -59,23 +59,28 @@ onMounted(async () => {
       @enter="enter"
       @leave="leave"
       mode="out-in">
-      <div v-if="spell.phase === SpellPhase.inputtingWord">
+      <div v-if="casting.phase === SpellPhase.inputtingWord">
         <v-input-spellword />
       </div>
-      <div v-else-if="spell.phase === SpellPhase.selectingKeys">
+      <div v-else-if="casting.phase === SpellPhase.selectingKeys">
         <v-select-keys />
       </div>
-      <div v-else-if="spell.phase === SpellPhase.submitted">
+      <div v-else-if="casting.phase === SpellPhase.submitted">
         <p class="mb-4">
-          You submitted a Spell with the Spellword {{ spell.word }} and the Key
-          Letter{{ spell.keys.size > 1 ? 's' : '' }} {{ spell.keysAsPhrase }}.
+          You submitted a Spell with the Spellword
+          {{ casting.submittedSpell.spellword }} and the Key Letter{{
+            casting.submittedSpell.keys.length > 1 ? 's' : ''
+          }}
+          {{ casting.keysAsPhrase }}.
         </p>
         <p>Your Spell code is:</p>
-        <code class="text-xl">{{ spell.code }}</code>
+        <code class="text-xl">{{ casting.submittedSpell.code }}</code>
         <p class="mt-4">
           Open your Profile tab to review it and your past Spells.
         </p>
-        <a-button big @click="spell.resetCasting">Cast another Spell</a-button>
+        <a-button big @click="casting.resetCasting"
+          >Cast another Spell</a-button
+        >
       </div>
     </transition>
   </template>

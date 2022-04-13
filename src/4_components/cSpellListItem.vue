@@ -4,14 +4,14 @@ import { LetterState as LS, SpellSource, SpellStatus } from '@/2_utils/global';
 import { spells } from '@/3_stores';
 
 const props = defineProps<{
-  spell: MetaSpellData;
+  meta: MetaSpellData;
 }>();
 
-const spell = reactive(props.spell.spell);
-const status = ref(props.spell.status);
-const source = ref(props.spell.source);
+const spell = reactive(props.meta.spell);
+const status = ref(props.meta.status);
+const source = ref(props.meta.source);
 
-const id = spells.getSpellId(spell, source.value);
+const id = ref(spells.getSpellId(spell, source.value));
 
 const shownSpell = computed((): GuessedLetter[] => {
   if (status.value === SpellStatus.finished) {
@@ -70,10 +70,7 @@ const shownSpell = computed((): GuessedLetter[] => {
           })
         }})</span
       >
-      <span v-else
-        >Cast by
-        {{ ((spell as SpellData).creator as OtherUserData).displayName }}</span
-      >
+      <span v-else>Cast by {{ (spell as SpellData).creator.displayName }}</span>
     </div>
   </li>
 </template>

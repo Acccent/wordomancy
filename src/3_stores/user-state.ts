@@ -1,11 +1,8 @@
 import type { User } from '@supabase/supabase-js';
-import { customAlphabet } from 'nanoid';
-import { app, spells } from './';
+import { createNewUser, SpellSource } from '@/2_utils/global';
 import router from '@/router';
-import { SpellSource } from '@/2_utils/global';
+import { app, spells } from './';
 import mRemoveFriend from '@/5_pages/home/profile/mRemoveFriend.vue';
-
-const nanoid = customAlphabet('0123456789', 4);
 
 export const useUser = defineStore('user', {
   state: () => {
@@ -19,6 +16,9 @@ export const useUser = defineStore('user', {
   },
   getters: {
     isSignedIn: s => s.user?.aud === 'authenticated',
+    homeRoute(): string {
+      return this.isSignedIn ? 'home' : 'index';
+    },
     displayNameSet: s =>
       s.data.displayName && !s.data.displayName.startsWith('guest-'),
   },
@@ -38,24 +38,7 @@ export const useUser = defineStore('user', {
         }
 
         if (!data?.length) {
-          this.data = {
-            id: this.user.id,
-            displayName: 'guest-' + nanoid(),
-            friends: [],
-            settings: {},
-            stats: {
-              '5-letters': {},
-              '6-letters': {},
-              '7-letters': {},
-              '8-letters': {},
-              '9-letters': {},
-              '10-letters': {},
-            },
-            solving: new Map(),
-            finished: new Map(),
-            solvingDailies: new Map(),
-            finishedDailies: new Map(),
-          };
+          this.data = createNewUser(this.user.id);
 
           const { error } = await app.supabase
             .from('profiles')
@@ -88,8 +71,8 @@ export const useUser = defineStore('user', {
         },
         {
           redirectTo: import.meta.env.PROD
-            ? 'https://wordomancy.app/home'
-            : 'http://localhost:8888/home',
+            ? 'https://wordomancy.app/home?signin'
+            : 'http://localhost:8888/home?signin',
         }
       );
 
@@ -111,19 +94,23 @@ export const useUser = defineStore('user', {
     },
 
     async updateUser(newData: Partial<UserData>) {
+      if (!this.user?.id) {
+        throw 'Invalid user ID. This is a known error, please try reloading for now!';
+      }
+
       const toUpdate = this.formatUserData(newData);
       const { error } = await app.supabase
         .from('profiles')
         .update(
           {
-            id: this.user?.id,
+            id: this.user.id,
             ...toUpdate,
           },
           {
             returning: 'minimal',
           }
         )
-        .eq('id', this.user?.id)
+        .eq('id', this.user.id)
         .limit(1);
 
       if (error) {
@@ -193,7 +180,7 @@ export const useUser = defineStore('user', {
       });
 
       this.friendsData.set(newFriend.displayName, newFriend);
-      (await spells.getSpellsFromUser(newFriend.id, true)).forEach(spell => {
+      (await spells.getSpellsFromUser(newFriend.id)).forEach(spell => {
         spells.addSpellLocally(spell, SpellSource.friend);
       });
     },
@@ -221,16 +208,11 @@ export const useUser = defineStore('user', {
       this.friendsData.delete(this.friendToRemove.displayName);
 
       const tempSpellsMap = new Map(spells.allSpells);
-      tempSpellsMap.forEach((spell, id) => {
-        const sd = spell.spell;
-        if (
-          'creator' in sd &&
-          typeof sd.creator !== 'string' &&
-          sd.creator.id === this.friendToRemove.id
-        ) {
+      tempSpellsMap.forEach((meta, id) => {
+        if ((meta.spell as SpellData).creator === this.friendToRemove) {
           if (this.data.solving.has(id) || this.data.finished.has(id)) {
-            spell.source = SpellSource.other;
-            spells.allSpells.set(id, spell);
+            meta.source = SpellSource.other;
+            spells.allSpells.set(id, meta);
           } else {
             spells.allSpells.delete(id);
           }

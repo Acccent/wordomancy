@@ -13,6 +13,7 @@ import ReadMe from '@/../readme.md';
         :key="p"
         class="btn-outline w-24 h-6"
         :title="p.replace(p[0], p[0].toUpperCase())"
+        :disable="p === 'google'"
         @click="user.signinWithProvider(p)">
         <a-icon :name="`a-${p}`" />
       </a-link-button>

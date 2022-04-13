@@ -6,16 +6,14 @@ import cSpellListItemUser from '@/4_components/cSpellListItemUser.vue';
 const props = defineProps<{
   list?: MetaSpellData[];
 }>();
-
-const list = computed(() => props.list ?? spells.sortedUserSpells);
 </script>
 
 <template>
   <ul class="w-list mx-auto mb-8">
     <component
       :is="props.list === undefined ? cSpellListItemUser : cSpellListItem"
-      v-for="(spell, i) in list"
-      :spell="spell"
+      v-for="(meta, i) in props.list ?? spells.sortedUserSpells"
+      :meta="meta"
       :key="i" />
   </ul>
 </template>

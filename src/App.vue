@@ -54,6 +54,7 @@ function mBoxEnter(el: Element, done: () => void) {
 </script>
 
 <template>
+  <c-data-manager />
   <main class="h-screen flex flex-col place-items-stretch">
     <c-navbar v-if="$route.meta.showNavbar" />
     <div v-else class="w-full h-[var(--navbar-height)]"></div>
@@ -65,17 +66,17 @@ function mBoxEnter(el: Element, done: () => void) {
           @leave="viewLeave"
           appear
           :css="false">
-          <Suspense>
-            <c-data-manager class="h-full w-full px-4" :key="route.path">
-              <component :is="Component" />
-            </c-data-manager>
-            <template #fallback>
-              <div
-                class="flex justify-center items-center h-screen-w/o-nav w-full">
-                <a-loading color="hsl(var(--a))" size="8" delay="0.2" />
-              </div>
-            </template>
-          </Suspense>
+          <div
+            v-if="app.dataReady"
+            class="h-full w-full px-4"
+            :key="route.path">
+            <component :is="Component" />
+          </div>
+          <div
+            v-else
+            class="flex justify-center items-center h-screen-w/o-nav w-full">
+            <a-loading color="hsl(var(--a))" size="8" delay="0.2" />
+          </div>
         </transition>
       </router-view>
     </div>
@@ -86,7 +87,7 @@ function mBoxEnter(el: Element, done: () => void) {
     @leave="mOverlayLeave"
     :css="false">
     <div
-      v-show="app.modalQueue.length > 0 && !viewTransition"
+      v-show="app.modalQueue.length && !viewTransition"
       id="modal-overlay"
       :class="{ open: app.modalQueue.length }">
       <transition
@@ -95,7 +96,10 @@ function mBoxEnter(el: Element, done: () => void) {
         @leave="mBoxLeave"
         mode="out-in"
         :css="false">
-        <div id="modal-box" :key="app.modalQueue[0]?.name">
+        <div
+          v-if="app.modalQueue.length"
+          id="modal-box"
+          :key="app.modalQueue[0]?.name">
           <component :is="app.modalQueue[0]?.component" />
         </div>
       </transition>

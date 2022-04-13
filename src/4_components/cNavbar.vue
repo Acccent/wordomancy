@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { generateAnims } from '@/2_utils/anims';
-import { user } from '@/3_stores';
+import { app, user, solving } from '@/3_stores';
+import mSpellInfo from '@/5_pages/spell/mSpellInfo.vue';
 
 const {
   setup: barSetup,
@@ -57,11 +58,12 @@ function btnsDelayedLeave(el: Element, done: () => void) {
             appear
             :css="false">
             <button
-              v-if="$route.name === 'spell'"
+              v-if="$route.name === 'spell' && !solving.isDaily"
               class="btn btn-square btn-ghost"
               title="Info"
               key="info"
-              data-index="0">
+              data-index="0"
+              @click="app.openModal('spell info', mSpellInfo)">
               <a-icon name="f-info" />
             </button>
             <button

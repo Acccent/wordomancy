@@ -22,7 +22,7 @@ declare global {
     id: string;
     displayName: string;
     friends: string[];
-    settings: Record<string, string | number | boolean>;
+    settings: UserSettings;
     stats: UserStats;
     solving: Map<string, PastGuesses>;
     finished: Map<string, PastGuesses>;
@@ -47,12 +47,18 @@ declare global {
     '10-letters': Record<string, number>;
   }
 
+  type UserSettings = {
+    guessTextInput: boolean;
+    guessLetterHints: boolean;
+    infoModalOnSpellStart: boolean;
+  }
+
   type SpellData = {
     code: string;
     createdOn: string;
     spellword: string;
     keys: number[];
-    creator: string | OtherUserData;
+    creator: OtherUserData;
     timesPlayed: number;
     timesSolved: number;
     timesFailed: number;
