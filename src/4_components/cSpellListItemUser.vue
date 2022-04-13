@@ -1,17 +1,18 @@
 <script setup lang="ts">
 import { LetterState as LS, SpellSource } from '@/2_utils/global';
 import { spells } from '@/3_stores';
+
 const props = defineProps<{
-  spell: MetaSpellData;
+  meta: MetaSpellData;
 }>();
 
-const sData = reactive(props.spell.spell as SpellData);
-const id = spells.getSpellId(sData, SpellSource.user);
+const spell = reactive(props.meta.spell as SpellData);
+const id = spells.getSpellId(spell, SpellSource.user);
 
 const shownSpell = computed((): GuessedLetter[] => {
-  return [...sData.spellword].map((letter, i) => ({
+  return [...spell.spellword].map((letter, i) => ({
     letter,
-    state: sData.keys.includes(i) ? LS.key : LS.default,
+    state: spell.keys.includes(i) ? LS.key : LS.default,
   }));
 });
 </script>
@@ -43,8 +44,8 @@ const shownSpell = computed((): GuessedLetter[] => {
         <a-icon :name="`f-${t}`" />
         {{
           t === 'guesses'
-            ? sData.averageGuesses.toFixed(1)
-            : sData[
+            ? spell.averageGuesses.toFixed(1)
+            : spell[
                 t === 'played'
                   ? 'timesPlayed'
                   : t === 'solved'

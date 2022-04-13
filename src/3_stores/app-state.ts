@@ -1,7 +1,7 @@
 import type { Component } from 'vue';
 import { createClient } from '@supabase/supabase-js';
 import { DateTime } from 'luxon';
-import mError from '@/4_components/mError.vue';
+import mError from '@/5_pages/mError.vue';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL as string,
@@ -17,7 +17,7 @@ export const useAppState = defineStore('app-state', {
   state: () => {
     return {
       supabase,
-      gotInitialData: false,
+      dataReady: false,
       modalQueue: [] as QueuedModal[],
       error: new Map<string, number>(),
     };

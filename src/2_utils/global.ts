@@ -1,3 +1,5 @@
+import { customAlphabet } from 'nanoid';
+
 enum SpellPhase {
   error,
   noEnergy,
@@ -70,6 +72,33 @@ function getSetFromArray<T>(array: Array<T>, num: number): Set<T> {
   return out;
 }
 
+const nanoid = customAlphabet('0123456789', 4);
+
+function createNewUser(id: string) {
+  return {
+    id,
+    displayName: 'guest-' + nanoid(),
+    friends: [],
+    settings: {
+      guessTextInput: true,
+      guessLetterHints: true,
+      infoModalOnSpellStart: true,
+    },
+    stats: {
+      '5-letters': {},
+      '6-letters': {},
+      '7-letters': {},
+      '8-letters': {},
+      '9-letters': {},
+      '10-letters': {},
+    },
+    solving: new Map(),
+    finished: new Map(),
+    solvingDailies: new Map(),
+    finishedDailies: new Map(),
+  } as UserData;
+}
+
 export {
   SpellPhase,
   LetterState,
@@ -78,4 +107,5 @@ export {
   KnownInfo,
   getKeysNeeded,
   getSetFromArray,
+  createNewUser,
 };

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { casting as spell } from '@/3_stores';
+import { casting } from '@/3_stores';
 
 const used: boolean[][] = reactive([]);
-const energyWords = computed(() => [...spell.energy.values()]);
+const energyWords = computed(() => [...casting.energy.values()]);
 const newSpellword = ref('');
 const usedWrongLetters = ref(false);
 const enteredOneLetter = ref(false);
@@ -34,24 +34,24 @@ function changeInput() {
   } else {
     usedWrongLetters.value = false;
   }
-  spell.word = newSpellword.value;
+  casting.word = newSpellword.value;
 }
 
-const btnLoading = ref(false);
+const loading = ref(false);
 async function submitInput() {
-  btnLoading.value = true;
-  const success = await spell.submitInput();
+  loading.value = true;
+  const success = await casting.submitInput();
   if (!success) {
     failedSubmitting.value = true;
   }
-  btnLoading.value = false;
+  loading.value = false;
 }
 
 const tooltip = computed(() => {
   if (usedWrongLetters.value) {
     return 'You can only use letters from the words of your energy forecast!';
   }
-  if (!spell.isValidWord && enteredOneLetter.value) {
+  if (!casting.isValidWord && enteredOneLetter.value) {
     return 'Spellwords need to be between 5 and 10 letters!';
   }
   if (failedSubmitting.value) {
@@ -87,8 +87,8 @@ const tooltip = computed(() => {
     <a-button
       type="submit"
       big
-      :disabled="!spell.isValidWord"
-      :loading="btnLoading"
+      :disabled="!casting.isValidWord"
+      :loading="loading"
       >Use this Spellword</a-button
     >
   </form>

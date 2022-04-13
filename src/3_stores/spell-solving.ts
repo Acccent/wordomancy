@@ -9,7 +9,7 @@ export const useSpellSolving = defineStore('spell-solving', {
     return {
       preloadedId: '',
       spellId: '',
-      rawSpellData: {} as SpellData | DailySpellData,
+      spellData: {} as SpellData | DailySpellData,
       isDaily: false,
       spellExists: false,
       kbInput: '',
@@ -44,8 +44,8 @@ export const useSpellSolving = defineStore('spell-solving', {
     gameOver(): boolean {
       return this.won || this.remainingGuesses < 1;
     },
-    wordArray: s => [...s.solution],
-    wordMap: s => new Map([...s.solution].map((l, i) => [i, l])),
+    solutionArray: s => [...s.solution],
+    solutionMap: s => new Map([...s.solution].map((l, i) => [i, l])),
   },
   actions: {
     // Check if letter has already been found & placed correctly
@@ -78,23 +78,27 @@ export const useSpellSolving = defineStore('spell-solving', {
         this.spellExists = true;
 
         this.$patch({
-          rawSpellData: foundSpell,
+          spellData: foundSpell,
           solution: foundSpell.spellword,
         });
         foundSpell.keys.forEach(i =>
           this.knownInfo.keys.set(i, this.solution[i])
         );
 
-        const solvingGuesses = user.data[this.solvingProp].get(this.spellId);
-        if (solvingGuesses) {
-          this.loadPastGuesses(solvingGuesses);
-          this.updateCurrentGuess();
-          return;
-        }
+        if (user.isSignedIn) {
+          const solvingGuesses = user.data[this.solvingProp].get(this.spellId);
+          if (solvingGuesses) {
+            this.loadPastGuesses(solvingGuesses);
+            this.updateCurrentGuess();
+            return;
+          }
 
-        const finishedGuesses = user.data[this.finishedProp].get(this.spellId);
-        if (finishedGuesses) {
-          this.loadPastGuesses(finishedGuesses);
+          const finishedGuesses = user.data[this.finishedProp].get(
+            this.spellId
+          );
+          if (finishedGuesses) {
+            this.loadPastGuesses(finishedGuesses);
+          }
         }
       }
     },
@@ -180,11 +184,11 @@ export const useSpellSolving = defineStore('spell-solving', {
       // If the guess is correct, no need to check anything else
       const won = (isPastGuess ? guess.str : this.kbInput) === this.solution;
       if (won) {
-        this.knownInfo.corrects = new Map(this.wordMap);
+        this.knownInfo.corrects = new Map(this.solutionMap);
 
         this.previousGuesses.push(
           new Map(
-            this.wordArray.map((letter, i) => [
+            this.solutionArray.map((letter, i) => [
               i,
               { letter, state: LS.correct },
             ])
@@ -196,8 +200,8 @@ export const useSpellSolving = defineStore('spell-solving', {
         // - one for the letters of the solution, from which we'll delete each letter we find
         // - an empty one to hold the result, which we'll populate
         const guessMap = new Map(guess?.gw ?? this.currentGuess);
-        const solutionMap = new Map(this.wordMap);
-        const resultMap = new Map<number, GuessedLetter>() as GuessedWord;
+        const solutionMap = new Map(this.solutionMap);
+        const resultMap = new Map() as GuessedWord;
 
         // First extract all correct and definitely wrong letters
         guessMap.forEach(({ letter }, i) => {
@@ -270,6 +274,8 @@ export const useSpellSolving = defineStore('spell-solving', {
             ' '.repeat(this.inputOffset) + this.kbInput
           );
         }
+
+        this.resetInput();
       }
 
       this.submittedFirstGuess = true;
@@ -322,6 +328,8 @@ export const useSpellSolving = defineStore('spell-solving', {
         if (user.isSignedIn) {
           this.updateUserStats(newKey);
         }
+
+        this.resetInput();
       }
 
       this.usedFirstHint = true;

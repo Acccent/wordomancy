@@ -1,5 +1,5 @@
-import { SpellStatus, SpellSource } from '@/2_utils/global';
 import { DateTime } from 'luxon';
+import { SpellStatus, SpellSource } from '@/2_utils/global';
 import { app, user } from './';
 
 function sortSpellsDescending(a: MetaSpellData, b: MetaSpellData) {
@@ -7,6 +7,13 @@ function sortSpellsDescending(a: MetaSpellData, b: MetaSpellData) {
   const dateB = DateTime.fromISO(b.spell.createdOn);
   return dateB.toMillis() - dateA.toMillis();
 }
+
+const sbSpellQuery = `*,
+          creator:profiles (
+            id,
+            displayName,
+            stats
+          )`;
 
 export const useSpellData = defineStore('spell-data', {
   state: () => {
@@ -49,13 +56,13 @@ export const useSpellData = defineStore('spell-data', {
       id: string,
       daily = false
     ): Promise<false | SpellData | DailySpellData> {
-      const localSpell = this.allSpells.get(id);
-      if (localSpell) {
-        return localSpell.spell;
+      const localMeta = this.allSpells.get(id);
+      if (localMeta) {
+        return localMeta.spell;
       }
       const { data, error } = await app.supabase
         .from(daily ? 'daily-spells' : 'spells')
-        .select()
+        .select(daily ? '*' : sbSpellQuery)
         .eq(daily ? 'createdOn' : 'code', id)
         .limit(1);
 
@@ -88,19 +95,10 @@ export const useSpellData = defineStore('spell-data', {
       }
     },
 
-    async getSpellsFromUser(uId: string, getCreatorProfile = false) {
-      const columns = getCreatorProfile
-        ? `*,
-          creator:profiles (
-            id,
-            displayName,
-            stats
-          )`
-        : '*';
-
+    async getSpellsFromUser(uId: string) {
       const { data, error } = await app.supabase
         .from('spells')
-        .select(columns)
+        .select(sbSpellQuery)
         .eq('creator', uId);
 
       if (error) {
@@ -113,14 +111,7 @@ export const useSpellData = defineStore('spell-data', {
     async getAllSpells() {
       const { data: spellsData, error: spellsError } = await app.supabase
         .from('spells')
-        .select(
-          `*,
-          creator:profiles (
-            id,
-            displayName,
-            stats
-          )`
-        )
+        .select(sbSpellQuery)
         .or(
           `creator.in.(${user.data.friends}),code.in.(${[
             ...user.data.solving.keys(),
@@ -147,9 +138,7 @@ export const useSpellData = defineStore('spell-data', {
         this.addSpellLocally(
           spell,
           SpellSource[
-            user.data.friends.includes((spell.creator as OtherUserData).id)
-              ? 'friend'
-              : 'other'
+            user.data.friends.includes(spell.creator.id) ? 'friend' : 'other'
           ]
         );
       });

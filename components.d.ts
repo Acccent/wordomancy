@@ -21,7 +21,6 @@ declare module 'vue' {
     CSpellListItemUser: typeof import('./src/4_components/cSpellListItemUser.vue')['default']
     CSpellSingleLetter: typeof import('./src/4_components/cSpellSingleLetter.vue')['default']
     CTabsContainer: typeof import('./src/4_components/cTabsContainer.vue')['default']
-    MError: typeof import('./src/4_components/mError.vue')['default']
   }
 }
 

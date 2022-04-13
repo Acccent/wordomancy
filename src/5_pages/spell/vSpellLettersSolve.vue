@@ -1,25 +1,24 @@
 <script setup lang="ts">
 import { LetterState as LS } from '@/2_utils/global';
-import { solving as spell } from '@/3_stores';
+import { solving } from '@/3_stores';
 
 const props = defineProps<{
   guess?: GuessedWord;
 }>();
 
-const isCurrent = props.guess === undefined;
-const guess = computed(() => (isCurrent ? spell.currentGuess : props.guess));
+const isCurrent = ref(props.guess === undefined);
 
 const guessDisplay = computed(() => {
   const glArray = [] as GuessedLetter[];
-  for (let i = 0; i < spell.solution.length; i++) {
-    const inputLetter = guess.value.get(i);
+  for (let i = 0; i < solving.solution.length; i++) {
+    const inputLetter = (props.guess ?? solving.currentGuess).get(i);
     if (inputLetter) {
       glArray.push(inputLetter);
       continue;
     }
 
-    if (isCurrent) {
-      const correctLetter = spell.knownInfo.corrects.get(i);
+    if (isCurrent.value) {
+      const correctLetter = solving.knownInfo.corrects.get(i);
       if (correctLetter) {
         glArray.push({
           letter: correctLetter,
@@ -28,7 +27,7 @@ const guessDisplay = computed(() => {
         continue;
       }
 
-      const keyLetter = spell.knownInfo.keys.get(i);
+      const keyLetter = solving.knownInfo.keys.get(i);
       if (keyLetter) {
         glArray.push({
           letter: keyLetter,
@@ -48,25 +47,26 @@ const guessDisplay = computed(() => {
 });
 
 function getLetterState(state: LS) {
-  if (isCurrent) {
+  if (isCurrent.value) {
     switch (state) {
       case LS.correct:
       case LS.key:
         return state;
       case LS.wrong:
-        return spell.showWrongState ? LS.wrong : LS.default;
+        return solving.showWrongState ? LS.wrong : LS.default;
       default:
         return LS.default;
     }
   } else {
-    return state === LS.wrong && !spell.showWrongState ? LS.unknown : state;
+    return state === LS.wrong && !solving.showWrongState ? LS.unknown : state;
   }
 }
 
 function isTranslucent(i: number) {
   return (
-    isCurrent &&
-    (i < spell.inputOffset || i >= spell.kbInput.length + spell.inputOffset)
+    isCurrent.value &&
+    (i < solving.inputOffset ||
+      i >= solving.kbInput.length + solving.inputOffset)
   );
 }
 </script>

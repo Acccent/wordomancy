@@ -1,14 +1,14 @@
 <script setup lang="ts">
+import { casting } from '@/3_stores';
 import vSpellLettersCast from './vSpellLettersCast.vue';
-import { casting as spell } from '@/3_stores';
 
-const missingKeysCount = computed(() => spell.keysNeeded - spell.keys.size);
+const missingKeysCount = computed(() => casting.keysNeeded - casting.keys.size);
 
-const btnLoading = ref(false);
+const loading = ref(false);
 async function submitKeys() {
-  btnLoading.value = true;
-  await spell.submitSpell();
-  btnLoading.value = false;
+  loading.value = true;
+  await casting.submitSpell();
+  loading.value = false;
 }
 </script>
 
@@ -21,14 +21,16 @@ async function submitKeys() {
   <form class="form-control w-full mt-6" @submit.prevent="submitKeys">
     <fieldset>
       <legend class="w-full">
-        <p v-if="spell.keys.size === 0">
-          <span>{{ spell.word.length }}-letter Spellwords need </span>
-          <span class="text-error">{{ spell.keysNeeded }}</span>
-          <span v-if="spell.keysNeeded < 2"> Key Letter. Select it below:</span>
+        <p v-if="casting.keys.size === 0">
+          <span>{{ casting.word.length }}-letter Spellwords need </span>
+          <span class="text-error">{{ casting.keysNeeded }}</span>
+          <span v-if="casting.keysNeeded < 2">
+            Key Letter. Select it below:</span
+          >
           <span v-else> Key Letters. Select them below:</span>
         </p>
         <p v-else>
-          <span>You've selected {{ spell.keysAsPhrase }}.</span>
+          <span>You've selected {{ casting.keysAsPhrase }}.</span>
           <span v-if="missingKeysCount > 0">
             Select
             <span class="text-error">{{ missingKeysCount }}</span> more letter{{
@@ -48,8 +50,8 @@ async function submitKeys() {
     <a-button
       type="submit"
       big
-      :disabled="!spell.hasEnoughKeys"
-      :loading="btnLoading"
+      :disabled="!casting.hasEnoughKeys"
+      :loading="loading"
       >Cast Spell!</a-button
     >
   </form>

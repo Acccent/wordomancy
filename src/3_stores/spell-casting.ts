@@ -8,7 +8,7 @@ export const useSpellCasting = defineStore('spell-casting', {
       phase: SpellPhase.noEnergy,
       word: '',
       keys: new Set<number>(),
-      code: '',
+      submittedSpell: {} as SpellData,
     };
   },
   getters: {
@@ -49,7 +49,7 @@ export const useSpellCasting = defineStore('spell-casting', {
         phase: SpellPhase.inputtingWord,
         word: '',
         keys: new Set<number>(),
-        code: '',
+        submittedSpell: {} as SpellData,
       });
     },
 
@@ -83,9 +83,16 @@ export const useSpellCasting = defineStore('spell-casting', {
         throw 'There was a problem submitting the Spell. ' + result;
       }
 
-      this.code = result[0].code;
+      this.submittedSpell = {
+        ...result[0],
+        creator: {
+          id: user.data.id,
+          displayName: user.data.displayName,
+          stats: user.data.stats,
+        },
+      };
 
-      await spells.addSpellLocally(result[0] as SpellData, SpellSource.user);
+      await spells.addSpellLocally(this.submittedSpell, SpellSource.user);
 
       this.phase = SpellPhase.submitted;
     },
