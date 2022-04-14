@@ -11,7 +11,6 @@ declare module 'vue' {
     AListDottedLine: typeof import('./src/4_components/atoms/aListDottedLine.vue')['default']
     ALoading: typeof import('./src/4_components/atoms/aLoading.vue')['default']
     ATextInput: typeof import('./src/4_components/atoms/aTextInput.vue')['default']
-    CDataManager: typeof import('./src/4_components/cDataManager.vue')['default']
     'CDebug.dev': typeof import('./src/4_components/cDebug.dev.vue')['default']
     CInputWithButton: typeof import('./src/4_components/cInputWithButton.vue')['default']
     CNavbar: typeof import('./src/4_components/cNavbar.vue')['default']

@@ -12,14 +12,15 @@ const tabNames: Record<string, string> = {
 };
 
 onMounted(() => {
-  if (!user.displayNameSet) {
+  // If !user.isSignedIn, they're going to be redirected to index
+  if (user.isSignedIn && !user.displayNameSet) {
     app.openModal('display name prompt', mDisplayName);
   }
 });
 </script>
 
 <template>
-  <template v-if="user.displayNameSet">
+  <div v-if="user.displayNameSet" class="pb-32">
     <c-tabs-container :initial-tab="tabNames.welcome">
       <template #[tabNames.welcome]>
         <v-welcome />
@@ -31,5 +32,5 @@ onMounted(() => {
         <v-profile />
       </template>
     </c-tabs-container>
-  </template>
+  </div>
 </template>

@@ -10,7 +10,25 @@
   }
 
   .home-section-title {
-    @apply mb-8 text-lg font-semibold;
+    --border-color: var(--bc);
+    @apply pb-1 mb-16 text-xl text-xl font-semibold border-b;
+
+    border-image: linear-gradient(
+        90deg,
+        hsla(var(--border-color) / 0%),
+        hsla(var(--border-color) / 25%),
+        hsla(var(--border-color) / 0%)
+      )
+      1;
+    border-color: hsla(var(--bc) / 10%);
+
+    &:not(:first-child) {
+      @apply mt-24;
+    }
+
+    &.text-primary {
+      --border-color: var(--p);
+    }
   }
 }
 

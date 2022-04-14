@@ -83,7 +83,11 @@ export const useSpellData = defineStore('spell-data', {
     ) {
       const isDaily =
         typeof daily === 'boolean' ? daily : daily === SpellSource.daily;
-      return isDaily ? spell.createdOn : (spell as SpellData).code;
+      return !isDaily
+        ? (spell as SpellData).code
+        : spell.createdOn === app.getLastMidnight()
+        ? ''
+        : spell.createdOn;
     },
 
     async getUserSpells() {

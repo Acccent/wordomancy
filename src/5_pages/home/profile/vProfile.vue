@@ -13,7 +13,7 @@ async function addFriend(friend: string) {
 </script>
 
 <template>
-  <h3 class="home-section-title">Your friends:</h3>
+  <h3 class="home-section-title">Your friends</h3>
   <ul v-if="user.data.friends.length" class="w-list mx-auto mb-8">
     <li
       v-for="[name, friend] in user.friendsData"
@@ -37,17 +37,17 @@ async function addFriend(friend: string) {
   </ul>
   <p v-else>You don't have any friends! :(</p>
 
-  <p class="mt-12">Add a friend:</p>
+  <p class="mt-16">Add a friend:</p>
   <c-input-with-button
     placeholder="Enter friend's name..."
     button-text="Add friend"
     :loading="loading.friends"
     @submitted="f => addFriend(f)" />
 
-  <h3 class="mt-16 home-section-title">Your stats:</h3>
+  <h3 class="home-section-title">Your stats</h3>
   <p class="italic text-neutral">WIP</p>
 
-  <h3 class="mt-16 home-section-title">Your Spells:</h3>
+  <h3 class="home-section-title">Your Spells</h3>
   <c-spell-list v-if="spells.userSpells.size" />
   <p v-else>You haven't cast any Spells! Go to the Welcome tab to cast one.</p>
 </template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { gsap } from 'gsap';
 import { generateAnims } from '@/2_utils/anims';
-import { app } from '@/3_stores';
+import { app, solving } from '@/3_stores';
 
 const viewTransition = ref(false);
 
@@ -54,30 +54,31 @@ function mBoxEnter(el: Element, done: () => void) {
 </script>
 
 <template>
-  <c-data-manager />
   <main class="h-screen flex flex-col place-items-stretch">
     <c-navbar v-if="$route.meta.showNavbar" />
     <div v-else class="w-full h-[var(--navbar-height)]"></div>
     <div class="relative w-full max-w grow mx-auto pt-8">
       <router-view v-slot="{ Component, route }">
-        <transition
+        <transition-group
           @before-enter="viewSetup"
           @enter="viewEnter"
           @leave="viewLeave"
           appear
           :css="false">
           <div
-            v-if="app.dataReady"
-            class="h-full w-full px-4"
-            :key="route.path">
+            v-if="app.dataState > 1"
+            v-show="!app.loading"
+            class="w-full px-4"
+            :key="route.name === 'spell' ? solving.spellId : route.name">
             <component :is="Component" />
           </div>
           <div
-            v-else
-            class="flex justify-center items-center h-screen-w/o-nav w-full">
+            v-if="app.dataState < 2 || app.loading"
+            class="flex justify-center items-center h-screen-w/o-nav w-full"
+            key="loading">
             <a-loading color="hsl(var(--a))" size="8" delay="0.2" />
           </div>
-        </transition>
+        </transition-group>
       </router-view>
     </div>
   </main>
