@@ -17,7 +17,8 @@ export const useAppState = defineStore('app-state', {
   state: () => {
     return {
       supabase,
-      dataReady: false,
+      dataState: 0, // 0: not loaded, 1: loading, 2: loaded
+      loading: false,
       modalQueue: [] as QueuedModal[],
       error: new Map<string, number>(),
     };

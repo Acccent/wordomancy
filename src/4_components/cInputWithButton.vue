@@ -25,7 +25,7 @@ const emit = defineEmits<{
   <form class="form-control items-center mt-2 mb-8" @submit.prevent="submit">
     <div class="input-group w-fit">
       <a-text-input
-        class="w-80 text-lg"
+        class="w-80 text-base"
         v-bind="$attrs"
         v-model="inputVal"
         required />

@@ -10,14 +10,22 @@ const route = useRoute();
 //  the component from the old page needs to remain hidden
 const showSpell = ref(false);
 
-await solving.resetSpell(route.params.id?.toString() || undefined);
+onBeforeMount(() => {
+  console.log('before mount');
+});
 
-onMounted(() => {
+onMounted(async () => {
+  app.loading = true;
+  console.log('mounting');
+  await solving.resetSpell(route.params.id?.toString() || undefined);
+  app.loading = false;
+
   if (!solving.spellExists) {
     app.openModal('spell not found', mSpellNotFound);
   } else {
     showSpell.value = true;
   }
+  console.log('show spell?', showSpell.value);
 });
 
 const scroller = ref<HTMLElement | null>(null);

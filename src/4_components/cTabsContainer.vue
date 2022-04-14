@@ -30,7 +30,7 @@ const { setup, enter, leave } = generateAnims(
       {{ tabName }}
     </button>
   </div>
-  <div class="w-full pt-12 pb-8">
+  <div class="w-full pt-16 pb-8">
     <keep-alive>
       <transition
         @before-enter="setup"
