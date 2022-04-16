@@ -13,7 +13,7 @@ async function addFriend(friend: string) {
 </script>
 
 <template>
-  <h3 class="home-section-title">Your friends</h3>
+  <h3 class="home-section-title text-info">Your friends</h3>
   <ul v-if="user.data.friends.length" class="w-list mx-auto mb-8">
     <li
       v-for="[name, friend] in user.friendsData"

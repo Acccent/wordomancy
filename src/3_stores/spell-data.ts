@@ -1,12 +1,5 @@
-import { DateTime } from 'luxon';
 import { SpellStatus, SpellSource } from '@/2_utils/global';
 import { app, user } from './';
-
-function sortSpellsDescending(a: MetaSpellData, b: MetaSpellData) {
-  const dateA = DateTime.fromISO(a.spell.createdOn);
-  const dateB = DateTime.fromISO(b.spell.createdOn);
-  return dateB.toMillis() - dateA.toMillis();
-}
 
 const sbSpellQuery = `*,
           creator:profiles (
@@ -21,22 +14,6 @@ export const useSpellData = defineStore('spell-data', {
       userSpells: new Map<string, MetaSpellData>(),
       allSpells: new Map<string, MetaSpellData>(),
     };
-  },
-  getters: {
-    sortedUserSpells: s =>
-      [...s.userSpells.values()].sort(sortSpellsDescending),
-    unplayedSpells: s =>
-      [...s.allSpells.values()]
-        .filter(s => s.status === SpellStatus.unplayed)
-        .sort(sortSpellsDescending),
-    solvingSpells: s =>
-      [...s.allSpells.values()]
-        .filter(s => s.status === SpellStatus.solving)
-        .sort(sortSpellsDescending),
-    finishedSpells: s =>
-      [...s.allSpells.values()]
-        .filter(s => s.status === SpellStatus.finished)
-        .sort(sortSpellsDescending),
   },
   actions: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -83,11 +60,7 @@ export const useSpellData = defineStore('spell-data', {
     ) {
       const isDaily =
         typeof daily === 'boolean' ? daily : daily === SpellSource.daily;
-      return !isDaily
-        ? (spell as SpellData).code
-        : spell.createdOn === app.getLastMidnight()
-        ? ''
-        : spell.createdOn;
+      return !isDaily ? (spell as SpellData).code : spell.createdOn;
     },
 
     async getUserSpells() {

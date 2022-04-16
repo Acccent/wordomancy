@@ -38,6 +38,12 @@ const router = createRouter({
       name: 'spell',
       component: Spell,
       meta: { showNavbar: true },
+      beforeEnter: to => {
+        if (to.params.id === app.getLastMidnight()) {
+          delete to.params.id;
+          return { ...to };
+        }
+      },
     },
     { path: '/notfound', name: 'not found', component: NotFound },
     { path: '/:pathMatch(.*)*', redirect: '/notfound' },
@@ -50,7 +56,7 @@ let i = 0;
 router.afterEach(async (to, from) => {
   i++;
   const r = i + ' | ';
-  console.log(
+  app.debug(
     `${r}route ${i}: to ${String(to.name)} (from ${String(from.name)}${
       to.params.debug ? `, ${to.params.debug}` : ''
     })`
@@ -64,16 +70,16 @@ router.afterEach(async (to, from) => {
       return;
     }
 
-    console.log(r + '🔜 start wait');
+    app.debug(r + '🔜 start wait');
 
     const wait = gsap.delayedCall(3, () => {
-      console.log(r + '🔚 wait ended');
+      app.debug(r + '🔚 wait ended');
       loadData(to, r);
     });
 
     const { data } = app.supabase.auth.onAuthStateChange(async e => {
       if (e === 'SIGNED_IN') {
-        console.log(r + '🔝 shortcut wait');
+        app.debug(r + '🔝 shortcut wait');
         wait.kill();
         data?.unsubscribe();
         loadData(to, r);
@@ -90,11 +96,11 @@ async function loadData(to: RouteLocationNormalized, r: string) {
   if (app.dataState < 1) {
     app.dataState = 1;
 
-    console.log(r + '🚺 checking user');
+    app.debug(r + '🚺 checking user');
     await user.getUser();
 
     if (user.isSignedIn) {
-      console.log(r + '🚰 getting data');
+      app.debug(r + '🚰 getting data');
       if (user.data.friends.length) {
         await user.getFriends();
       }
@@ -104,7 +110,7 @@ async function loadData(to: RouteLocationNormalized, r: string) {
 
     app.dataState = 2;
   }
-  console.log(
+  app.debug(
     `${r}🔡 got data (${
       user.isSignedIn ? 'user name: ' + user.data.displayName : 'guest'
     })`
@@ -121,25 +127,25 @@ async function loadData(to: RouteLocationNormalized, r: string) {
 
 function resolveRoute(to: RouteLocationNormalized, r: string) {
   if (to.name === 'home' && !user.isSignedIn) {
-    console.log(r + '↩️ to index');
+    app.debug(r + '↩️ to index');
     router.replace({ name: 'index' });
   } else if (to.name === 'index' && user.isSignedIn) {
-    console.log(r + '↪️ to home');
+    app.debug(r + '↪️ to home');
     router.replace({ ...to, name: 'home' });
   } else if ('signin' in to.query) {
-    console.log(r + '🔂 clean up');
+    app.debug(r + '🔂 clean up');
+    delete to.query.signin;
     router.replace({
       ...to,
-      query: {},
       hash: '',
       params: { debug: 'clean up from ' + r },
     });
   }
-  console.log(r + '✅ resolved!');
+  app.debug(r + '✅ resolved!');
 }
 
 function abortRoute(r: string) {
-  console.log(r + '💥 aborted');
+  app.debug(r + '💥 aborted');
 }
 
 export default router;

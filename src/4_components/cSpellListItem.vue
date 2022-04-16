@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { DateTime } from 'luxon';
 import { LetterState as LS, SpellSource, SpellStatus } from '@/2_utils/global';
-import { spells } from '@/3_stores';
+import { user, spells } from '@/3_stores';
 
 const props = defineProps<{
   meta: MetaSpellData;
@@ -13,16 +13,52 @@ const source = ref(props.meta.source);
 
 const id = ref(spells.getSpellId(spell, source.value));
 
-const shownSpell = computed((): GuessedLetter[] => {
-  if (status.value === SpellStatus.finished) {
-    return [...spell.spellword].map((letter, i) => ({
-      letter,
-      state: spell.keys.includes(i) ? LS.key : LS.correct,
-    }));
+const guesses = computed(() => {
+  if (status.value !== SpellStatus.unplayed) {
+    const isDaily = source.value === SpellSource.daily;
+    const isFinished = status.value === SpellStatus.finished;
+
+    return user.data[
+      isDaily
+        ? isFinished
+          ? 'finishedDailies'
+          : 'solvingDailies'
+        : isFinished
+        ? 'finished'
+        : 'solving'
+    ].get(id.value);
   }
+});
+
+const isWon = computed(
+  () =>
+    guesses.value?.length &&
+    guesses.value[guesses.value?.length - 1] === spell.spellword
+);
+
+const isLost = computed(() => status.value === SpellStatus.finished && !isWon);
+
+const shownSpell = computed((): GuessedLetter[] => {
+  const corrects = new Set<number>();
+  (guesses.value || []).forEach(g => {
+    if (typeof g === 'number') {
+      corrects.add(g);
+    } else {
+      [...g].forEach((l, i) => {
+        if (l === spell.spellword[i]) {
+          corrects.add(i);
+        }
+      });
+    }
+  });
+
   return [...spell.spellword].map((letter, i) =>
     spell.keys.includes(i)
       ? { letter, state: LS.key }
+      : corrects.has(i)
+      ? { letter, state: LS.correct }
+      : status.value === SpellStatus.finished
+      ? { letter, state: LS.wrong }
       : { letter: ' ', state: LS.default }
   );
 });
@@ -30,47 +66,67 @@ const shownSpell = computed((): GuessedLetter[] => {
 
 <template>
   <li class="flex justify-between items-center my-4">
-    <div
-      class="flex items-center"
-      :class="{ 'pl-8': source === SpellSource.other }">
+    <div class="w-6 mr-2">
       <div
-        v-if="source === SpellSource.daily"
-        class="flex w-5 mr-3 text-primary">
-        <a-icon name="f-clock" />
-      </div>
-      <div
-        v-else-if="source === SpellSource.friend"
-        class="flex w-5 mr-3 text-info">
-        <a-icon name="f-friend" />
-      </div>
-      <router-link
-        class="flex items-center gap-0.5 w-fit"
-        :to="{
-          name: 'spell',
-          params: {
-            id,
+        v-if="status !== SpellStatus.unplayed"
+        title="Your guesses"
+        :class="[
+          'flex',
+          {
+            'text-success': isWon,
+            'text-error': isLost,
           },
-        }">
-        <c-spell-single-letter
-          v-for="(gl, i) in shownSpell"
-          :class="['w-8', { 'opacity-[0.9]': gl.state !== LS.key }]"
-          :letter="gl.letter"
-          :letterState="gl.state"
-          :key="i" />
-      </router-link>
+        ]">
+        <a-icon name="f-square">{{ isLost ? '×' : guesses?.length }}</a-icon>
+      </div>
     </div>
+    <router-link
+      class="flex items-center gap-0.5 w-fit"
+      :to="{
+        name: 'spell',
+        params: {
+          id,
+        },
+      }">
+      <c-spell-single-letter
+        v-for="(gl, i) in shownSpell"
+        :class="['w-8', { 'opacity-[0.9]': gl.state !== LS.key }]"
+        :letter="gl.letter"
+        :letterState="gl.state"
+        :key="i" />
+    </router-link>
     <a-list-dotted-line />
     <div class="text-sm italic opacity-85">
       <span v-if="source === SpellSource.daily"
         >Daily Spell ({{
           DateTime.fromISO(spell.createdOn).toLocaleString({
-            weekday: 'long',
+            weekday: 'short',
             day: 'numeric',
             month: 'short',
           })
         }})</span
       >
       <span v-else>Cast by {{ (spell as SpellData).creator.displayName }}</span>
+    </div>
+    <div class="w-5 ml-1">
+      <div
+        v-if="source === SpellSource.daily"
+        class="text-primary"
+        title="Daily Spell">
+        <a-icon name="f-clock" />
+      </div>
+      <div
+        v-else-if="source === SpellSource.friend"
+        class="text-info"
+        title="Friend Spell">
+        <a-icon name="f-friend" />
+      </div>
+      <div
+        v-else-if="source === SpellSource.other"
+        class="text-neutral"
+        title="User Spell">
+        <a-icon name="f-not-friend" />
+      </div>
     </div>
   </li>
 </template>

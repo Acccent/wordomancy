@@ -4,34 +4,48 @@
 @import 'tailwindcss/utilities';
 @import 'tweaks';
 
+:root {
+  --navbar-height: 4rem;
+}
+
+@layer base {
+  html {
+    font-size: 2.4vw;
+
+    @media screen(sm) {
+      font-size: 16px;
+    }
+  }
+}
+
 @layer components {
   .logo {
     @apply font-display drop-shadow-spell;
   }
 
   .home-section-title {
-    --border-color: var(--bc);
+    --line-color: var(--bc);
     @apply pb-1 mb-16 text-xl text-xl font-semibold border-b;
 
     border-image: linear-gradient(
         90deg,
-        hsla(var(--border-color) / 0%),
-        hsla(var(--border-color) / 25%),
-        hsla(var(--border-color) / 0%)
+        hsla(var(--line-color) / 0%),
+        hsla(var(--line-color) / 25%),
+        hsla(var(--line-color) / 0%)
       )
       1;
-    border-color: hsla(var(--bc) / 10%);
+    border-color: hsla(var(--line-color) / 10%);
 
     &:not(:first-child) {
       @apply mt-24;
     }
 
     &.text-primary {
-      --border-color: var(--p);
+      --line-color: var(--p);
+    }
+
+    &.text-info {
+      --line-color: var(--in);
     }
   }
-}
-
-:root {
-  --navbar-height: 4rem;
 }

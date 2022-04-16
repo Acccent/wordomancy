@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 import { LetterState as LS, KnownInfo } from '@/2_utils/global';
-import { user, local, spells, app } from './';
+import { user, local, spells } from './';
 
 const maxGuesses = 6;
 
@@ -59,11 +59,11 @@ export const useSpellSolving = defineStore('spell-solving', {
     },
 
     // Setup a new Spell
-    async resetSpell(id?: string, preload = false) {
+    async resetSpell(id: string, preload = false) {
       if (this.preloadedId !== id) {
         this.$reset();
 
-        this.spellId = id ? id : app.getLastMidnight();
+        this.spellId = id;
         this.isDaily = id ? DateTime.fromISO(id).isValid : true;
 
         if (preload) {
