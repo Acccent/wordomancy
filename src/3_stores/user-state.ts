@@ -16,9 +16,6 @@ export const useUser = defineStore('user', {
   },
   getters: {
     isSignedIn: s => s.user?.aud === 'authenticated',
-    homeRoute(): string {
-      return this.isSignedIn ? 'home' : 'index';
-    },
     displayNameSet: s =>
       s.data.displayName && !s.data.displayName.startsWith('guest-'),
   },
@@ -95,7 +92,7 @@ export const useUser = defineStore('user', {
 
     async updateUser(newData: Partial<UserData>) {
       if (!this.user?.id) {
-        throw 'Invalid user ID. This is a known error, please try reloading for now!';
+        throw 'Invalid user ID.';
       }
 
       const toUpdate = this.formatUserData(newData);

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { gsap } from 'gsap';
 import { generateAnims } from '@/2_utils/anims';
-import { app, solving } from '@/3_stores';
+import { app } from '@/3_stores';
 
 const viewTransition = ref(false);
 
@@ -69,7 +69,7 @@ function mBoxEnter(el: Element, done: () => void) {
             v-if="app.dataState > 1"
             v-show="!app.loading"
             class="w-full px-4"
-            :key="route.name === 'spell' ? solving.spellId : route.name">
+            :key="route.name === 'spell' ? route.params.id : route.name">
             <component :is="Component" />
           </div>
           <div

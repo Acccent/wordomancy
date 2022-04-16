@@ -28,6 +28,7 @@ There's still a lot missing and some things might not work, so feedback is very 
   - [ ] Toggle letter hints
   - [ ] Toggle text input
   - [ ] Choose color for letter states
+- [ ] "Give up" button
 
 ### Future considerations
 

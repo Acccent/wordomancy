@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { SpellStatus } from '@/2_utils/global';
 import { app, spells, solving } from '@/3_stores';
 import mWrongSpellCode from './mWrongSpellCode.vue';
 const router = useRouter();
@@ -14,17 +15,27 @@ async function tryGoToSpell(code: string) {
   }
   loading.value = false;
 }
+
+const unplayedSpells = computed(() =>
+  [...spells.allSpells.values()].filter(s => s.status === SpellStatus.unplayed)
+);
+const solvingSpells = computed(() =>
+  [...spells.allSpells.values()].filter(s => s.status === SpellStatus.solving)
+);
+const finishedSpells = computed(() =>
+  [...spells.allSpells.values()].filter(s => s.status === SpellStatus.finished)
+);
 </script>
 
 <template>
-  <template v-if="spells.unplayedSpells.length">
+  <template v-if="unplayedSpells.length">
     <h3 class="home-section-title text-primary">New Spells!</h3>
-    <c-spell-list :list="spells.unplayedSpells" />
+    <c-spell-list :list="unplayedSpells" />
   </template>
 
-  <template v-if="spells.solvingSpells.length">
+  <template v-if="solvingSpells.length">
     <h3 class="home-section-title">Spells you've started</h3>
-    <c-spell-list :list="spells.solvingSpells" />
+    <c-spell-list :list="solvingSpells" />
   </template>
 
   <h3 class="home-section-title">Add Spells</h3>
@@ -38,8 +49,8 @@ async function tryGoToSpell(code: string) {
     :loading="loading"
     @submitted="c => tryGoToSpell(c)" />
 
-  <template v-if="spells.finishedSpells.length">
+  <template v-if="finishedSpells.length">
     <h3 class="home-section-title">Spells you've finished</h3>
-    <c-spell-list :list="spells.finishedSpells" />
+    <c-spell-list :list="finishedSpells" />
   </template>
 </template>

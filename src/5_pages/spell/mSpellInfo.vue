@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { app, solving } from '@/3_stores';
+import { app, user, solving } from '@/3_stores';
 
 const spell = reactive(solving.spellData) as SpellData;
 </script>
@@ -32,7 +32,13 @@ const spell = reactive(solving.spellData) as SpellData;
     </li>
   </ul>
 
-  <div class="flex justify-center mt-8">
+  <div class="flex flex-col items-center gap-6 mt-8">
     <a-button class="btn-primary" @click="app.closeModal">OK</a-button>
+    <a-link-button
+      class="btn-xs btn-outline py-2"
+      v-if="user.isSignedIn"
+      @click="app.closeModalAndGo(app.homeRoute)"
+      >Go back Home</a-link-button
+    >
   </div>
 </template>

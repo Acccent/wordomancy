@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { app, user, solving } from '@/3_stores';
+import { app, solving } from '@/3_stores';
 import vSpellLettersSolve from './spell/vSpellLettersSolve.vue';
 import vKeyboard from './spell/vKeyboard.vue';
 import mSpellNotFound from './spell/mSpellNotFound.vue';
@@ -10,14 +10,11 @@ const route = useRoute();
 //  the component from the old page needs to remain hidden
 const showSpell = ref(false);
 
-onBeforeMount(() => {
-  console.log('before mount');
-});
-
 onMounted(async () => {
   app.loading = true;
-  console.log('mounting');
-  await solving.resetSpell(route.params.id?.toString() || undefined);
+  await solving.resetSpell(
+    route.params.id?.toString() || app.getLastMidnight()
+  );
   app.loading = false;
 
   if (!solving.spellExists) {
@@ -25,7 +22,6 @@ onMounted(async () => {
   } else {
     showSpell.value = true;
   }
-  console.log('show spell?', showSpell.value);
 });
 
 const scroller = ref<HTMLElement | null>(null);
@@ -54,11 +50,15 @@ const scroller = ref<HTMLElement | null>(null);
       </template>
     </div>
     <div class="flex-none" ref="scroller">
-      <div v-if="solving.gameOver" class="flex justify-center py-12">
+      <div
+        v-if="solving.gameOver"
+        class="flex flex-col items-center gap-6 py-12">
         <p v-if="solving.won">Congratulations!</p>
-        <a-link-button @click="$router.push({ name: user.homeRoute })"
-          >Go back Home</a-link-button
-        >
+        <div>
+          <a-link-button @click="$router.push(app.homeRoute)"
+            >Go back Home</a-link-button
+          >
+        </div>
       </div>
       <div v-else>
         <v-keyboard @submitted="scroller?.scrollIntoView()" />
