@@ -21,14 +21,15 @@ module.exports = {
         'screen-w/o-nav': 'calc(100vh - var(--navbar-height) - 2rem)',
       },
       width: {
-        '1/10': '10%',
+        '9%': '9%',
+        '10%': '10%',
         list: '36rem',
       },
       maxWidth: {
         DEFAULT: '50rem',
       },
       dropShadow: {
-        spell: '0 0 40px hsl(var(--a))',
+        spell: '0 0 2.5rem hsl(var(--a))',
       },
     },
   },
@@ -68,8 +69,8 @@ module.exports = {
           '--animation-input': '0.12s',
           '--btn-text-case': 'uppercase',
           '--btn-focus-scale': '0.98',
-          '--border-btn': '1px',
-          '--tab-border': '2px',
+          '--border-btn': '0.0625rem',
+          '--tab-border': '0.125rem',
           '--tab-radius': '.4rem',
           '--navbar-padding': '.25rem',
         },
