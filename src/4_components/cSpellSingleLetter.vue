@@ -72,6 +72,7 @@ svg {
   border-width: var(--border-btn, 1px);
   border-style: inherit;
   color: hsl(var(--bc));
+  font-size: 16px;
 
   & > text {
     @apply w-full h-full font-spell;
