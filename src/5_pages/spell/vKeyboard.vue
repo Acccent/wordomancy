@@ -78,7 +78,7 @@ const emit = defineEmits<{
 
 <template>
   <form id="guess-text-input" @submit.prevent="submitGuess">
-    <div class="w-[30rem] max-w-full mb-4 mx-auto">
+    <div class="w-[30rem] max-w-full mb-6 mx-auto">
       <c-spell-input
         class="text-xl"
         :tooltip="solving.invalidGuess ? 'This is not a valid guess.' : ''"
@@ -94,7 +94,7 @@ const emit = defineEmits<{
     class="flex justify-center gap-2 mb-2">
     <button
       v-if="i === 2 && solving.solution.length > 5"
-      class="btn w-12 p-0 shrink"
+      class="btn w-10% p-0 shrink"
       title="Move input left"
       :disabled="solving.inputOffset <= 0 || inputsDisabled"
       @click.prevent="moveLeft">
@@ -103,15 +103,14 @@ const emit = defineEmits<{
     <button
       v-for="letter in row"
       :key="`letter-${letter}`"
-      class="btn w-12 p-0 shrink"
-      :class="getLetterButtonState(letter)"
+      :class="['btn w-9% p-0 shrink', getLetterButtonState(letter)]"
       :disabled="inputsDisabled"
       @click.prevent="addLetter(letter)">
       {{ letter }}
     </button>
     <button
       v-if="i === 2 && solving.solution.length > 5"
-      class="btn w-12 p-0 shrink"
+      class="btn w-10% p-0 shrink"
       title="Move input right"
       :disabled="
         solving.kbInput.length < 1 ||
@@ -126,14 +125,14 @@ const emit = defineEmits<{
   <div
     class="flex justify-center gap-4 w-[34rem] max-w-full mt-6 mb-10 mx-auto">
     <a-button
-      class="btn-secondary shrink min-w-min py-2"
+      class="btn-secondary w-10% py-2"
       title="Backspace"
       :disabled="!solving.kbInput.length || inputsDisabled"
       @click.prevent="backspace">
       <a-icon name="f-backspace" />
     </a-button>
     <a-button
-      class="btn-primary grow basis-2/3 py-2"
+      class="btn-primary grow py-2"
       title="Submit"
       form="guess-text-input"
       type="submit"
@@ -142,7 +141,7 @@ const emit = defineEmits<{
       <a-icon name="u-upload" />
     </a-button>
     <a-button
-      class="btn-accent shrink min-w-min py-2"
+      class="btn-accent w-10% py-2"
       title="Get hint"
       :disabled="!solving.canGetHint || inputsDisabled"
       :loading="loading.btnHint"

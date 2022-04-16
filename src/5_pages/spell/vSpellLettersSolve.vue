@@ -73,7 +73,7 @@ function isTranslucent(i: number) {
 
 <template>
   <div class="flex justify-center gap-1 my-4">
-    <div v-for="({ letter, state }, i) in guessDisplay" :key="i" class="w-1/10">
+    <div v-for="({ letter, state }, i) in guessDisplay" :key="i" class="w-10%">
       <c-spell-single-letter
         :letter="letter"
         :letterState="getLetterState(state)"

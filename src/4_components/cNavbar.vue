@@ -35,7 +35,7 @@ function btnsDelayedLeave(el: Element, done: () => void) {
     <div class="border-b h-[var(--navbar-height)]">
       <div class="navbar w-full max-w mx-auto px-8">
         <div class="flex-1">
-          <h1 class="text-s logo">
+          <h1 class="logo text-lg sm:text-base">
             <template
               v-if="
                 (user.isSignedIn && $route.name === 'home') ||

@@ -3,8 +3,12 @@
     outline-offset: -3px;
   }
 
-  .btn:focus {
-    outline-width: 1px;
-    outline-offset: 1px;
+  .btn {
+    @apply text-base;
+
+    &:focus {
+      outline-width: 1px;
+      outline-offset: 1px;
+    }
   }
 }

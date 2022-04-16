@@ -4,7 +4,7 @@ import { casting } from '@/3_stores';
 
 <template>
   <div class="flex justify-center gap-1 my-4">
-    <div v-for="i in casting.word.length" :key="i" class="w-1/10">
+    <div v-for="i in casting.word.length" :key="i" class="w-10%">
       <c-spell-single-letter
         :letter="casting.word[i - 1]"
         isCheckbox
