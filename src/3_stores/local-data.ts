@@ -24,6 +24,10 @@ export const useLocal = defineStore('local-data', {
     },
 
     async checkIfGuessExists(word: string) {
+      const sw = await this.checkIfSpellwordExists(word);
+      if (sw) {
+        return true;
+      }
       if (!this.possibleGuesses.size) {
         this.possibleGuesses = await this.fetchSet('guesses');
       }

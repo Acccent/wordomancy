@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { generateAnims } from '@/2_utils/anims';
 import { app, user, solving } from '@/3_stores';
-import mSpellInfo from '@/5_pages/spell/mSpellInfo.vue';
+import { mSpellInfo } from '@/6_modals';
 
 const {
   setup: barSetup,

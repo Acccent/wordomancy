@@ -1,17 +1,26 @@
 <script setup lang="ts">
 import { casting } from '@/3_stores';
+import ATextInput from '@/4_components/atoms/aTextInput.vue';
 
 const used: boolean[][] = reactive([]);
 const energyWords = computed(() => [...casting.energy.values()]);
-const newSpellword = ref('');
 const usedWrongLetters = ref(false);
 const enteredOneLetter = ref(false);
 const failedSubmitting = ref(false);
 
+const spellInput = ref<InstanceType<typeof ATextInput> | null>(null);
+
 function changeInput() {
+  const refInput = spellInput?.value?.refInput;
+
+  if (!refInput) {
+    return;
+  }
+
   failedSubmitting.value = false;
   enteredOneLetter.value = true;
-  let swCompare = newSpellword.value;
+  const inputUpper = refInput.value.toUpperCase() ?? '';
+  let swCompare = inputUpper;
 
   energyWords.value.forEach((energyWord, w) => {
     used[w] = new Array(energyWord.length);
@@ -26,15 +35,19 @@ function changeInput() {
   });
   if (swCompare.length) {
     usedWrongLetters.value = true;
-    let newSwArray = [...newSpellword.value];
+    let newSwArray = [...inputUpper];
     [...swCompare].forEach(letter => {
       newSwArray[newSwArray.lastIndexOf(letter)] = '';
     });
-    newSpellword.value = newSwArray.join('');
+    casting.word = newSwArray.join('');
   } else {
     usedWrongLetters.value = false;
+    casting.word = inputUpper;
   }
-  casting.word = newSpellword.value;
+
+  if (casting.word !== inputUpper) {
+    refInput.value = casting.word;
+  }
 }
 
 const loading = ref(false);
@@ -78,12 +91,12 @@ const tooltip = computed(() => {
     <label class="mb-4" for="spellword-input">
       <p>Type in your Spellword below using letters from those words:</p>
     </label>
-    <c-spell-input
+    <a-text-input
       id="spellword"
-      class="input-accent input-lg text-3xl"
+      class="input-accent input-lg text-3xl spell-text-input"
       :tooltip="tooltip"
-      v-model="newSpellword"
-      @update:modelValue="changeInput" />
+      ref="spellInput"
+      @input="changeInput" />
     <a-button
       type="submit"
       big

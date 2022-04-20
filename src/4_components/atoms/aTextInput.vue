@@ -5,24 +5,18 @@ export default {
 </script>
 
 <script setup lang="ts">
-const props = defineProps<{
-  modelValue?: string;
+defineProps<{
   tooltip?: string;
-  tipPosition?: string;
-  uppercase?: boolean;
+  topTooltip?: boolean | string;
 }>();
 
-function emitValue(e: Event) {
-  const v = (e.target as HTMLInputElement).value;
-  emit('update:modelValue', props.uppercase ? v.toUpperCase() : v);
-}
+const refInput = ref<HTMLInputElement | null>(null);
 
-const tipFlexOrder = computed(() =>
-  props.tipPosition === 'top' ? 'order-first' : 'order-last'
-);
+defineExpose({ refInput });
 
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: string): void;
+defineEmits<{
+  (e: 'input'): void;
+  (e: 'enterUp'): void;
 }>();
 </script>
 
@@ -32,54 +26,11 @@ const emit = defineEmits<{
       class="input input-bordered w-full"
       type="text"
       v-bind="$attrs"
-      :value="modelValue"
-      @input="emitValue" />
-    <div
-      v-show="props.tooltip"
-      class="tooltip"
-      :class="[
-        tipFlexOrder,
-        'tooltip-error',
-        `tooltip-${props.tipPosition || 'bottom'}`,
-        props.tooltip ? 'opacity-100' : 'opacity-0',
-      ]">
-      {{ props.tooltip }}
-    </div>
+      ref="refInput"
+      @input.prevent="$emit('input')"
+      @keyup.enter="$emit('enterUp')" />
+    <a-tooltip v-show="tooltip" :is-top="topTooltip">
+      {{ tooltip }}
+    </a-tooltip>
   </div>
 </template>
-
-<style scoped lang="postcss">
-.tooltip {
-  @apply transition delay-100 duration-200 ease-in-out;
-  @apply rounded px-2 py-1 text-sm font-semibold w-max;
-  background-color: var(--tooltip-color);
-  color: var(--tooltip-text-color);
-
-  &::after {
-    @apply opacity-100;
-    left: 50%;
-    right: auto;
-  }
-
-  &.tooltip-bottom {
-    margin-top: 3px;
-
-    &::after {
-      top: auto;
-      bottom: 100%;
-    }
-  }
-  &.tooltip-top {
-    margin-bottom: 3px;
-
-    &::after {
-      top: 100%;
-      bottom: auto;
-    }
-  }
-
-  &::before {
-    display: none;
-  }
-}
-</style>

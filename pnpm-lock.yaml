@@ -4,7 +4,6 @@ specifiers:
   '@iconify-json/akar-icons': ^1.1.2
   '@iconify-json/fluent': ^1.1.4
   '@iconify-json/twemoji': ^1.1.2
-  '@iconify-json/uil': ^1.1.1
   '@iconify/vue': ^3.2.0
   '@netlify/functions': ^1.0.0
   '@rushstack/eslint-patch': ^1.1.1
@@ -52,7 +51,6 @@ devDependencies:
   '@iconify-json/akar-icons': 1.1.2
   '@iconify-json/fluent': 1.1.4
   '@iconify-json/twemoji': 1.1.2
-  '@iconify-json/uil': 1.1.1
   '@iconify/vue': 3.2.0_vue@3.2.31
   '@netlify/functions': 1.0.0
   '@rushstack/eslint-patch': 1.1.1
@@ -190,12 +188,6 @@ packages:
 
   /@iconify-json/twemoji/1.1.2:
     resolution: {integrity: sha512-w2dZmkglD+wdwRhnse/ek04NP1ETXVNLmrWJKrZxMq90oAdMal1WBQaLySyNcFM9G8OKuvEhttS84Crp+Kk0iw==}
-    dependencies:
-      '@iconify/types': 1.1.0
-    dev: true
-
-  /@iconify-json/uil/1.1.1:
-    resolution: {integrity: sha512-bzhLHaeO1qIJpgSNk4uiu1mOXb3437IrFmA61qubBne/xhfErUnEOGRnDOPqk3fZ8NekHkU8qCyIVTM5+Zokcg==}
     dependencies:
       '@iconify/types': 1.1.0
     dev: true

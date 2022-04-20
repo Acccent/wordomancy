@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { Icon } from '@iconify/vue/offline';
 
-const props = defineProps<{
+defineProps<{
   name: string;
 }>();
 </script>
 
 <template>
-  <Icon :icon="props.name" />
+  <Icon :icon="name" />
 </template>

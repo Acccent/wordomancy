@@ -66,7 +66,7 @@ function isTranslucent(i: number) {
   return (
     isCurrent.value &&
     (i < solving.inputOffset ||
-      i >= solving.kbInput.length + solving.inputOffset)
+      i >= solving.guessInput.length + solving.inputOffset)
   );
 }
 </script>

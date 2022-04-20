@@ -4,7 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import { DateTime } from 'luxon';
 import { user } from './';
 import router from '@/router';
-import mError from '@/5_pages/mError.vue';
+import { mError } from '@/6_modals';
 
 const supabase = createClient(
   import.meta.env.VITE_SUPABASE_URL as string,

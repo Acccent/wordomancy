@@ -12,9 +12,9 @@ async function submitDisplayName() {
 }
 
 const tooltip = computed(() =>
-  /^[a-zA-Z0-9]*$/.test(displayNameInput.value)
-    ? undefined
-    : 'Your username can only contain letters or numbers.'
+  /\W/.test(displayNameInput.value)
+    ? 'Your username can only contain letters or numbers.'
+    : undefined
 );
 </script>
 

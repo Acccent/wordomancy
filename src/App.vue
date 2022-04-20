@@ -69,7 +69,7 @@ function mBoxEnter(el: Element, done: () => void) {
             v-if="app.dataState > 1"
             v-show="!app.loading"
             class="w-full px-8"
-            :key="route.name === 'spell' ? route.params.id : route.name">
+            :key="route.name + (route.name === 'spell' ? route.params.id : '')">
             <component :is="Component" />
           </div>
           <div

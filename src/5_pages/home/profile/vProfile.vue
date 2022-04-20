@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { user, spells } from '@/3_stores';
+import { user, spells, app } from '@/3_stores';
+import { mCouldntFindFriend } from '@/6_modals';
 
 const loading = reactive({
   friends: false,
@@ -7,8 +8,11 @@ const loading = reactive({
 
 async function addFriend(friend: string) {
   loading.friends = true;
-  await user.addFriend(friend);
+  const addedFriend = await user.addFriend(friend);
   loading.friends = false;
+  if (!addedFriend) {
+    app.openModal('couldnt find friend', mCouldntFindFriend);
+  }
 }
 </script>
 
@@ -41,6 +45,7 @@ async function addFriend(friend: string) {
   <c-input-with-button
     placeholder="Enter friend's name..."
     button-text="Add friend"
+    condition="^\w+$"
     :loading="loading.friends"
     @submitted="f => addFriend(f)" />
 
