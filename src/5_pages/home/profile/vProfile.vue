@@ -45,7 +45,7 @@ async function addFriend(friend: string) {
   <c-input-with-button
     placeholder="Enter friend's name..."
     button-text="Add friend"
-    condition="^\w+$"
+    condition="^\w{3,}$"
     :loading="loading.friends"
     @submitted="f => addFriend(f)" />
 

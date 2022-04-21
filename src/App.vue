@@ -121,7 +121,7 @@ function mBoxEnter(el: Element, done: () => void) {
   }
 }
 #modal-box {
-  @apply rounded-box bg-base-100 w-fit max-w-full p-12 m-4;
+  @apply rounded-box bg-base-100 w-fit max-w p-12 m-4;
   max-height: calc(100vh - 4rem);
   overflow-y: auto;
   overscroll-behavior: contain;

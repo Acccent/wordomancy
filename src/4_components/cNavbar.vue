@@ -31,7 +31,8 @@ function btnsDelayedLeave(el: Element, done: () => void) {
     @before-enter="barSetup"
     @enter="(e:Element, d: () => void) => barEnter(e, d).duration(0.3)"
     @leave="(e:Element, d: () => void) => barLeave(e, d)"
-    appear>
+    appear
+    :css="false">
     <div class="border-b h-[var(--navbar-height)]">
       <div class="navbar w-full max-w mx-auto px-8">
         <div class="flex-1">

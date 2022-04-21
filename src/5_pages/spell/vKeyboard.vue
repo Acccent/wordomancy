@@ -82,10 +82,9 @@ const emit = defineEmits<{
 <template>
   <div class="flex flex-col gap-2 max-w-full mb-10">
     <a-tooltip
-      v-show="solving.invalidGuess"
-      class="after:hidden mb-2 mx-auto text-center">
-      This is not a valid guess.
-    </a-tooltip>
+      :show="solving.invalidGuess"
+      text="This is not a valid guess."
+      class="after:hidden mb-2 mx-auto text-center" />
     <div class="flex gap-2 items-end mb-4">
       <a-button
         class="btn-error px-3"

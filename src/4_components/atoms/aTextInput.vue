@@ -7,6 +7,7 @@ export default {
 <script setup lang="ts">
 defineProps<{
   tooltip?: string;
+  showTooltip?: boolean;
   topTooltip?: boolean | string;
 }>();
 
@@ -29,8 +30,11 @@ defineEmits<{
       ref="refInput"
       @input.prevent="$emit('input')"
       @keyup.enter="$emit('enterUp')" />
-    <a-tooltip v-show="tooltip" :is-top="topTooltip">
-      {{ tooltip }}
+    <a-tooltip
+      v-if="tooltip"
+      :show="showTooltip ?? false"
+      :text="tooltip"
+      :is-top="topTooltip">
     </a-tooltip>
   </div>
 </template>

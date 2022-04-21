@@ -97,6 +97,7 @@ export const useUser = defineStore('user', {
       }
 
       const toUpdate = this.formatUserData(newData);
+
       const { error } = await app.supabase
         .from('profiles')
         .update(

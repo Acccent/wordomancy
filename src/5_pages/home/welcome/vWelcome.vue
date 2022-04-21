@@ -58,7 +58,8 @@ onMounted(async () => {
       @before-enter="setup"
       @enter="enter"
       @leave="leave"
-      mode="out-in">
+      mode="out-in"
+      :css="false">
       <div v-if="casting.phase === SpellPhase.inputtingWord">
         <v-input-spellword />
       </div>

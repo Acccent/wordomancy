@@ -5,8 +5,9 @@ import ATextInput from '@/4_components/atoms/aTextInput.vue';
 const used: boolean[][] = reactive([]);
 const energyWords = computed(() => [...casting.energy.values()]);
 const usedWrongLetters = ref(false);
-const enteredOneLetter = ref(false);
-const failedSubmitting = ref(false);
+
+const tooltipShow = ref(false);
+const tooltipText = ref('No error yet');
 
 const spellInput = ref<InstanceType<typeof ATextInput> | null>(null);
 
@@ -17,8 +18,7 @@ function changeInput() {
     return;
   }
 
-  failedSubmitting.value = false;
-  enteredOneLetter.value = true;
+  tooltipShow.value = false;
   const inputUpper = refInput.value.toUpperCase() ?? '';
   let swCompare = inputUpper;
 
@@ -35,6 +35,9 @@ function changeInput() {
   });
   if (swCompare.length) {
     usedWrongLetters.value = true;
+    tooltipShow.value = true;
+    tooltipText.value =
+      'You can only use letters from the words of your energy forecast!';
     let newSwArray = [...inputUpper];
     [...swCompare].forEach(letter => {
       newSwArray[newSwArray.lastIndexOf(letter)] = '';
@@ -43,6 +46,11 @@ function changeInput() {
   } else {
     usedWrongLetters.value = false;
     casting.word = inputUpper;
+
+    if (!casting.isValidWord) {
+      tooltipShow.value = true;
+      tooltipText.value = 'Spellwords need to be between 5 and 10 letters!';
+    }
   }
 
   if (casting.word !== inputUpper) {
@@ -55,22 +63,11 @@ async function submitInput() {
   loading.value = true;
   const success = await casting.submitInput();
   if (!success) {
-    failedSubmitting.value = true;
+    tooltipShow.value = true;
+    tooltipText.value = "This isn't a valid Spellword...";
   }
   loading.value = false;
 }
-
-const tooltip = computed(() => {
-  if (usedWrongLetters.value) {
-    return 'You can only use letters from the words of your energy forecast!';
-  }
-  if (!casting.isValidWord && enteredOneLetter.value) {
-    return 'Spellwords need to be between 5 and 10 letters!';
-  }
-  if (failedSubmitting.value) {
-    return "This isn't a valid Spellword...";
-  }
-});
 </script>
 
 <template>
@@ -88,13 +85,14 @@ const tooltip = computed(() => {
     >
   </div>
   <form class="form-control w-full mt-12" @submit.prevent="submitInput">
-    <label class="mb-4" for="spellword-input">
+    <label class="mb-2" for="spellword-input">
       <p>Type in your Spellword below using letters from those words:</p>
     </label>
     <a-text-input
       id="spellword"
       class="input-accent input-lg text-3xl spell-text-input"
-      :tooltip="tooltip"
+      :tooltip="tooltipText"
+      :show-tooltip="tooltipShow"
       ref="spellInput"
       @input="changeInput" />
     <a-button
