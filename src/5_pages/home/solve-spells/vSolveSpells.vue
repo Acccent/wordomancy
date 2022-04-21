@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { SpellStatus } from '@/2_utils/global';
 import { app, spells, solving } from '@/3_stores';
-import mWrongSpellCode from './mWrongSpellCode.vue';
+import { mWrongSpellCode } from '@/6_modals';
 const router = useRouter();
 
 const loading = ref(false);
@@ -40,12 +40,14 @@ const finishedSpells = computed(() =>
 
   <h3 class="home-section-title">Add Spells</h3>
   <p class="mt-4">
-    If you know the code for another Spell, you can enter it below:
+    If you know the code for another Spell, you can enter it below.<br />Codes
+    are 8 letters or numbers.
   </p>
   <c-input-with-button
     class="font-mono"
     placeholder="Enter Spell code..."
     button-text="Solve Spell"
+    condition="^\w{8}$"
     :loading="loading"
     @submitted="c => tryGoToSpell(c)" />
 

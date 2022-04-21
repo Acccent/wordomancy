@@ -1,6 +1,6 @@
 {
   "name": "wordomancy",
-  "version": "0.9.1",
+  "version": "0.9.2",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
@@ -19,7 +19,6 @@
     "@iconify-json/akar-icons": "^1.1.2",
     "@iconify-json/fluent": "^1.1.4",
     "@iconify-json/twemoji": "^1.1.2",
-    "@iconify-json/uil": "^1.1.1",
     "@iconify/vue": "^3.2.0",
     "@netlify/functions": "^1.0.0",
     "@rushstack/eslint-patch": "^1.1.1",

@@ -69,7 +69,7 @@ function mBoxEnter(el: Element, done: () => void) {
             v-if="app.dataState > 1"
             v-show="!app.loading"
             class="w-full px-8"
-            :key="route.name === 'spell' ? route.params.id : route.name">
+            :key="route.name + (route.name === 'spell' ? route.params.id : '')">
             <component :is="Component" />
           </div>
           <div
@@ -121,7 +121,7 @@ function mBoxEnter(el: Element, done: () => void) {
   }
 }
 #modal-box {
-  @apply rounded-box bg-base-100 w-fit max-w-full p-12 m-4;
+  @apply rounded-box bg-base-100 w-fit max-w p-12 m-4;
   max-height: calc(100vh - 4rem);
   overflow-y: auto;
   overscroll-behavior: contain;

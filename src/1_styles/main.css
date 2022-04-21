@@ -48,4 +48,8 @@
       --line-color: var(--in);
     }
   }
+
+  .spell-text-input {
+    @apply font-spell uppercase tracking-widest;
+  }
 }

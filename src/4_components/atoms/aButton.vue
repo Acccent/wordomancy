@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   big?: boolean;
   disabled?: boolean;
   loading?: boolean;
@@ -10,16 +10,13 @@ const props = defineProps<{
   <button
     class="relative btn min-w-fit max-w-full h-auto px-6 font-bold"
     :class="{
-      'btn-primary w-64 py-4 mt-8 mx-auto text-lg': props.big,
-      'text-base': !props.big,
+      'btn-primary w-64 py-4 mt-8 mx-auto text-lg': big,
+      'text-base': !big,
     }"
-    :disabled="props.loading || props.disabled">
-    <div :class="{ invisible: props.loading }">
+    :disabled="loading || disabled">
+    <div :class="{ invisible: loading }">
       <slot />
     </div>
-    <a-loading
-      v-if="props.loading"
-      class="!absolute"
-      :size="props.big ? 1.75 : 1" />
+    <a-loading v-if="loading" class="!absolute" :size="big ? 1.75 : 1" />
   </button>
 </template>

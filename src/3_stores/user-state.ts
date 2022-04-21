@@ -2,7 +2,7 @@ import type { User } from '@supabase/supabase-js';
 import { createNewUser, SpellSource } from '@/2_utils/global';
 import router from '@/router';
 import { app, spells } from './';
-import mRemoveFriend from '@/5_pages/home/profile/mRemoveFriend.vue';
+import { mRemoveFriend } from '@/6_modals';
 
 export const useUser = defineStore('user', {
   state: () => {
@@ -11,6 +11,7 @@ export const useUser = defineStore('user', {
       user: null as User | null,
       data: {} as UserData,
       friendsData: new Map<string, OtherUserData>(),
+      friendNameToAdd: '',
       friendToRemove: {} as OtherUserData,
     };
   },
@@ -96,6 +97,7 @@ export const useUser = defineStore('user', {
       }
 
       const toUpdate = this.formatUserData(newData);
+
       const { error } = await app.supabase
         .from('profiles')
         .update(
@@ -156,6 +158,8 @@ export const useUser = defineStore('user', {
     },
 
     async addFriend(name: string) {
+      this.friendNameToAdd = name;
+
       const { data, error } = await app.supabase
         .from('profiles')
         .select('id, displayName, stats')
@@ -180,6 +184,9 @@ export const useUser = defineStore('user', {
       (await spells.getSpellsFromUser(newFriend.id)).forEach(spell => {
         spells.addSpellLocally(spell, SpellSource.friend);
       });
+
+      this.friendNameToAdd = '';
+      return true;
     },
 
     async confirmRemoveFriend(friend: OtherUserData) {

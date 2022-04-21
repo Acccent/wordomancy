@@ -3,7 +3,7 @@ import { app, user } from '@/3_stores';
 import vWelcome from './home/welcome/vWelcome.vue';
 import VSolveSpells from './home/solve-spells/vSolveSpells.vue';
 import vProfile from './home/profile/vProfile.vue';
-import mDisplayName from './home/mDisplayName.vue';
+import { mDisplayName } from '@/6_modals';
 
 const route = useRoute();
 const router = useRouter();

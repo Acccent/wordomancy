@@ -2,7 +2,7 @@
 import { app, solving } from '@/3_stores';
 import vSpellLettersSolve from './spell/vSpellLettersSolve.vue';
 import vKeyboard from './spell/vKeyboard.vue';
-import mSpellNotFound from './spell/mSpellNotFound.vue';
+import { mSpellNotFound } from '@/6_modals';
 const route = useRoute();
 
 // We need a per-component "visibility variable" to handle the case of
@@ -60,9 +60,7 @@ const scroller = ref<HTMLElement | null>(null);
           >
         </div>
       </div>
-      <div v-else>
-        <v-keyboard @submitted="scroller?.scrollIntoView()" />
-      </div>
+      <v-keyboard v-else @submitted="scroller?.scrollIntoView()" />
     </div>
   </div>
 </template>

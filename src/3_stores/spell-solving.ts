@@ -12,7 +12,7 @@ export const useSpellSolving = defineStore('spell-solving', {
       spellData: {} as SpellData | DailySpellData,
       isDaily: false,
       spellExists: false,
-      kbInput: '',
+      guessInput: '',
       inputOffset: 0,
       showWrongState: false,
       invalidGuess: false,
@@ -27,8 +27,8 @@ export const useSpellSolving = defineStore('spell-solving', {
   getters: {
     solvingProp: s => (s.isDaily ? 'solvingDailies' : 'solving'),
     finishedProp: s => (s.isDaily ? 'finishedDailies' : 'finished'),
-    isValidGuess: s =>
-      new RegExp(`^[A-Z]{5,${s.solution.length || 5}}$`).test(s.kbInput),
+    isInputValid: s =>
+      new RegExp(`^[a-zA-Z]{5,${s.solution.length || 5}}$`).test(s.guessInput),
     remainingGuesses: s => maxGuesses - s.previousGuesses.length,
     canGetHint(): boolean {
       const allKnown = new Set([
@@ -127,7 +127,7 @@ export const useSpellSolving = defineStore('spell-solving', {
     // Reset the user input and get ready for a new guess
     resetInput() {
       this.$patch({
-        kbInput: '',
+        guessInput: '',
         inputOffset: 0,
       });
       this.updateCurrentGuess();
@@ -135,25 +135,31 @@ export const useSpellSolving = defineStore('spell-solving', {
 
     // Update the guess preview based on user input,
     // taking into account known info
-    updateCurrentGuess() {
+    updateCurrentGuess(input?: string) {
       this.currentGuess.clear();
 
       // Normalize the input and offset first
+      if (input !== undefined) {
+        this.guessInput = input
+          .replace(/[^a-zA-Z]+/g, '')
+          .slice(0, this.solution.length);
+
+        // We're keeping the lowercase letters to avoid moving the caret whenever possible
+      }
       this.$patch({
         invalidGuess: false,
-        kbInput: this.kbInput.slice(0, this.solution.length),
         inputOffset: Math.max(
           Math.min(
             this.inputOffset,
-            this.solution.length - this.kbInput.length
+            this.solution.length - this.guessInput.length
           ),
           0
         ),
       });
 
-      const inputEnd = this.inputOffset + this.kbInput.length;
+      const inputEnd = this.inputOffset + this.guessInput.length;
       for (let i = this.inputOffset; i < inputEnd; i++) {
-        const letter = this.kbInput[i - this.inputOffset];
+        const letter = this.guessInput[i - this.inputOffset].toUpperCase();
         const correct = this.knownInfo.corrects.get(i);
         const key = this.knownInfo.keys.get(i);
 
@@ -173,16 +179,17 @@ export const useSpellSolving = defineStore('spell-solving', {
 
     async evaluateGuess(guess?: { str: string; gw: GuessedWord }) {
       const isPastGuess = guess !== undefined;
+      const upperInput = this.guessInput.toUpperCase();
 
       // Exit before doing anything if the word isn't correct
       // (we allow strings with spaces before or after)
-      if (!isPastGuess && !(await local.checkIfGuessExists(this.kbInput))) {
+      if (!isPastGuess && !(await local.checkIfGuessExists(upperInput))) {
         this.invalidGuess = true;
         return;
       }
 
       // If the guess is correct, no need to check anything else
-      const won = (isPastGuess ? guess.str : this.kbInput) === this.solution;
+      const won = (isPastGuess ? guess.str : upperInput) === this.solution;
       if (won) {
         this.knownInfo.corrects = new Map(this.solutionMap);
 
@@ -270,9 +277,7 @@ export const useSpellSolving = defineStore('spell-solving', {
 
         // Update user data
         if (user.isSignedIn) {
-          await this.updateUserStats(
-            ' '.repeat(this.inputOffset) + this.kbInput
-          );
+          await this.updateUserStats(' '.repeat(this.inputOffset) + upperInput);
         }
 
         this.resetInput();

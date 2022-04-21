@@ -10,6 +10,9 @@
 [functions."set-daily-spell"]
 schedule = "@daily"
 
+[functions."set-wordle-spell"]
+schedule = "@daily"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

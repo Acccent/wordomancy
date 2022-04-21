@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   disable?: boolean;
 }>();
 </script>
@@ -8,8 +8,8 @@ const props = defineProps<{
   <a
     class="btn min-w-fit py-3 h-auto min-h-0 font-semibold"
     :class="{
-      'btn-primary': !props.disable,
-      'btn-disabled': props.disable,
+      'btn-primary': !disable,
+      'btn-disabled': disable,
     }"
     role="button">
     <slot />
