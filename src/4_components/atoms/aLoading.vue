@@ -22,7 +22,7 @@ const bgColor = ref(props.color ?? 'currentColor');
 const d = computed(() => Math.pow(size.value * 3, 0.15));
 
 onMounted(() => {
-  droplets.value.forEach((e, i) => {
+  for (const [i, e] of droplets.value.entries()) {
     gsap
       .timeline({
         delay: i * (d.value / 4) + initDelay.value,
@@ -58,7 +58,7 @@ onMounted(() => {
         },
         d.value
       );
-  });
+  }
 });
 </script>
 

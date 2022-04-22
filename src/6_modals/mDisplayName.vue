@@ -3,14 +3,17 @@ import { app, user } from '@/3_stores';
 import ATextInput from '@/4_components/atoms/aTextInput.vue';
 
 const nameInput = ref<InstanceType<typeof ATextInput> | null>(null);
+let refInput = nameInput?.value?.refInput;
+
+onMounted(() => {
+  refInput = nameInput?.value?.refInput;
+});
 
 const inputVal = ref('');
 const isValid = ref(false);
 const loading = ref(false);
 
 function handleInput() {
-  const refInput = nameInput?.value?.refInput;
-
   if (!refInput) {
     return;
   }

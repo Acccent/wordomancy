@@ -39,7 +39,9 @@ export const useSpellCasting = defineStore('spell-casting', {
         throw 'There was a problem getting your forecast. ' + result;
       }
 
-      (result as string[][]).forEach(kv => this.energy.set(kv[0], kv[1]));
+      for (const kv of result as string[][]) {
+        this.energy.set(kv[0], kv[1]);
+      }
 
       this.resetCasting();
     },

@@ -31,13 +31,13 @@ const handler: Handler = async event => {
       throw new Error('Incorrect number of Key Letters submitted');
     }
 
-    keys.forEach(k => {
+    for (const k of keys) {
       if (k > spellword.length - 1) {
         throw new Error(
           'The submitted Spellword and Key Letters are incompatible'
         );
       }
-    });
+    }
 
     const code = nanoid();
 

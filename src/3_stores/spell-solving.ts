@@ -81,9 +81,10 @@ export const useSpellSolving = defineStore('spell-solving', {
           spellData: foundSpell,
           solution: foundSpell.spellword,
         });
-        foundSpell.keys.forEach(i =>
-          this.knownInfo.keys.set(i, this.solution[i])
-        );
+
+        for (const i of foundSpell.keys) {
+          this.knownInfo.keys.set(i, this.solution[i]);
+        }
 
         if (user.isSignedIn) {
           const solvingGuesses = user.data[this.solvingProp].get(this.spellId);
@@ -105,7 +106,7 @@ export const useSpellSolving = defineStore('spell-solving', {
 
     // Recover past attempts from user data
     loadPastGuesses(guesses: PastGuesses) {
-      guesses.forEach(guess => {
+      for (const guess of guesses) {
         if (typeof guess === 'string') {
           const offset = guess.lastIndexOf(' ') + 1;
           const str = guess.trim();
@@ -121,7 +122,7 @@ export const useSpellSolving = defineStore('spell-solving', {
         } else {
           this.receiveHint(guess);
         }
-      });
+      }
     },
 
     // Reset the user input and get ready for a new guess
@@ -211,7 +212,7 @@ export const useSpellSolving = defineStore('spell-solving', {
         const resultMap = new Map() as GuessedWord;
 
         // First extract all correct and definitely wrong letters
-        guessMap.forEach(({ letter }, i) => {
+        for (const [i, { letter }] of guessMap) {
           if (letter === this.solution[i]) {
             resultMap.set(i, {
               letter,
@@ -224,13 +225,13 @@ export const useSpellSolving = defineStore('spell-solving', {
             resultMap.set(i, { letter, state: LS.wrong });
             guessMap.delete(i);
           }
-        });
+        }
 
         // Then for all remaining letters:
         // 1) See if we find it in the letters not yet used
         // 2) If we do, mark it as misplaced and remove it from the available letters
         // 3) Otherwise mark it as wrong
-        guessMap.forEach(({ letter }, i) => {
+        for (const [i, { letter }] of guessMap) {
           const inRemaining = [...solutionMap].find(kv => kv[1] === letter);
 
           if (inRemaining !== undefined) {
@@ -247,7 +248,7 @@ export const useSpellSolving = defineStore('spell-solving', {
               this.knownInfo.notInWord.add(letter);
             }
           }
-        });
+        }
 
         // Finally, sort the result and save it as a submitted guess
         const sortedResult = [...resultMap].sort((a, b) => a[0] - b[0]);

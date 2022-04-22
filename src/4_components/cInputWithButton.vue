@@ -14,14 +14,17 @@ const props = defineProps<{
 }>();
 
 const textInput = ref<InstanceType<typeof ATextInput> | null>(null);
+let refInput = textInput?.value?.refInput;
+
+onMounted(() => {
+  refInput = textInput?.value?.refInput;
+});
 
 const inputVal = ref('');
 const isValid = ref(false);
 const condRegExp = ref(new RegExp(`${props.condition}`));
 
 function handleInput() {
-  const refInput = textInput?.value?.refInput;
-
   if (!refInput) {
     return;
   }
