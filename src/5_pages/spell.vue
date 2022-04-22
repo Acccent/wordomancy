@@ -29,7 +29,7 @@ const scroller = ref<HTMLElement | null>(null);
 function submitted() {
   scroller.value?.scrollIntoView();
 
-  if (!solving.gameOver) {
+  if (solving.gameOver) {
     app.openModal('spell finished', mSpellFinished);
   }
 }

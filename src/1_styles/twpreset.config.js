@@ -18,7 +18,7 @@ module.exports = {
     },
     extend: {
       height: {
-        'screen-w/o-nav': 'calc(95vh - var(--navbar-height) - 2rem)',
+        'screen-w/o-nav': 'calc(100vh - var(--navbar-height) - 3rem)',
       },
       width: {
         '9%': '9%',

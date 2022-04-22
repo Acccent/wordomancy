@@ -32,13 +32,15 @@ onBeforeMount(async () => {
     </li>
   </ul>
 
-  <div class="flex justify-center mt-8">
+  <div class="flex flex-col items-center gap-6 mt-8">
     <a-button
       v-if="user.isSignedIn"
       class="btn-primary"
       @click="app.closeModalAndGo(app.homeRoute)"
       >Go back Home</a-button
     >
-    <a-button v-else class="btn-primary" @click="app.closeModal">OK</a-button>
+    <a-button class="btn-xs btn-outline py-2" @click="app.closeModal"
+      >OK</a-button
+    >
   </div>
 </template>
