@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { generateAnims } from '@/2_utils/anims';
 import { app, user, solving } from '@/3_stores';
-import { mSpellInfo } from '@/6_modals';
+import { mHelp, mSpellInfo } from '@/6_modals';
 
 const {
   setup: barSetup,
@@ -71,7 +71,8 @@ function btnsDelayedLeave(el: Element, done: () => void) {
               class="btn btn-square btn-ghost"
               title="Help"
               key="help"
-              data-index="1">
+              data-index="1"
+              @click="app.openModal('help', mHelp)">
               <a-icon name="f-question" />
             </button>
             <template v-if="user.isSignedIn">

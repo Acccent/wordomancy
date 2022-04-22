@@ -2,6 +2,11 @@
 import { app, user, solving } from '@/3_stores';
 
 const spell = reactive(solving.spellData) as SpellData;
+
+function giveUpConfirm() {
+  solving.givingUp = true;
+  app.closeModal();
+}
 </script>
 
 <template>
@@ -30,7 +35,10 @@ const spell = reactive(solving.spellData) as SpellData;
       @click="app.closeModalAndGo(app.homeRoute)"
       >Go back Home</a-link-button
     >
-    <a-link-button class="btn-xs btn-error btn-outline py-1"
+    <a-link-button
+      v-if="solving.previousGuesses.length > 0"
+      class="btn-xs btn-error btn-outline py-1"
+      @click="giveUpConfirm"
       >Give up</a-link-button
     >
   </div>

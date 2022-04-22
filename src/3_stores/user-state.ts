@@ -116,7 +116,7 @@ export const useUser = defineStore('user', {
         throw error;
       }
 
-      this.data = { ...this.data, ...newData };
+      this.data = reactive({ ...this.data, ...newData });
     },
 
     formatUserData(data: Partial<UserData>) {
