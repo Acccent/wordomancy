@@ -6,7 +6,7 @@ const props = defineProps<{
   guess?: GuessedWord;
 }>();
 
-const isCurrent = ref(props.guess === undefined);
+const isCurrent = props.guess === undefined;
 
 const guessDisplay = computed(() => {
   const glArray = [] as GuessedLetter[];
@@ -17,7 +17,7 @@ const guessDisplay = computed(() => {
       continue;
     }
 
-    if (isCurrent.value) {
+    if (isCurrent) {
       const correctLetter = solving.knownInfo.corrects.get(i);
       if (correctLetter) {
         glArray.push({
@@ -47,7 +47,7 @@ const guessDisplay = computed(() => {
 });
 
 function getLetterState(state: LS) {
-  if (isCurrent.value) {
+  if (isCurrent) {
     switch (state) {
       case LS.correct:
       case LS.key:
@@ -64,7 +64,7 @@ function getLetterState(state: LS) {
 
 function isTranslucent(i: number) {
   return (
-    isCurrent.value &&
+    isCurrent &&
     (i < solving.inputOffset ||
       i >= solving.guessInput.length + solving.inputOffset)
   );

@@ -9,12 +9,10 @@ const props = defineProps<{
 const spell = reactive(props.meta.spell as SpellData);
 const id = spells.getSpellId(spell, SpellSource.user);
 
-const shownSpell = computed((): GuessedLetter[] => {
-  return [...spell.spellword].map((letter, i) => ({
-    letter,
-    state: spell.keys.includes(i) ? LS.key : LS.default,
-  }));
-});
+const shownSpell = [...spell.spellword].map((letter, i) => ({
+  letter,
+  state: spell.keys.includes(i) ? LS.key : LS.default,
+}));
 </script>
 
 <template>

@@ -2,11 +2,10 @@ import { DateTime } from 'luxon';
 import { LetterState as LS, KnownInfo } from '@/2_utils/global';
 import { user, local, spells } from './';
 
-const maxGuesses = 6;
-
 export const useSpellSolving = defineStore('spell-solving', {
   state: () => {
     return {
+      maxGuesses: 6,
       preloadedId: '',
       spellId: '',
       spellData: {} as SpellData | DailySpellData,
@@ -21,6 +20,7 @@ export const useSpellSolving = defineStore('spell-solving', {
       knownInfo: new KnownInfo(),
       currentGuess: new Map() as GuessedWord,
       previousGuesses: [] as GuessedWord[],
+      givingUp: false,
       solution: '',
     };
   },
@@ -29,7 +29,7 @@ export const useSpellSolving = defineStore('spell-solving', {
     finishedProp: s => (s.isDaily ? 'finishedDailies' : 'finished'),
     isInputValid: s =>
       new RegExp(`^[a-zA-Z]{5,${s.solution.length || 5}}$`).test(s.guessInput),
-    remainingGuesses: s => maxGuesses - s.previousGuesses.length,
+    remainingGuesses: s => s.maxGuesses - s.previousGuesses.length,
     canGetHint(): boolean {
       const allKnown = new Set([
         ...this.knownInfo.corrects.keys(),
@@ -107,7 +107,11 @@ export const useSpellSolving = defineStore('spell-solving', {
     // Recover past attempts from user data
     loadPastGuesses(guesses: PastGuesses) {
       for (const guess of guesses) {
-        if (typeof guess === 'string') {
+        if (typeof guess === 'number') {
+          this.receiveHint(guess);
+        } else if (guess === 'x') {
+          this.giveUp(true);
+        } else {
           const offset = guess.lastIndexOf(' ') + 1;
           const str = guess.trim();
           this.evaluateGuess({
@@ -119,8 +123,6 @@ export const useSpellSolving = defineStore('spell-solving', {
               ])
             ),
           });
-        } else {
-          this.receiveHint(guess);
         }
       }
     },
@@ -339,11 +341,31 @@ export const useSpellSolving = defineStore('spell-solving', {
       return true;
     },
 
+    async giveUp(isPast = false) {
+      this.maxGuesses = this.previousGuesses.length;
+      if (!isPast) {
+        // Update Spell stats
+        if (!this.isDaily) {
+          if (!this.submittedFirstGuess) {
+            spells.updateSpellStats(this.spellId, 'played');
+          }
+          spells.updateSpellStats(this.spellId, 'failed');
+        }
+
+        // Update user data
+        if (user.isSignedIn) {
+          await this.updateUserStats('x');
+        }
+
+        this.resetInput();
+      }
+      this.submittedFirstGuess = true;
+      return true;
+    },
+
     async updateUserStats(newGuess: string | number) {
       const id = this.spellId;
       const upd = {} as Partial<UserData>;
-      // const finishedData = new Map(user.data[this.finishedProp]);
-      // const allStats = { ...user.data.stats };
 
       const solvingStat = new Map(user.data[this.solvingProp]);
       const pastGuesses = solvingStat.get(id) ?? [];

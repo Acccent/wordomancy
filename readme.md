@@ -8,7 +8,7 @@ There's still a lot missing and some things might not work, so feedback is very 
 ### Known issues
 
 - [ ] ⚠️ Google sign-up doesn't work currently
-- [ ] ⚠️ There may be a bug where a misplaced letter is highlighted several times in a guess, when it's only once in the solution
+- [ ] ⚠️ When starting or finishing a Spell and going back to the home page, the Spell list isn't properly updated (reloading fixes it)
 - [ ] Colors need tweaking and accessibility check
 
 ### Planned features

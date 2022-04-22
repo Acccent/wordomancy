@@ -11,36 +11,30 @@ const spell = reactive(props.meta.spell);
 const status = ref(props.meta.status);
 const source = ref(props.meta.source);
 
-const id = ref(spells.getSpellId(spell, source.value));
+const id = spells.getSpellId(spell, source.value);
+const isDaily = source.value === SpellSource.daily;
+const isFinished = status.value === SpellStatus.finished;
 
-const guesses = computed(() => {
-  if (status.value !== SpellStatus.unplayed) {
-    const isDaily = source.value === SpellSource.daily;
-    const isFinished = status.value === SpellStatus.finished;
+const guesses =
+  status.value === SpellStatus.unplayed
+    ? []
+    : user.data[
+        isDaily
+          ? isFinished
+            ? 'finishedDailies'
+            : 'solvingDailies'
+          : isFinished
+          ? 'finished'
+          : 'solving'
+      ].get(id) ?? [];
+const lastGuess = guesses.length ? guesses[guesses.length - 1] : '';
 
-    return user.data[
-      isDaily
-        ? isFinished
-          ? 'finishedDailies'
-          : 'solvingDailies'
-        : isFinished
-        ? 'finished'
-        : 'solving'
-    ].get(id.value);
-  }
-});
+const isWon = isFinished && lastGuess === spell.spellword;
+const isLost = isFinished && lastGuess !== spell.spellword;
 
-const isWon = computed(
-  () =>
-    guesses.value?.length &&
-    guesses.value[guesses.value?.length - 1] === spell.spellword
-);
-
-const isLost = computed(() => status.value === SpellStatus.finished && !isWon);
-
-const shownSpell = computed((): GuessedLetter[] => {
+const shownSpell = (): GuessedLetter[] => {
   const corrects = new Set<number>();
-  for (const g of guesses.value || []) {
+  for (const g of guesses || []) {
     if (typeof g === 'number') {
       corrects.add(g);
     } else {
@@ -61,7 +55,7 @@ const shownSpell = computed((): GuessedLetter[] => {
       ? { letter, state: LS.wrong }
       : { letter: ' ', state: LS.default }
   );
-});
+};
 </script>
 
 <template>
@@ -77,7 +71,7 @@ const shownSpell = computed((): GuessedLetter[] => {
             'text-error': isLost,
           },
         ]">
-        <a-icon name="f-square">{{ isLost ? '×' : guesses?.length }}</a-icon>
+        <a-icon name="f-square">{{ isLost ? '×' : guesses.length }}</a-icon>
       </div>
     </div>
     <router-link
@@ -89,7 +83,7 @@ const shownSpell = computed((): GuessedLetter[] => {
         },
       }">
       <c-spell-single-letter
-        v-for="(gl, i) in shownSpell"
+        v-for="(gl, i) in shownSpell()"
         :class="['w-8', { 'opacity-[0.9]': gl.state !== LS.key }]"
         :letter="gl.letter"
         :letterState="gl.state"

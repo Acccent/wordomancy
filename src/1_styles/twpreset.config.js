@@ -20,6 +20,9 @@ module.exports = {
       height: {
         'screen-w/o-nav': 'calc(98vh - var(--navbar-height) - 2rem)',
       },
+      minHeight: {
+        touch: '36px',
+      },
       width: {
         '9%': '9%',
         '10%': '10%',

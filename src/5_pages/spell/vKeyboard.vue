@@ -87,7 +87,7 @@ const emit = defineEmits<{
       :show="solving.invalidGuess"
       text="This is not a valid guess."
       class="after:hidden mb-2 mx-auto text-center" />
-    <div class="flex gap-2 items-end mb-4">
+    <div class="flex gap-2 min-h-touch mb-4">
       <a-button
         class="btn-error px-3"
         title="Delete all"
@@ -104,12 +104,12 @@ const emit = defineEmits<{
       </a-button>
       <form
         id="guess-text-input"
-        class="form-control grow"
+        class="form-control grow h-full"
         @submit.prevent="submit('evaluateGuess')">
-        <div class="input-group items-end">
-          <div class="w-1/2 min-w-[16rem]">
+        <div class="input-group">
+          <div class="w-1/2 min-w-[15rem]">
             <a-text-input
-              class="text-xl spell-text-input"
+              class="min-h-touch text-xl spell-text-input"
               ref="textInput"
               :disabled="inputsDisabled"
               @input="changeInput"
@@ -141,7 +141,7 @@ const emit = defineEmits<{
       class="flex justify-center gap-2">
       <button
         v-if="i === 2 && solving.solution.length > 5"
-        class="btn w-10% p-0 shrink"
+        class="btn w-10% min-h-touch p-0 shrink"
         title="Move input left"
         :disabled="solving.inputOffset <= 0 || inputsDisabled"
         @click.prevent="moveLeft">
@@ -150,14 +150,17 @@ const emit = defineEmits<{
       <button
         v-for="letter in row"
         :key="`letter-${letter}`"
-        :class="['btn w-9% p-0 shrink', getLetterButtonState(letter)]"
+        :class="[
+          'btn w-9% min-h-touch p-0 shrink',
+          getLetterButtonState(letter),
+        ]"
         :disabled="inputsDisabled"
         @click.prevent="changeInput(solving.guessInput + letter)">
         {{ letter }}
       </button>
       <button
         v-if="i === 2 && solving.solution.length > 5"
-        class="btn w-10% p-0 shrink"
+        class="btn w-10% min-h-touch p-0 shrink"
         title="Move input right"
         :disabled="
           solving.guessInput.length < 1 ||
