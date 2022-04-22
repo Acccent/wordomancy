@@ -62,10 +62,10 @@ const loading = reactive({
 
 async function submit(type: 'evaluateGuess' | 'receiveHint') {
   loading.btnGuess = true;
-  await solving[type]();
+  const didSubmit = await solving[type]();
   emit('submitted');
   loading.btnGuess = false;
-  if (refInput) {
+  if (didSubmit && refInput) {
     refInput.value = '';
   }
 }
@@ -107,7 +107,7 @@ const emit = defineEmits<{
         class="form-control grow"
         @submit.prevent="submit('evaluateGuess')">
         <div class="input-group items-end">
-          <div class="w-1/2">
+          <div class="w-1/2 min-w-[16rem]">
             <a-text-input
               class="text-xl spell-text-input"
               ref="textInput"

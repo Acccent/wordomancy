@@ -12,22 +12,26 @@ const spell = reactive(solving.spellData) as SpellData;
   <ul class="flex flex-col gap-4 w-fit mt-4 mx-auto">
     <li
       v-for="t in ['played', 'solved', 'average', 'failed']"
-      :title="t === 'average' ? 'Average guesses' : `Times ${t}`"
       class="flex gap-1"
       :key="t">
       <a-icon :name="`f-${t}`" />
-      {{ t === 'average' ? 'Average guesses:' : 'Times ' + t }}
+      {{ t === 'average' ? 'Average guesses:' : `Times ${t}:` }}
       {{ spell[`stat${t}`].toFixed(t === 'average' ? 1 : 0) }}
     </li>
   </ul>
 
-  <div class="flex flex-col items-center gap-6 mt-8">
-    <a-button class="btn-primary" @click="app.closeModal">OK</a-button>
+  <div class="flex flex-col items-center gap-4 mt-8">
+    <a-button class="btn-primary mb-2" @click="app.closeModal"
+      >Continue</a-button
+    >
     <a-link-button
-      class="btn-xs btn-outline py-2"
+      class="btn-xs btn-warning btn-outline py-1"
       v-if="user.isSignedIn"
       @click="app.closeModalAndGo(app.homeRoute)"
       >Go back Home</a-link-button
+    >
+    <a-link-button class="btn-xs btn-error btn-outline py-1"
+      >Give up</a-link-button
     >
   </div>
 </template>

@@ -186,7 +186,7 @@ export const useSpellSolving = defineStore('spell-solving', {
       // (we allow strings with spaces before or after)
       if (!isPastGuess && !(await local.checkIfGuessExists(upperInput))) {
         this.invalidGuess = true;
-        return;
+        return false;
       }
 
       // If the guess is correct, no need to check anything else
@@ -280,13 +280,14 @@ export const useSpellSolving = defineStore('spell-solving', {
       }
 
       this.submittedFirstGuess = true;
+      return true;
     },
 
     async receiveHint(keyPosition?: number) {
       const isPastHint = keyPosition !== undefined;
 
       if (!isPastHint && !this.canGetHint) {
-        throw "You can't get a hint right now.";
+        return false;
       }
 
       const hintResult = new Map() as GuessedWord;
@@ -335,6 +336,7 @@ export const useSpellSolving = defineStore('spell-solving', {
 
       this.usedFirstHint = true;
       this.submittedFirstGuess = true;
+      return true;
     },
 
     async updateUserStats(newGuess: string | number) {

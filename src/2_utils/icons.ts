@@ -21,7 +21,7 @@ const iconList = {
   'f-signout': 'person-arrow-right-24-regular',
   'f-square': 'square-24-regular',
   'f-played': 'play-circle-24-regular',
-  'f-guesses': 'number-symbol-square-24-regular',
+  'f-average': 'number-symbol-square-24-regular',
   'f-solved': 'checkmark-square-24-regular',
   'f-failed': 'dismiss-square-24-regular',
   'f-friend': 'emoji-24-regular',

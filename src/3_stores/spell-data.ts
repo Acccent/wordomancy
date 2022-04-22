@@ -167,10 +167,10 @@ export const useSpellData = defineStore('spell-data', {
           spellcode,
           status,
           guesses,
-        },
-        {
-          head: true,
         }
+        // {
+        //   head: true,
+        // }
       );
 
       if (error) {
