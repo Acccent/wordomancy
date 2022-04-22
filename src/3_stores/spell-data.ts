@@ -157,14 +157,14 @@ export const useSpellData = defineStore('spell-data', {
     },
 
     async updateSpellStats(
-      code: string,
+      spellcode: string,
       status: 'played' | 'solved' | 'failed',
       guesses = 0
     ) {
       const { error } = await app.supabase.rpc(
         `update_spell_stats`,
         {
-          code,
+          spellcode,
           status,
           guesses,
         },
