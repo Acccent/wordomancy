@@ -20,7 +20,6 @@ There's still a lot missing and some things might not work, so feedback is very 
 - [ ] Explanations + acknowledgments (via intro popups and navbar buttons)
 - Settings
   - [ ] Toggle letter hints
-  - [ ] Toggle text input
   - [ ] Choose color for letter states
 - [ ] "Give up" button
 
@@ -28,5 +27,4 @@ There's still a lot missing and some things might not work, so feedback is very 
 
 - [ ] Animations everywhere ✨
 - [ ] Other languages / kb layouts
-- [ ] Word definitions at game end
 - [ ] Maybe add button to shuffle letters of forecast words

@@ -2,7 +2,7 @@
 import { app, solving } from '@/3_stores';
 import vSpellLettersSolve from './spell/vSpellLettersSolve.vue';
 import vKeyboard from './spell/vKeyboard.vue';
-import { mSpellNotFound } from '@/6_modals';
+import { mSpellFinished, mSpellNotFound } from '@/6_modals';
 const route = useRoute();
 
 // We need a per-component "visibility variable" to handle the case of
@@ -25,6 +25,14 @@ onMounted(async () => {
 });
 
 const scroller = ref<HTMLElement | null>(null);
+
+function submitted() {
+  scroller.value?.scrollIntoView();
+
+  if (solving.gameOver) {
+    app.openModal('spell finished', mSpellFinished);
+  }
+}
 </script>
 
 <template>
@@ -60,7 +68,7 @@ const scroller = ref<HTMLElement | null>(null);
           >
         </div>
       </div>
-      <v-keyboard v-else @submitted="scroller?.scrollIntoView()" />
+      <v-keyboard v-else @submitted="submitted" />
     </div>
   </div>
 </template>

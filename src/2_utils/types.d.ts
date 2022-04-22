@@ -76,4 +76,14 @@ declare global {
     status: SpellStatus;
     source: SpellSource;
   }
+
+  type WordMeaning = {
+    partOfSpeech: string;
+    definitions: {
+      definition: string;
+      example: string;
+      synonyms: string[];
+      antonyms: string[];
+    }[];
+  }
 }

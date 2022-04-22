@@ -4,7 +4,7 @@ import { icons as twemojis } from '@iconify-json/twemoji';
 import { addIcon } from '@iconify/vue/offline';
 import emojis from '@/../public/emojis.json';
 
-Object.entries({
+const iconList = {
   'a-twitter': 'twitter-fill',
   'a-google': 'google-fill',
   'a-discord': 'discord-fill',
@@ -29,19 +29,21 @@ Object.entries({
   'f-remove-friend': 'person-delete-24-regular',
   'f-stats': 'data-histogram-24-regular',
   'f-clock': 'clock-24-regular',
-}).forEach(([name, icon]) => {
+};
+
+for (const [name, icon] of Object.entries(iconList)) {
   const lib = name[0] === 'a' ? akar : fluent;
   addIcon(name, {
     body: lib.icons[icon].body,
     width: 24,
     height: 24,
   });
-});
+}
 
-emojis.forEach(name => {
+for (const name of emojis) {
   addIcon(name, {
     body: twemojis.icons[name].body,
     width: 36,
     height: 36,
   });
-});
+}

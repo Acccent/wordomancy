@@ -47,7 +47,7 @@ export const useUser = defineStore('user', {
           }
         } else {
           const fetchedUser = {} as Record<string, unknown>;
-          Object.entries(data[0]).forEach(([k, v]) => {
+          for (const [k, v] of Object.entries(data[0])) {
             if (k.startsWith('solving') || k.startsWith('finished')) {
               fetchedUser[k] = new Map(
                 Object.entries(v as { [x: string]: PastGuesses })
@@ -55,7 +55,7 @@ export const useUser = defineStore('user', {
             } else {
               fetchedUser[k] = v;
             }
-          });
+          }
 
           this.data = fetchedUser as UserData;
         }
@@ -122,13 +122,13 @@ export const useUser = defineStore('user', {
     formatUserData(data: Partial<UserData>) {
       const formatted = {} as Record<string, unknown>;
 
-      Object.entries(data).forEach(([k, v]) => {
+      for (const [k, v] of Object.entries(data)) {
         if (k.startsWith('solving') || k.startsWith('finished')) {
           formatted[k] = Object.fromEntries(v as Map<string, PastGuesses>);
         } else {
           formatted[k] = v;
         }
-      });
+      }
 
       return formatted;
     },
@@ -181,9 +181,10 @@ export const useUser = defineStore('user', {
       });
 
       this.friendsData.set(newFriend.displayName, newFriend);
-      (await spells.getSpellsFromUser(newFriend.id)).forEach(spell => {
+
+      for (const spell of await spells.getSpellsFromUser(newFriend.id)) {
         spells.addSpellLocally(spell, SpellSource.friend);
-      });
+      }
 
       this.friendNameToAdd = '';
       return true;
@@ -212,7 +213,7 @@ export const useUser = defineStore('user', {
       this.friendsData.delete(this.friendToRemove.displayName);
 
       const tempSpellsMap = new Map(spells.allSpells);
-      tempSpellsMap.forEach((meta, id) => {
+      for (const [id, meta] of tempSpellsMap) {
         if ((meta.spell as SpellData).creator === this.friendToRemove) {
           if (this.data.solving.has(id) || this.data.finished.has(id)) {
             meta.source = SpellSource.other;
@@ -221,7 +222,7 @@ export const useUser = defineStore('user', {
             spells.allSpells.delete(id);
           }
         }
-      });
+      }
 
       this.friendToRemove = {} as OtherUserData;
     },

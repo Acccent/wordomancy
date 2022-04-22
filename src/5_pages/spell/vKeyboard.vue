@@ -9,16 +9,15 @@ const kbKeys = [
 ];
 
 const textInput = ref<InstanceType<typeof ATextInput> | null>(null);
+let refInput = textInput?.value?.refInput;
+
+onMounted(() => {
+  refInput = textInput?.value?.refInput;
+});
 
 function changeInput(s?: string) {
-  const refInput = textInput?.value?.refInput;
-
-  if (!refInput) {
-    return;
-  }
-
-  solving.updateCurrentGuess(s ?? refInput.value);
-  if (solving.guessInput !== refInput.value) {
+  solving.updateCurrentGuess(s ?? refInput?.value);
+  if (refInput && refInput?.value !== solving.guessInput) {
     refInput.value = solving.guessInput;
   }
 }
@@ -66,10 +65,13 @@ async function submit(type: 'evaluateGuess' | 'receiveHint') {
   await solving[type]();
   emit('submitted');
   loading.btnGuess = false;
+  if (refInput) {
+    refInput.value = '';
+  }
 }
 
 function submittedWithEnter() {
-  textInput?.value?.refInput?.focus();
+  refInput?.focus();
 }
 
 const inputsDisabled = computed(() => loading.btnGuess || loading.btnHint);

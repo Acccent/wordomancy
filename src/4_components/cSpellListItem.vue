@@ -40,17 +40,17 @@ const isLost = computed(() => status.value === SpellStatus.finished && !isWon);
 
 const shownSpell = computed((): GuessedLetter[] => {
   const corrects = new Set<number>();
-  (guesses.value || []).forEach(g => {
+  for (const g of guesses.value || []) {
     if (typeof g === 'number') {
       corrects.add(g);
     } else {
-      [...g].forEach((l, i) => {
+      for (const [i, l] of [...g].entries()) {
         if (l === spell.spellword[i]) {
           corrects.add(i);
         }
-      });
+      }
     }
-  });
+  }
 
   return [...spell.spellword].map((letter, i) =>
     spell.keys.includes(i)

@@ -66,9 +66,9 @@ export const useSpellData = defineStore('spell-data', {
     async getUserSpells() {
       const uId = user.user?.id;
       if (uId) {
-        (await this.getSpellsFromUser(uId)).forEach(spell =>
-          this.addSpellLocally(spell, SpellSource.user)
-        );
+        for (const spell of await this.getSpellsFromUser(uId)) {
+          this.addSpellLocally(spell, SpellSource.user);
+        }
       }
     },
 
@@ -111,18 +111,18 @@ export const useSpellData = defineStore('spell-data', {
         throw dailiesError;
       }
 
-      (spellsData as SpellData[]).forEach(spell => {
+      for (const spell of spellsData as SpellData[]) {
         this.addSpellLocally(
           spell,
           SpellSource[
             user.data.friends.includes(spell.creator.id) ? 'friend' : 'other'
           ]
         );
-      });
+      }
 
-      (dailiesData as DailySpellData[]).forEach(spell => {
+      for (const spell of dailiesData as DailySpellData[]) {
         this.addSpellLocally(spell, SpellSource.daily);
-      });
+      }
     },
 
     async addSpellLocally(
@@ -160,9 +160,15 @@ export const useSpellData = defineStore('spell-data', {
       code: string,
       status: 'played' | 'solved' | 'failed'
     ) {
-      const { error } = await app.supabase.rpc(`increment_${status}`, {
-        spellcode: code,
-      });
+      const { error } = await app.supabase.rpc(
+        `increment_${status}`,
+        {
+          spellcode: code,
+        },
+        {
+          head: true,
+        }
+      );
 
       if (error) {
         throw error;
@@ -170,10 +176,16 @@ export const useSpellData = defineStore('spell-data', {
     },
 
     async updateSpellAverage(code: string, guesses: number) {
-      const { error } = await app.supabase.rpc('update_average', {
-        spellcode: code,
-        guesses,
-      });
+      const { error } = await app.supabase.rpc(
+        'update_average',
+        {
+          spellcode: code,
+          guesses,
+        },
+        {
+          head: true,
+        }
+      );
 
       if (error) {
         throw error;

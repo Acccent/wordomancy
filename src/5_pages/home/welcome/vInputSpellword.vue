@@ -10,10 +10,13 @@ const tooltipShow = ref(false);
 const tooltipText = ref('No error yet');
 
 const spellInput = ref<InstanceType<typeof ATextInput> | null>(null);
+let refInput = spellInput?.value?.refInput;
+
+onMounted(() => {
+  refInput = spellInput?.value?.refInput;
+});
 
 function changeInput() {
-  const refInput = spellInput?.value?.refInput;
-
   if (!refInput) {
     return;
   }
@@ -22,26 +25,26 @@ function changeInput() {
   const inputUpper = refInput.value.toUpperCase() ?? '';
   let swCompare = inputUpper;
 
-  energyWords.value.forEach((energyWord, w) => {
-    used[w] = new Array(energyWord.length);
-    [...energyWord].forEach((energyLetter, l) => {
+  for (const [i, energyWord] of energyWords.value.entries()) {
+    used[i] = new Array(energyWord.length);
+    for (const [j, energyLetter] of [...energyWord].entries()) {
       if (swCompare.includes(energyLetter)) {
-        used[w][l] = true;
+        used[i][j] = true;
         swCompare = swCompare.replace(energyLetter, '');
       } else {
-        used[w][l] = false;
+        used[i][j] = false;
       }
-    });
-  });
+    }
+  }
   if (swCompare.length) {
     usedWrongLetters.value = true;
     tooltipShow.value = true;
     tooltipText.value =
       'You can only use letters from the words of your energy forecast!';
     let newSwArray = [...inputUpper];
-    [...swCompare].forEach(letter => {
+    for (const letter of [...swCompare]) {
       newSwArray[newSwArray.lastIndexOf(letter)] = '';
-    });
+    }
     casting.word = newSwArray.join('');
   } else {
     usedWrongLetters.value = false;
