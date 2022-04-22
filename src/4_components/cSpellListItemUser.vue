@@ -37,22 +37,12 @@ const shownSpell = computed((): GuessedLetter[] => {
     <a-list-dotted-line />
     <div class="flex gap-2">
       <div
-        v-for="t in ['played', 'solved', 'guesses', 'failed']"
-        :title="t === 'guesses' ? 'Average guesses' : `Times ${t}`"
+        v-for="t in ['played', 'solved', 'average', 'failed']"
+        :title="t === 'average' ? 'Average guesses' : `Times ${t}`"
         class="flex gap-0.5 w-12"
         :key="t">
         <a-icon :name="`f-${t}`" />
-        {{
-          t === 'guesses'
-            ? spell.averageGuesses.toFixed(1)
-            : spell[
-                t === 'played'
-                  ? 'timesPlayed'
-                  : t === 'solved'
-                  ? 'timesSolved'
-                  : 'timesFailed'
-              ]
-        }}
+        {{ spell[`stat${t}`].toFixed(t === 'average' ? 1 : 0) }}
       </div>
     </div>
   </li>
