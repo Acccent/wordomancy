@@ -11,24 +11,13 @@ const spell = reactive(solving.spellData) as SpellData;
   <p class="text-center mt-8">Stats:</p>
   <ul class="flex flex-col gap-4 w-fit mt-4 mx-auto">
     <li
-      v-for="t in ['played', 'solved', 'guesses', 'failed']"
-      :title="t === 'guesses' ? 'Average guesses' : `Times ${t}`"
+      v-for="t in ['played', 'solved', 'average', 'failed']"
+      :title="t === 'average' ? 'Average guesses' : `Times ${t}`"
       class="flex gap-1"
       :key="t">
       <a-icon :name="`f-${t}`" />
-      {{
-        t === 'guesses'
-          ? `Average guesses: ${spell.averageGuesses.toFixed(1)}`
-          : `Times ${t}: ${
-              spell[
-                t === 'played'
-                  ? 'timesPlayed'
-                  : t === 'solved'
-                  ? 'timesSolved'
-                  : 'timesFailed'
-              ]
-            }`
-      }}
+      {{ t === 'average' ? 'Average guesses:' : 'Times ' + t }}
+      {{ spell[`stat${t}`].toFixed(t === 'average' ? 1 : 0) }}
     </li>
   </ul>
 

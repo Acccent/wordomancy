@@ -265,14 +265,9 @@ export const useSpellSolving = defineStore('spell-solving', {
           if (this.gameOver) {
             spells.updateSpellStats(
               this.spellId,
-              this.won ? 'solved' : 'failed'
+              this.won ? 'solved' : 'failed',
+              this.won ? this.previousGuesses.length : 0
             );
-            if (this.won) {
-              spells.updateSpellAverage(
-                this.spellId,
-                this.previousGuesses.length
-              );
-            }
           }
         }
 

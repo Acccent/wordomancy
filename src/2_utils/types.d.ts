@@ -59,10 +59,10 @@ declare global {
     spellword: string;
     keys: number[];
     creator: OtherUserData;
-    timesPlayed: number;
-    timesSolved: number;
-    timesFailed: number;
-    averageGuesses: number;
+    statplayed: number;
+    statsolved: number;
+    statfailed: number;
+    stataverage: number;
   }
 
   type DailySpellData = {
