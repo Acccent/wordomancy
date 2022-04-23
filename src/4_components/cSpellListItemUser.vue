@@ -35,7 +35,7 @@ const shownSpell = [...spell.spellword].map((letter, i) => ({
     <a-list-dotted-line />
     <div class="flex gap-2">
       <div
-        v-for="t in ['played', 'solved', 'average', 'failed']"
+        v-for="t in (['played', 'solved', 'average', 'failed'] as const)"
         :title="t === 'average' ? 'Average guesses' : `Times ${t}`"
         class="flex gap-0.5 w-12"
         :key="t">

@@ -16,7 +16,7 @@ function giveUpConfirm() {
   <p class="text-center mt-8">Stats:</p>
   <ul class="flex flex-col gap-4 w-fit mt-4 mx-auto">
     <li
-      v-for="t in ['played', 'solved', 'average', 'failed']"
+      v-for="t in (['played', 'solved', 'average', 'failed'] as const)"
       class="flex gap-1"
       :key="t">
       <a-icon :name="`f-${t}`" />
